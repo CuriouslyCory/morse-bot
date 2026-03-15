@@ -4,9 +4,11 @@ import { useCallback, useRef } from "react";
 
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
+import { DecodedText } from "./decoded-text";
 
 export function DecoderPanel() {
-  const { decodedText, processSamples, reset } = useMorseDecoder();
+  const { decodedText, currentElements, processSamples, reset } =
+    useMorseDecoder();
 
   const onSamples = useCallback(
     (samples: Float32Array) => {
@@ -40,15 +42,11 @@ export function DecoderPanel() {
         {error && <span className="text-sm text-destructive">{error}</span>}
       </div>
 
-      <div className="min-h-48 w-full rounded border bg-muted p-4 font-mono text-lg">
-        {decodedText || (
-          <span className="text-muted-foreground">
-            {isRecording
-              ? "Listening for morse code..."
-              : "Press Start to begin decoding"}
-          </span>
-        )}
-      </div>
+      <DecodedText
+        decodedText={decodedText}
+        currentElements={currentElements}
+        isRecording={isRecording}
+      />
     </div>
   );
 }
