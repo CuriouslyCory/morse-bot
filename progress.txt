@@ -1,3 +1,13 @@
+## 2026-03-15 - US-006
+- Exposed `actualSampleRate` from `useAudioInput` and synced it to the decoder
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-input.ts`: Added `actualSampleRate: number | null` state; set after AudioContext created, cleared in stopRecording and catch block; added to return type
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Destructure `actualSampleRate` from `useAudioInput`; added `useEffect` to call `updateConfig({ sampleRate: actualSampleRate })` when non-null
+- **Learnings for future iterations:**
+  - Circular dependency between `useAudioInput` (needs onSamples) and `useMorseDecoder` (needs sampleRate) — solved by reading actualSampleRate from hook return and syncing via `updateConfig` in a `useEffect` rather than passing at construction time
+  - `audioContext.sampleRate` reflects the actual rate after construction (may differ from the requested rate on Safari)
+---
+
 ## 2026-03-15 - US-005
 - Fixed AudioContext and MediaStream leak in useAudioInput catch block
 - Files changed:

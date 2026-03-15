@@ -86,7 +86,7 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "Safari may ignore the sampleRate parameter and use hardware default (44100/48000). The Goertzel filter frequency calc will be completely wrong if the decoder assumes 8000 but receives 44100."
     },
     {
