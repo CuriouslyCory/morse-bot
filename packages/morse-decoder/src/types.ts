@@ -32,6 +32,20 @@ export interface EnvelopeState {
   snrDb: number;
 }
 
+export interface TimingConfig {
+  /** Initial words per minute estimate */
+  wpm: number;
+  /** Whether to adaptively track sender speed */
+  adaptive: boolean;
+}
+
+export interface MorseDecoder {
+  processSamples(samples: Float32Array, timestampMs: number): void;
+  getDecodedText(): string;
+  reset(): void;
+  updateConfig(partial: Partial<DecoderConfig>): void;
+}
+
 export interface DecoderConfig {
   /** Target frequency to detect in Hz (default: 600) */
   targetFrequency: number;
