@@ -43,6 +43,18 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-016
+- Added Save Session button (auth-gated) and "Sign in to save sessions" for unauthenticated users
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added authClient.useSession() for auth check, useMutation for session.save tRPC call, session timing tracking (sessionStartRef), source tracking (mic/file), handleSave callback, save/sign-in UI section
+- **Learnings for future iterations:**
+  - `authClient.useSession()` from `~/auth/client` provides client-side auth state (data is non-null when authenticated)
+  - `useMutation` must be imported from `@tanstack/react-query`, not react — uses `trpc.session.save.mutationOptions()`
+  - `<a>` element triggers `@next/next/no-html-link-for-pages` ESLint error; use `<button onClick>` with `authClient.signIn.social()` instead for auth redirects in client components
+  - toast.success/toast.error from `@moris-bot/ui/toast` work as expected
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-015
 - Added decoded_sessions table to DB schema and session tRPC router
 - Files changed:
