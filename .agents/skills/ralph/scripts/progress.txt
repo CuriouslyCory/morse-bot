@@ -1,3 +1,41 @@
+## Codebase Patterns
+- This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
+- sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
+- pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
+- Package scope is @moris-bot/ (was @acme/ in the t3-turbo template).
+- Root package.json name is "moris-bot".
+
 # Ralph Progress Log
 Started: Sat Mar 14 08:55:18 PM MST 2026
+---
+
+## 2026-03-14 - US-001
+- Renamed all @acme/ references to @moris-bot/ across all files
+- Updated root package.json name from create-t3-turbo to moris-bot
+- Updated turbo/generators/config.ts description from "Acme Monorepo" to "Moris Bot Monorepo"
+- Updated apps/nextjs/src/app/layout.tsx metadata titles/descriptions/URLs from "Create T3 Turbo" to "Moris Bot"
+- Fixed alphabetical ordering in packages/auth/package.json and apps/tanstack-start/package.json (required by sherif)
+- Deleted and regenerated pnpm-lock.yaml via pnpm install
+- Typecheck passed (14/14 tasks)
+- Files changed: all *.json, *.ts, *.tsx, *.js, *.css files across the monorepo
+- **Learnings for future iterations:**
+  - sherif enforces alphabetical sorting in package.json; new packages must have sorted deps
+  - pnpm install fails if sherif finds issues (it runs as postinstall)
+  - Node engine mismatch warning (wants ^22.21.0, has v24.13.1) but doesn't block install
+---
+
+## 2026-03-14 - US-002
+- Created packages/morse-decoder with name @moris-bot/morse-decoder
+- package.json follows existing validators pattern: "type": "module", exports with types+default, no runtime dependencies
+- tsconfig.json extends @moris-bot/tsconfig/base.json (not compiled-package.json as PRD specified base.json)
+- eslint.config.ts mirrors packages/validators/eslint.config.ts (baseConfig only, no react)
+- src/types.ts exports: MorseElement, MorseGap, GoertzelResult, DecoderConfig, DecoderEvents, DecoderStats
+- src/constants.ts exports: DEFAULT_CONFIG, TIMING_RATIOS, ditDurationMs()
+- src/morse-tree.ts exports: lookupMorse(), getMorseForChar() covering A-Z, 0-9, and 18 standard punctuation marks
+- src/index.ts re-exports all public API using named exports
+- Typecheck passed (15/15 tasks)
+- **Learnings for future iterations:**
+  - New packages need pnpm install to be registered in the workspace before typechecking
+  - Use map-based approach for morse code lookup (MORSE_TO_CHAR / CHAR_TO_REVERSE maps) — simpler than binary tree
+  - Internal imports need .js extension in ESM (e.g., "./types.js") even for .ts source files
 ---

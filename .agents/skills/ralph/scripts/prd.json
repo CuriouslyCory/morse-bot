@@ -16,7 +16,7 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "This is a mechanical global find-and-replace. Must be done first so all subsequent work uses the new scope."
     },
     {
@@ -36,7 +36,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "Foundation package. The morse tree is a binary tree: left=dit, right=dah. Must cover full ITU international morse code."
     },
     {
