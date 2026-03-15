@@ -54,7 +54,7 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Goertzel is ~30 lines of arithmetic. Envelope detector compares magnitude against thresholds and tracks state transitions with timestamps."
     },
     {
@@ -74,7 +74,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "This completes the decode pipeline. The decoder state machine tracks accumulated elements and flushes characters on character/word gaps."
     },
     {

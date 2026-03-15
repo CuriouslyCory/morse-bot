@@ -24,6 +24,32 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
   - Node engine mismatch warning (wants ^22.21.0, has v24.13.1) but doesn't block install
 ---
 
+## 2026-03-14 - US-003
+- Created packages/morse-decoder/src/goertzel.ts: createGoertzelFilter using standard second-order IIR Goertzel algorithm
+- Created packages/morse-decoder/src/envelope-detector.ts: createEnvelopeDetector with dual-threshold hysteresis and EMA noise floor tracking
+- Updated src/types.ts: added GoertzelConfig, EnvelopeConfig, EnvelopeState interfaces
+- Updated src/index.ts: exports for new types and functions
+- Typecheck passed (15/15 tasks)
+- **Learnings for future iterations:**
+  - Goertzel power formula: `s1*s1 + s2*s2 - coeff*s1*s2` where coeff = 2*cos(omega); normalize by dividing sqrt(power) by N/2
+  - Envelope detector: onThreshold > offThreshold (hysteresis gap prevents jitter); noise floor tracked via slow EMA (0.99/0.01 ratio) only when tone is off
+  - `stateStartMs` initialized on first call since we don't have a valid timestamp at construction time
+---
+
+## 2026-03-14 - US-004
+- Created packages/morse-decoder/src/timing-analyzer.ts: createTimingAnalyzer with onToneEnd/onSilenceEnd/getCurrentWpm
+- Created packages/morse-decoder/src/decoder.ts: createDecoder orchestrating Goertzel -> envelope -> timing -> morse tree
+- Updated src/types.ts: added TimingConfig and MorseDecoder interfaces
+- Updated src/index.ts: exports for new types and functions
+- Typecheck passed (15/15 tasks)
+- **Learnings for future iterations:**
+  - Timing thresholds: dit/dah split at 1.5x ditUnit; element/char gap split at 2x; char/word gap split at 5x ditUnit
+  - Decoder tracks lastTransitionMs externally (not from envelope detector) to compute state durations accurately
+  - Adaptive EMA only applied on dits (not dahs) to track sender dit duration; wpm updated as 1200/ditUnit
+  - On silence end with "element" gap (inter-element space), do nothing — only flush on character/word gaps
+  - updateConfig and reset both re-create all sub-components to clear internal state
+---
+
 ## 2026-03-14 - US-002
 - Created packages/morse-decoder with name @moris-bot/morse-decoder
 - package.json follows existing validators pattern: "type": "module", exports with types+default, no runtime dependencies
