@@ -60,15 +60,15 @@ export function Spectrogram({ stats }: SpectrogramProps) {
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     function tick() {
-      const queue = queueRef.current;
+      // Drain entire queue atomically (O(1)) to avoid unbounded growth during fast file processing
+      const items = queueRef.current.splice(0);
+      // If more items arrived than we can display, skip the oldest ones
+      const visible = items.slice(-CANVAS_WIDTH);
 
-      while (queue.length > 0) {
-        const db = queue.shift();
-        if (db === undefined) break;
+      const w = el.width;
+      const h = el.height;
 
-        const w = el.width;
-        const h = el.height;
-
+      for (const db of visible) {
         // Shift existing content one pixel to the left
         const imageData = ctx.getImageData(1, 0, w - 1, h);
         ctx.putImageData(imageData, 0, 0);
