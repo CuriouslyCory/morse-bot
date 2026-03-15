@@ -119,6 +119,9 @@ export function createDecoder(
     updateConfig(partial: Partial<DecoderConfig>): void {
       cfg = { ...cfg, ...partial };
       ({ goertzel, envelopeDetector, timingAnalyzer } = buildComponents(cfg));
+      prevToneActive = false;
+      lastTransitionMs = null;
+      currentElements = [];
     },
   };
 }
