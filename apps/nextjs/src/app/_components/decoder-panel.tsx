@@ -5,12 +5,13 @@ import { useCallback, useRef } from "react";
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
+import { DecoderControls } from "./decoder-controls";
 import { DecodedText } from "./decoded-text";
 import { SignalStats } from "./signal-stats";
 import { Waterfall } from "./waterfall";
 
 export function DecoderPanel() {
-  const { decodedText, currentElements, stats, processSamples, reset } =
+  const { decodedText, currentElements, stats, processSamples, reset, updateConfig } =
     useMorseDecoder();
 
   const onSamplesFromMic = useCallback(
@@ -58,6 +59,12 @@ export function DecoderPanel() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
+      <DecoderControls
+        onUpdateConfig={updateConfig}
+        onReset={reset}
+        isDisabled={isActive}
+      />
+
       <div className="flex flex-wrap items-center gap-2">
         <button
           onClick={isRecording ? stopRecording : () => void startRecording()}
@@ -90,14 +97,6 @@ export function DecoderPanel() {
             Stop
           </button>
         )}
-
-        <button
-          onClick={reset}
-          disabled={isActive}
-          className="rounded border px-4 py-2 font-semibold hover:bg-muted disabled:opacity-50"
-        >
-          Clear
-        </button>
 
         {error && <span className="text-sm text-destructive">{error}</span>}
       </div>
