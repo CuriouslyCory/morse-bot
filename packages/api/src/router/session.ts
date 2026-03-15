@@ -1,7 +1,7 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod/v4";
 
-import { desc, eq } from "@moris-bot/db";
+import { and, desc, eq } from "@moris-bot/db";
 import {
   CreateDecodedSessionSchema,
   DecodedSession,
@@ -30,7 +30,10 @@ export const sessionRouter = {
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       return ctx.db.query.DecodedSession.findFirst({
-        where: eq(DecodedSession.id, input.id),
+        where: and(
+          eq(DecodedSession.id, input.id),
+          eq(DecodedSession.userId, ctx.session.user.id),
+        ),
       });
     }),
 
@@ -39,6 +42,11 @@ export const sessionRouter = {
     .mutation(({ ctx, input }) => {
       return ctx.db
         .delete(DecodedSession)
-        .where(eq(DecodedSession.id, input));
+        .where(
+          and(
+            eq(DecodedSession.id, input),
+            eq(DecodedSession.userId, ctx.session.user.id),
+          ),
+        );
     }),
 } satisfies TRPCRouterRecord;
