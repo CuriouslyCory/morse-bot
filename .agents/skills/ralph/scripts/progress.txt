@@ -1,3 +1,28 @@
+## 2026-03-14 - US-010
+- Created apps/nextjs/src/app/_components/signal-stats.tsx: 4-stat display (signal dBFS, frequency Hz, SNR dB, speed WPM)
+- Uses @moris-bot/ui/separator (vertical) between stat items; StatItem subcomponent for label+value layout
+- isFinite() guard to display "— dBFS" / "— dB" when values are -Infinity/non-finite (e.g. before recording starts)
+- Updated DecoderPanel to import SignalStats and pass stats from useMorseDecoder()
+- Typecheck passed (16/16 tasks, 15 cached)
+- Browser verification: manual verification needed (no browser tool available)
+- **Learnings for future iterations:**
+  - @moris-bot/ui/separator supports `orientation="vertical"` with explicit `className="h-8"` for fixed height
+  - Use `isFinite()` for -Infinity guard on dBFS/dB values before calling .toFixed()
+  - tabular-nums class keeps number widths consistent as values update
+---
+
+## 2026-03-14 - US-009
+- Created apps/nextjs/src/app/_components/decoded-text.tsx: scrollable monospace text area with auto-scroll and in-progress element display
+- "dit" → "." and "dah" → "-" rendered as in-progress symbols in muted color at end of decoded text
+- Auto-scroll via useEffect watching decodedText/currentElements, setting scrollTop = scrollHeight
+- Updated DecoderPanel to import DecodedText and pass decodedText, currentElements, isRecording props
+- Typecheck passed (16/16 tasks, 15 cached)
+- **Learnings for future iterations:**
+  - Auto-scroll pattern: containerRef + useEffect → el.scrollTop = el.scrollHeight
+  - In-progress elements live in a separate styled span after the main decoded text
+  - MorseElement "dit" → ".", "dah" → "-" for visual display
+---
+
 ## 2026-03-14 - US-008
 - Replaced demo posts/auth showcase in apps/nextjs/src/app/page.tsx with DecoderPanel
 - Created apps/nextjs/src/app/_components/decoder-panel.tsx as 'use client' component
