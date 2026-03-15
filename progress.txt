@@ -43,6 +43,19 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-014
+- Implemented text-to-morse encoder with audio playback
+- Files changed:
+  - `apps/nextjs/src/hooks/use-morse-player.ts` (new): Hook wrapping AudioContext OscillatorNode scheduling; uses createEncoder() for tone events; buildCharTimings() mirrors encoder walk for character index tracking; setTimeout for UI highlights
+  - `apps/nextjs/src/app/_components/encoder-panel.tsx` (new): EncoderPanel with textarea input, WPM selector, Play/Stop button, character highlight display
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Lifted frequency/wpm to local state; intercept updateConfig to sync encoder; added EncoderPanel toggle below decoder
+- **Learnings for future iterations:**
+  - Audio scheduling: use AudioContext.currentTime for precise tone timing; setTimeout for UI-only updates (char highlights)
+  - buildCharTimings must exactly mirror createEncoder's walk logic (word gap condition, charIdx tracking) to keep highlights in sync with audio
+  - For charIdx tracking across split(" ") words: advance charIdx by 1 between words (for the space character in original text)
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-013
 - Audio file upload/decoding was already implemented in a previous iteration (labeled as US-005 in that entry)
 - Verified: use-audio-file.ts + decoder-panel.tsx fully meet US-013 acceptance criteria

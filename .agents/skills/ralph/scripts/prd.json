@@ -267,7 +267,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "Schedule OscillatorNode start/stop times using AudioContext.currentTime for precise timing. Do not use setTimeout for tone timing."
     },
     {
