@@ -44,7 +44,7 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "base.json has noEmit: true which prevents any output. compiled-package.json overrides this with declaration: true, emitDeclarationOnly: true, outDir: dist."
     },
     {
@@ -58,7 +58,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "Security fix. Currently any authenticated user can delete/read any session by guessing the ID."
     },
     {

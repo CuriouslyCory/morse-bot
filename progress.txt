@@ -10,6 +10,27 @@
 
 ---
 
+## 2026-03-15 - US-004
+- Fixed IDOR vulnerability: added `and()` ownership checks to `getById` and `delete` in session router
+- Files changed:
+  - `packages/api/src/router/session.ts`: imported `and` from `@moris-bot/db`; both `getById` and `delete` now filter by `DecodedSession.userId === ctx.session.user.id` in addition to `DecodedSession.id`
+- **Learnings for future iterations:**
+  - drizzle `query.Table.findFirst({ where: and(...) })` works the same as the delete `.where(and(...))` pattern
+  - `and` is exported from `@moris-bot/db` alongside `eq`, `desc`
+
+---
+
+## 2026-03-15 - US-003
+- Changed morse-decoder tsconfig.json `extends` from `@moris-bot/tsconfig/base.json` to `@moris-bot/tsconfig/compiled-package.json`
+- Files changed:
+  - `packages/morse-decoder/tsconfig.json`: extends changed to compiled-package.json
+- **Learnings for future iterations:**
+  - dist/ is in .gitignore — do not try to commit it; the build produces it on demand
+  - `compiled-package.json` sets `declaration: true, emitDeclarationOnly: true, outDir: dist`; `base.json` has `noEmit: true`
+  - Typecheck passes with all 16 tasks successful
+
+---
+
 ## 2026-03-15 - US-002
 - Updated README.md to remove stale @acme references
 - Files changed:
