@@ -1,5 +1,5 @@
 {
-  "name": "@acme/expo",
+  "name": "@moris-bot/expo",
   "private": true,
   "main": "index.ts",
   "scripts": {
@@ -44,16 +44,16 @@
     "superjson": "2.2.3"
   },
   "devDependencies": {
-    "@acme/api": "workspace:*",
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tailwind-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@moris-bot/api": "workspace:*",
+    "@moris-bot/eslint-config": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tailwind-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
     "@types/react": "catalog:react19",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@moris-bot/prettier-config"
 }

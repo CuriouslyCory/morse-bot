@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { cn } from "@acme/ui";
-import { ThemeProvider, ThemeToggle } from "@acme/ui/theme";
-import { Toaster } from "@acme/ui/toast";
+import { cn } from "@moris-bot/ui";
+import { ThemeProvider, ThemeToggle } from "@moris-bot/ui/theme";
+import { Toaster } from "@moris-bot/ui/toast";
 
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
@@ -13,16 +13,16 @@ import "~/app/styles.css";
 export const metadata: Metadata = {
   metadataBase: new URL(
     env.VERCEL_ENV === "production"
-      ? "https://turbo.t3.gg"
+      ? "https://moris-bot.vercel.app"
       : "http://localhost:3000",
   ),
-  title: "Create T3 Turbo",
-  description: "Simple monorepo with shared backend for web & mobile apps",
+  title: "Moris Bot",
+  description: "Real-time morse code decoder web app",
   openGraph: {
-    title: "Create T3 Turbo",
-    description: "Simple monorepo with shared backend for web & mobile apps",
-    url: "https://create-t3-turbo.vercel.app",
-    siteName: "Create T3 Turbo",
+    title: "Moris Bot",
+    description: "Real-time morse code decoder web app",
+    url: "https://moris-bot.vercel.app",
+    siteName: "Moris Bot",
   },
   twitter: {
     card: "summary_large_image",

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "prd": {
+      "source": "CuriouslyCory/skills",
+      "sourceType": "github",
+      "computedHash": "84ed168fc18a06febb66bed06b00ef09f707395c6dd52e8c63fa652fd3997715"
+    },
+    "ralph": {
+      "source": "CuriouslyCory/skills",
+      "sourceType": "github",
+      "computedHash": "8143d338846af62974b92180b24dfb5646c54e53780e1153c1e4459fc4088301"
+    },
+    "ship-it": {
+      "source": "CuriouslyCory/skills",
+      "sourceType": "github",
+      "computedHash": "1969594ccdb865875d950ef4ef5ee38919b159707abd617ceb9e9b4d0e61dce0"
+    }
+  }
+}

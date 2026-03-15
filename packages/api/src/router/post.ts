@@ -1,8 +1,8 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod/v4";
 
-import { desc, eq } from "@acme/db";
-import { CreatePostSchema, Post } from "@acme/db/schema";
+import { desc, eq } from "@moris-bot/db";
+import { CreatePostSchema, Post } from "@moris-bot/db/schema";
 
 import { protectedProcedure, publicProcedure } from "../trpc";
 

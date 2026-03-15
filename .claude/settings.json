@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/curiouslycory/workspace/active-personal/moris-bot*)",
+      "Bash(find:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr:*)",
+      "Bash(git branch:*)",
+      "Bash(git ls-files *)",
+      "Bash(git pull:*)",
+      "Bash(grep:*)",
+      "Bash(ls /home/curiouslycory/workspace/active-personal/moris-bot*)",
+      "Bash(ls -la /home/curiouslycory/workspace/active-personal/moris-bot*)",
+      "Bash(npx prisma generate)",
+      "Bash(pnpm build)",
+      "Bash(pnpm check:*)",
+      "Bash(pnpm info:*)",
+      "Bash(pnpm install)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm lint:fix)",
+      "Bash(pnpm typecheck)",
+      "Skill(dev-browser:dev-browser)",
+      "WebFetch(domain:ai-sdk.dev)",
+      "WebFetch(domain:authjs.dev)",
+      "WebFetch(domain:platejs.org)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebSearch"
+    ],
+    "additionalDirectories": [
+      "/home/curiouslycory/workspace/active-personal/moris-bot",
+      "/home/curiouslycory/workspace/active-personal/moris-bot/.claude/skills/ralph/scripts/"
+    ]
+  }
+}

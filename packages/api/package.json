@@ -1,5 +1,5 @@
 {
-  "name": "@acme/api",
+  "name": "@moris-bot/api",
   "private": true,
   "type": "module",
   "exports": {
@@ -18,20 +18,20 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@acme/auth": "workspace:*",
-    "@acme/db": "workspace:*",
-    "@acme/validators": "workspace:*",
+    "@moris-bot/auth": "workspace:*",
+    "@moris-bot/db": "workspace:*",
+    "@moris-bot/validators": "workspace:*",
     "@trpc/server": "catalog:",
     "superjson": "2.2.3",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@moris-bot/eslint-config": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@moris-bot/prettier-config"
 }

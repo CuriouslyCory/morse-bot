@@ -1,5 +1,5 @@
 {
-  "name": "@acme/auth",
+  "name": "@moris-bot/auth",
   "private": true,
   "type": "module",
   "exports": {
@@ -17,20 +17,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@acme/db": "workspace:*",
     "@better-auth/expo": "catalog:",
+    "@moris-bot/db": "workspace:*",
     "@t3-oss/env-core": "^0.13.8",
     "better-auth": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
     "@better-auth/cli": "catalog:",
+    "@moris-bot/eslint-config": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@moris-bot/prettier-config"
 }

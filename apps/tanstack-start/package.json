@@ -1,5 +1,5 @@
 {
-  "name": "@acme/tanstack-start",
+  "name": "@moris-bot/tanstack-start",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -13,12 +13,12 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@acme/api": "workspace:*",
-    "@acme/auth": "workspace:*",
-    "@acme/db": "workspace:*",
-    "@acme/ui": "workspace:*",
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
+    "@moris-bot/api": "workspace:*",
+    "@moris-bot/auth": "workspace:*",
+    "@moris-bot/db": "workspace:*",
+    "@moris-bot/ui": "workspace:*",
     "@t3-oss/env-core": "^0.13.8",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
@@ -37,10 +37,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tailwind-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@moris-bot/eslint-config": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tailwind-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
@@ -53,5 +53,5 @@
     "vite": "catalog:",
     "vite-tsconfig-paths": "^5.1.4"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@moris-bot/prettier-config"
 }

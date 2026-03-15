@@ -1,5 +1,5 @@
 {
-  "name": "@acme/eslint-config",
+  "name": "@moris-bot/eslint-config",
   "private": true,
   "type": "module",
   "exports": {
@@ -24,12 +24,12 @@
     "typescript-eslint": "^8.46.2"
   },
   "devDependencies": {
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@moris-bot/prettier-config"
 }
