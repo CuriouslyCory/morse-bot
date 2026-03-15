@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { DEFAULT_CONFIG } from "@moris-bot/morse-decoder";
@@ -73,8 +73,15 @@ export function DecoderPanel() {
     [processSamples],
   );
 
-  const { isRecording, error: micError, startRecording, stopRecording } =
+  const { isRecording, actualSampleRate, error: micError, startRecording, stopRecording } =
     useAudioInput({ onSamples: onSamplesFromMic });
+
+  // Sync actual AudioContext sample rate to decoder when recording starts
+  useEffect(() => {
+    if (actualSampleRate !== null) {
+      updateConfig({ sampleRate: actualSampleRate });
+    }
+  }, [actualSampleRate, updateConfig]);
 
   const {
     isProcessing,

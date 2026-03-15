@@ -9,6 +9,7 @@ interface UseAudioInputOptions {
 
 interface UseAudioInputResult {
   isRecording: boolean;
+  actualSampleRate: number | null;
   error: string | null;
   startRecording: () => Promise<void>;
   stopRecording: () => void;
@@ -19,6 +20,7 @@ export function useAudioInput({
   sampleRate = 8000,
 }: UseAudioInputOptions): UseAudioInputResult {
   const [isRecording, setIsRecording] = useState(false);
+  const [actualSampleRate, setActualSampleRate] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -42,6 +44,7 @@ export function useAudioInput({
 
       const audioContext = new AudioContext({ sampleRate });
       audioContextRef.current = audioContext;
+      setActualSampleRate(audioContext.sampleRate);
 
       await audioContext.audioWorklet.addModule(
         "/audio-worklet/sample-forwarder.js",
@@ -72,6 +75,7 @@ export function useAudioInput({
       streamRef.current = null;
       sourceNodeRef.current = null;
       workletNodeRef.current = null;
+      setActualSampleRate(null);
 
       const message =
         err instanceof DOMException && err.name === "NotAllowedError"
@@ -95,7 +99,8 @@ export function useAudioInput({
     streamRef.current = null;
 
     setIsRecording(false);
+    setActualSampleRate(null);
   }, []);
 
-  return { isRecording, error, startRecording, stopRecording };
+  return { isRecording, actualSampleRate, error, startRecording, stopRecording };
 }
