@@ -43,6 +43,12 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-013
+- Audio file upload/decoding was already implemented in a previous iteration (labeled as US-005 in that entry)
+- Verified: use-audio-file.ts + decoder-panel.tsx fully meet US-013 acceptance criteria
+- PRD updated to passes: true; no code changes needed
+---
+
 ## 2026-03-14 - US-005
 - Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
 - Files changed:

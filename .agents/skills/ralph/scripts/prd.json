@@ -247,7 +247,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Use setTimeout or requestAnimationFrame to chunk processing so the UI remains responsive during file decode."
     },
     {
