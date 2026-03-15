@@ -52,7 +52,7 @@ const MORSE_TO_CHAR: Record<string, string> = {
   "-..-.": "/",
   "-.--.": "(",
   "-.--.-": ")",
-  ".-...": "&",
+  // ".-...": "&", // ITU AS (wait) prosign — not mapped to avoid collision with &
   "---...": ":",
   "-.-.-.": ";",
   "-...-": "=",
@@ -60,7 +60,7 @@ const MORSE_TO_CHAR: Record<string, string> = {
   "-....-": "-",
   "..--.-": "_",
   ".-..-.": '"',
-  "...-..-": "$",
+  // "...-..-": "$", // Non-ITU SX prosign — removed to avoid collision
   ".--.-.": "@",
 };
 

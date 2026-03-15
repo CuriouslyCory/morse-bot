@@ -25,7 +25,7 @@ export function createEncoder(config: EncoderConfig): MorseEncoder {
     encode(text: string): ToneEvent[] {
       const dit = ditDurationMs(config.wpm);
       const dah = dit * TIMING_RATIOS.dah;
-      const elementGap = dit * TIMING_RATIOS.dit;
+      const elementGap = dit * TIMING_RATIOS.elementGap;
       const charGap = dit * TIMING_RATIOS.charGap;
       const wordGap = dit * TIMING_RATIOS.wordGap;
 

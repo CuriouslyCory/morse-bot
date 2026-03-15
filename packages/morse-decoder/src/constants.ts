@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG: DecoderConfig = {
 /** Timing ratios relative to one dit unit */
 export const TIMING_RATIOS = {
   dit: 1,
+  elementGap: 1,
   dah: 3,
   charGap: 3,
   wordGap: 7,
