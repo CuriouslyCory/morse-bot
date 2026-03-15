@@ -231,6 +231,9 @@ importers:
       '@moris-bot/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@moris-bot/morse-decoder':
+        specifier: workspace:*
+        version: link:../../packages/morse-decoder
       '@moris-bot/ui':
         specifier: workspace:*
         version: link:../../packages/ui

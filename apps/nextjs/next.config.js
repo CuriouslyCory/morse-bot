@@ -12,6 +12,7 @@ const config = {
     "@moris-bot/api",
     "@moris-bot/auth",
     "@moris-bot/db",
+    "@moris-bot/morse-decoder",
     "@moris-bot/ui",
     "@moris-bot/validators",
   ],

@@ -16,6 +16,7 @@
     "@moris-bot/api": "workspace:*",
     "@moris-bot/auth": "workspace:*",
     "@moris-bot/db": "workspace:*",
+    "@moris-bot/morse-decoder": "workspace:*",
     "@moris-bot/ui": "workspace:*",
     "@moris-bot/validators": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.8",
