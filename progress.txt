@@ -1,3 +1,13 @@
+## 2026-03-15 - US-008
+- Reset transition state (prevToneActive, lastTransitionMs, currentElements) in updateConfig after rebuilding DSP components
+- decodedText is NOT cleared — only in-flight transition state is reset
+- Files changed:
+  - `packages/morse-decoder/src/decoder.ts`: added 3 reset lines in updateConfig after buildComponents call
+- **Learnings for future iterations:**
+  - updateConfig rebuilds DSP components but the transition state variables are in the outer closure — must be reset manually to avoid spurious transitions
+  - resetState() also resets decodedText; updateConfig intentionally does NOT call resetState()
+---
+
 ## 2026-03-15 - US-007
 - Added `elementGap: 1` to `TIMING_RATIOS` in constants.ts
 - Updated encoder.ts to use `TIMING_RATIOS.elementGap` instead of `TIMING_RATIOS.dit` for element gap

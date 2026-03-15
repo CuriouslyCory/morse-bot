@@ -114,7 +114,7 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
+      "passes": true,
       "notes": "Without this, if updateConfig is called mid-character, the stale prevToneActive=true with a fresh envelope detector (starts toneActive=false) causes a spurious transition."
     },
     {
