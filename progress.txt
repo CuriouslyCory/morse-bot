@@ -1,0 +1,23 @@
+## Codebase Patterns
+- Package scope: @moris-bot (renamed from @acme)
+- All hooks use `useRef` + `onSamplesRef.current = onSamples` pattern to keep callbacks fresh — this triggers `react-hooks/refs` ESLint errors in custom hooks but is the established pattern in this codebase
+- Pre-existing lint errors (19 in original, reduced to 13): react-hooks/refs in use-audio-input.ts, use-morse-decoder.ts; do not add new lint errors
+- `useRef<boolean>(false)` required (not `useRef(false)`) to avoid TypeScript narrowing `current` to literal `false`, which would cause `@typescript-eslint/no-unnecessary-condition` errors on async cancellation checks
+- Async cancellation checks across await boundaries (`if (cancelledRef.current)`) need `// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition` since TypeScript can't reason about ref mutations across awaits
+- AudioContext sample rate is 8000 Hz (matches live mic input) for consistent decoder behavior
+- Timestamps for file decoding: derived from sample position `(offset / audioBuffer.sampleRate) * 1000` — not wall-clock time
+- Existing hooks (useAudioInput, useMorseDecoder) handle their own internal ref syncing; decoder-panel.tsx should NOT add an additional onSamplesRef wrapper
+
+---
+
+## 2026-03-14 - US-005
+- Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-file.ts` (new): useAudioFile hook with decodeAudioData, chunked processing, progress reporting, cancellation
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added Open File button, hidden file input, progress bar, Stop button, disabled states
+- **Learnings for future iterations:**
+  - `useRef(false)` infers literal type `false` causing unnecessary-condition errors; always use `useRef<boolean>(false)` for mutable boolean flags
+  - Async cancellation checks need eslint-disable comments — the linter can't see across await boundaries
+  - decoder-panel.tsx previously had a ref-during-render anti-pattern (onSamplesRef.current = onSamples); removed it by passing separate typed callbacks directly to each hook
+  - Pre-existing lint errors: 19 before this story, 13 after (improvement)
+---
