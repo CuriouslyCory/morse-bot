@@ -65,3 +65,17 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
   - Use map-based approach for morse code lookup (MORSE_TO_CHAR / CHAR_TO_REVERSE maps) — simpler than binary tree
   - Internal imports need .js extension in ESM (e.g., "./types.js") even for .ts source files
 ---
+
+## 2026-03-14 - US-005
+- Created packages/morse-decoder/src/encoder.ts: createEncoder(config) returning MorseEncoder with encode(text) method
+- encode() splits text by spaces for words, iterates chars, looks up getMorseForChar(), emits tone/silence ToneEvent[]
+- Timing: dit=1200/wpm, dah=3x dit, elementGap=1x dit, charGap=3x dit, wordGap=7x dit (uses TIMING_RATIOS + ditDurationMs from constants)
+- Unknown characters silently skipped; empty words from multiple spaces also skipped
+- Updated src/index.ts: exports createEncoder, EncoderConfig, MorseEncoder, ToneEvent
+- Typecheck passed (15/15 tasks, 14 cached)
+- **Learnings for future iterations:**
+  - Encoder is pure data transformation — no audio involved at this layer; audio playback is handled in the UI (US-014)
+  - Word gaps: insert wordGap silence BETWEEN words (not before first word, not after last); use index check + events.length guard
+  - Char gaps: insert charGap silence BETWEEN encoded characters within a word (not before first char)
+  - Element gaps: insert elementGap silence BETWEEN elements within a character (not before first element)
+---
