@@ -1,18 +1,39 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
+
+import { DEFAULT_CONFIG } from "@moris-bot/morse-decoder";
+import type { DecoderConfig } from "@moris-bot/morse-decoder";
 
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { DecoderControls } from "./decoder-controls";
 import { DecodedText } from "./decoded-text";
+import { EncoderPanel } from "./encoder-panel";
 import { SignalStats } from "./signal-stats";
 import { Spectrogram } from "./spectrogram";
 
 export function DecoderPanel() {
   const { decodedText, currentElements, stats, processSamples, reset, updateConfig } =
     useMorseDecoder();
+
+  // Track frequency and wpm so the encoder panel can mirror decoder settings
+  const [encoderFrequency, setEncoderFrequency] = useState(
+    DEFAULT_CONFIG.targetFrequency,
+  );
+  const [encoderWpm, setEncoderWpm] = useState(DEFAULT_CONFIG.wpm);
+  const [showEncoder, setShowEncoder] = useState(false);
+
+  const handleUpdateConfig = useCallback(
+    (partial: Partial<DecoderConfig>) => {
+      updateConfig(partial);
+      if (partial.targetFrequency !== undefined)
+        setEncoderFrequency(partial.targetFrequency);
+      if (partial.wpm !== undefined) setEncoderWpm(partial.wpm);
+    },
+    [updateConfig],
+  );
 
   const onSamplesFromMic = useCallback(
     (samples: Float32Array) => {
@@ -60,7 +81,7 @@ export function DecoderPanel() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <DecoderControls
-        onUpdateConfig={updateConfig}
+        onUpdateConfig={handleUpdateConfig}
         onReset={reset}
         isDisabled={isActive}
       />
@@ -119,6 +140,21 @@ export function DecoderPanel() {
         currentElements={currentElements}
         isRecording={isActive}
       />
+
+      {/* Encoder section */}
+      <div>
+        <button
+          onClick={() => setShowEncoder((v) => !v)}
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          {showEncoder ? "▲ Hide encoder" : "▼ Show encoder"}
+        </button>
+        {showEncoder && (
+          <div className="mt-2">
+            <EncoderPanel frequency={encoderFrequency} wpm={encoderWpm} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
