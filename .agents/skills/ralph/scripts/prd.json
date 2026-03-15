@@ -1,6 +1,6 @@
 {
   "project": "Moris Bot",
-  "branchName": "fix/code-review-remediation",
+  "branchName": "feat/morse-decoder",
   "description": "Fix 13 issues from code review: incomplete @acme rename, broken tsconfig, IDOR security vulnerability, AudioContext leaks, Safari sampleRate, encoder constants, morse tree collisions, decoder state corruption, spectrogram performance, missing Suspense boundary, and more",
   "userStories": [
     {
@@ -15,7 +15,7 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "4 files were missed during the original rename. These are all simple string replacements."
     },
     {

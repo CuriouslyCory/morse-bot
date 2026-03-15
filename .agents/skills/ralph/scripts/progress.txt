@@ -13,3 +13,15 @@
 # Ralph Progress Log
 Started: Sat Mar 15 2026 — Code Review Remediation
 ---
+
+## 2026-03-15 - US-001
+- Replaced all remaining @acme/ references with @moris-bot/ in turbo generator templates and Expo postcss config
+- Files changed:
+  - turbo/generators/templates/package.json.hbs (lines 2, 18, 19, 20, 25)
+  - turbo/generators/templates/eslint.config.ts.hbs (line 3)
+  - turbo/generators/templates/tsconfig.json.hbs (line 2)
+  - apps/expo/postcss.config.mjs (line 1)
+- **Learnings for future iterations:**
+  - .hbs template files are not compiled by TS so won't show typecheck errors; check them separately with grep
+  - All 4 files were simple string replacements, no functional changes needed
+---
