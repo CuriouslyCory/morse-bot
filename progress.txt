@@ -33,6 +33,16 @@
   - Lint error count remains at 13 (no new errors)
 ---
 
+## 2026-03-14 - US-012
+- Renamed waterfall.tsx → spectrogram.tsx and Waterfall component → Spectrogram (per acceptance criteria)
+- Files changed:
+  - `apps/nextjs/src/app/_components/spectrogram.tsx` (renamed from waterfall.tsx): Spectrogram component — same ImageData pixel-shift scrolling, rAF-driven render loop
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Updated import/usage from Waterfall to Spectrogram
+- **Learnings for future iterations:**
+  - Progress log IDs and PRD IDs became misaligned in earlier iterations; always trust the PRD passes field, not the progress log entry IDs
+  - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
+---
+
 ## 2026-03-14 - US-005
 - Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
 - Files changed:

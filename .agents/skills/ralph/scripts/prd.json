@@ -228,7 +228,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": false,
+      "passes": true,
       "notes": "Use a ring buffer or ImageData shift pattern for efficient scrolling. Canvas rendering must not cause React re-renders."
     },
     {
