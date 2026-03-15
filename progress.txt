@@ -43,6 +43,19 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-015
+- Added decoded_sessions table to DB schema and session tRPC router
+- Files changed:
+  - `packages/db/src/schema.ts`: Added DecodedSession table, CreateDecodedSessionSchema, SelectDecodedSessionSchema; imported user from auth-schema for FK reference
+  - `packages/api/src/router/session.ts` (new): sessionRouter with save/list/getById/delete protected procedures
+  - `packages/api/src/root.ts`: Added sessionRouter to appRouter
+- **Learnings for future iterations:**
+  - drizzle uses `casing: "snake_case"` globally — camelCase JS field names map to snake_case DB columns automatically
+  - user.id is text (not uuid) — DecodedSession.userId must be text type to match
+  - `createInsertSchema` and `createSelectSchema` from drizzle-zod work with zod/v4 (same as existing Post pattern)
+  - Import `user` from auth-schema directly in schema.ts for FK references (don't use `export * from` before the table definition that needs it)
+---
+
 ## 2026-03-14 - US-014
 - Implemented text-to-morse encoder with audio playback
 - Files changed:
