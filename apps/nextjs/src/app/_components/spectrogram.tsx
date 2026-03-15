@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 import type { DecoderStats } from "@moris-bot/morse-decoder";
 
-interface WaterfallProps {
+interface SpectrogramProps {
   stats: DecoderStats;
 }
 
@@ -33,7 +33,7 @@ function dbToColor(db: number): [number, number, number] {
  * New columns are appended on the right; older data scrolls left.
  * Rendering is driven by requestAnimationFrame, independent of React renders.
  */
-export function Waterfall({ stats }: WaterfallProps) {
+export function Spectrogram({ stats }: SpectrogramProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const queueRef = useRef<number[]>([]);
   const rafRef = useRef<number | null>(null);
@@ -98,7 +98,7 @@ export function Waterfall({ stats }: WaterfallProps) {
       width={CANVAS_WIDTH}
       height={CANVAS_HEIGHT}
       className="w-full rounded border"
-      aria-label="Signal waterfall display"
+      aria-label="Signal spectrogram display"
     />
   );
 }

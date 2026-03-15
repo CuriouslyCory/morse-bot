@@ -8,7 +8,7 @@ import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { DecoderControls } from "./decoder-controls";
 import { DecodedText } from "./decoded-text";
 import { SignalStats } from "./signal-stats";
-import { Waterfall } from "./waterfall";
+import { Spectrogram } from "./spectrogram";
 
 export function DecoderPanel() {
   const { decodedText, currentElements, stats, processSamples, reset, updateConfig } =
@@ -110,7 +110,7 @@ export function DecoderPanel() {
         </div>
       )}
 
-      <Waterfall stats={stats} />
+      <Spectrogram stats={stats} />
 
       <SignalStats stats={stats} />
 
