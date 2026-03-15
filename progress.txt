@@ -43,6 +43,21 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-017
+- Created sessions list page with expand/collapse, export, and delete
+- Files changed:
+  - `apps/nextjs/src/app/sessions/page.tsx` (new): Server component with auth redirect, renders SessionsList
+  - `apps/nextjs/src/app/sessions/_components/sessions-list.tsx` (new): Client component with useSuspenseQuery, expand/collapse, downloadText helper, delete with window.confirm
+  - `apps/nextjs/src/app/layout.tsx`: Added server-side auth check + conditional "My Sessions" Link nav
+- **Learnings for future iterations:**
+  - `<a>` triggers @next/next/no-html-link-for-pages even in server components — always use `<Link>` from next/link for internal navigation
+  - `window.confirm` works for simple delete confirmations in client components
+  - Blob + URL.createObjectURL + anchor.click() pattern works for file downloads in browser
+  - useSuspenseQuery requires the component to be wrapped in Suspense (or the parent handles it) — in practice it works with the TRPCReactProvider
+  - layout.tsx can be async (export default async function) for server-side data fetching
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-016
 - Added Save Session button (auth-gated) and "Sign in to save sessions" for unauthenticated users
 - Files changed:
