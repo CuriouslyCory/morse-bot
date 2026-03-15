@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -21,7 +23,9 @@ export default async function SessionsPage() {
           ← Back to decoder
         </Link>
       </div>
-      <SessionsList />
+      <Suspense fallback={<p>Loading sessions...</p>}>
+        <SessionsList />
+      </Suspense>
     </main>
   );
 }
