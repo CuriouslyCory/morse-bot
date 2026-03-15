@@ -1,3 +1,19 @@
+## 2026-03-14 - US-007
+- Created apps/nextjs/src/hooks/use-morse-decoder.ts: useMorseDecoder(config) hook
+- Wraps createDecoder() in a useRef to avoid recreating on every render
+- Maintains React state for decodedText (string), stats (DecoderStats), currentElements (MorseElement[])
+- Uses requestAnimationFrame-gated flush (scheduleFlush) to batch all decoder event updates into a single React render
+- Pending updates accumulated in refs (pendingTextRef, pendingStatsRef, pendingElementsRef) between rAF callbacks
+- Config change detection via JSON.stringify comparison — recreates decoder when config differs
+- cancelAnimationFrame on unmount to prevent memory leaks
+- Typecheck passed (16/16 tasks)
+- **Learnings for future iterations:**
+  - Use pending refs + rAF batching for high-frequency callbacks (decoder fires onStats on every sample block)
+  - decodedText appends incrementally via setDecodedText(prev => prev + newText) — avoids needing full text in pending ref
+  - Config recreation pattern: compare JSON.stringify of config, recreate decoder inline (not in useEffect) to avoid stale closure issues
+  - The void prev line is just to silence "variable assigned but never used" linter warnings on the old decoder reference
+---
+
 ## Codebase Patterns
 - This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
 - sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
