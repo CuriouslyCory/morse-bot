@@ -1,0 +1,44 @@
+"use client";
+
+import { Separator } from "@moris-bot/ui/separator";
+import { type DecoderStats } from "@moris-bot/morse-decoder";
+
+interface SignalStatsProps {
+  stats: DecoderStats;
+}
+
+function StatItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-muted-foreground text-xs uppercase tracking-wider">
+        {label}
+      </span>
+      <span className="font-mono text-sm font-semibold tabular-nums">
+        {value}
+      </span>
+    </div>
+  );
+}
+
+export function SignalStats({ stats }: SignalStatsProps) {
+  const signalDb = isFinite(stats.signalDb)
+    ? `${stats.signalDb.toFixed(1)} dBFS`
+    : "— dBFS";
+  const snrDb = isFinite(stats.snrDb)
+    ? `${stats.snrDb.toFixed(1)} dB`
+    : "— dB";
+  const frequency = `${stats.frequency.toFixed(0)} Hz`;
+  const wpm = `${stats.wpm.toFixed(0)} WPM`;
+
+  return (
+    <div className="flex items-center justify-around gap-2 rounded border p-3">
+      <StatItem label="Signal" value={signalDb} />
+      <Separator orientation="vertical" className="h-8" />
+      <StatItem label="Freq" value={frequency} />
+      <Separator orientation="vertical" className="h-8" />
+      <StatItem label="SNR" value={snrDb} />
+      <Separator orientation="vertical" className="h-8" />
+      <StatItem label="Speed" value={wpm} />
+    </div>
+  );
+}

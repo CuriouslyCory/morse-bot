@@ -5,9 +5,10 @@ import { useCallback, useRef } from "react";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { DecodedText } from "./decoded-text";
+import { SignalStats } from "./signal-stats";
 
 export function DecoderPanel() {
-  const { decodedText, currentElements, processSamples, reset } =
+  const { decodedText, currentElements, stats, processSamples, reset } =
     useMorseDecoder();
 
   const onSamples = useCallback(
@@ -41,6 +42,8 @@ export function DecoderPanel() {
         </button>
         {error && <span className="text-sm text-destructive">{error}</span>}
       </div>
+
+      <SignalStats stats={stats} />
 
       <DecodedText
         decodedText={decodedText}
