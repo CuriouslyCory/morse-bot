@@ -7,6 +7,7 @@ import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { DecodedText } from "./decoded-text";
 import { SignalStats } from "./signal-stats";
+import { Waterfall } from "./waterfall";
 
 export function DecoderPanel() {
   const { decodedText, currentElements, stats, processSamples, reset } =
@@ -109,6 +110,8 @@ export function DecoderPanel() {
           />
         </div>
       )}
+
+      <Waterfall stats={stats} />
 
       <SignalStats stats={stats} />
 
