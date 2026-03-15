@@ -22,6 +22,17 @@
   - Lint error count remains at 13 (no new errors)
 ---
 
+## 2026-03-14 - US-011
+- Implemented decoder controls component with frequency, WPM, adaptive, and threshold settings
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-controls.tsx` (new): DecoderControls component with frequency slider (300-1200 Hz), WPM preset selector (5/10/13/15/20/25/30), adaptive toggle, threshold slider, and Clear button
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Replaced inline Clear button with `<DecoderControls>` at top, passing `updateConfig`, `reset`, and `isDisabled`
+- **Learnings for future iterations:**
+  - Inline type specifiers (`import { type Foo }`) cause lint error — use top-level `import type { Foo }` instead (separate import statement)
+  - `<select>` is not available from @moris-bot/ui; use a native `<select>` with Tailwind classes matching the Input style
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-005
 - Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
 - Files changed:
