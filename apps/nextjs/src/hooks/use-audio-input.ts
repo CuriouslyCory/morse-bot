@@ -65,6 +65,14 @@ export function useAudioInput({
 
       setIsRecording(true);
     } catch (err) {
+      // Clean up any partially-initialized resources to prevent leaks
+      void audioContextRef.current?.close();
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      audioContextRef.current = null;
+      streamRef.current = null;
+      sourceNodeRef.current = null;
+      workletNodeRef.current = null;
+
       const message =
         err instanceof DOMException && err.name === "NotAllowedError"
           ? "Microphone permission denied."
