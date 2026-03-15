@@ -13,7 +13,7 @@ function StatItem({ label, value }: { label: string; value: string }) {
       <span className="text-muted-foreground text-xs uppercase tracking-wider">
         {label}
       </span>
-      <span className="font-mono text-sm font-semibold tabular-nums">
+      <span className="font-mono text-sm font-semibold tabular-nums dark:text-green-400">
         {value}
       </span>
     </div>
@@ -31,7 +31,7 @@ export function SignalStats({ stats }: SignalStatsProps) {
   const wpm = `${stats.wpm.toFixed(0)} WPM`;
 
   return (
-    <div className="flex items-center justify-around gap-2 rounded border p-3">
+    <div className="flex flex-wrap items-center justify-around gap-2 rounded border p-3 dark:border-zinc-700 dark:bg-zinc-950">
       <StatItem label="Signal" value={signalDb} />
       <Separator orientation="vertical" className="h-8" />
       <StatItem label="Freq" value={frequency} />

@@ -177,9 +177,15 @@ export function DecoderPanel() {
         </div>
       )}
 
-      <Spectrogram stats={stats} />
-
-      <SignalStats stats={stats} />
+      {/* Middle section: spectrogram (left) + stats (right) on desktop, stacked on tablet */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+        <div className="min-w-0 flex-1">
+          <Spectrogram stats={stats} />
+        </div>
+        <div className="lg:w-56 lg:shrink-0">
+          <SignalStats stats={stats} />
+        </div>
+      </div>
 
       <DecodedText
         decodedText={decodedText}

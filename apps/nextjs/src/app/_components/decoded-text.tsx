@@ -34,13 +34,15 @@ export function DecodedText({
   return (
     <div
       ref={containerRef}
-      className="min-h-48 w-full overflow-y-auto rounded border bg-muted p-4 font-mono text-lg"
+      className="min-h-48 w-full overflow-y-auto rounded border bg-muted p-4 font-mono text-lg dark:bg-zinc-950 dark:text-green-400"
     >
       {decodedText || inProgress ? (
         <span>
           {decodedText}
           {inProgress && (
-            <span className="text-muted-foreground">{inProgress}</span>
+            <span className="text-muted-foreground dark:text-green-700">
+              {inProgress}
+            </span>
           )}
         </span>
       ) : (
