@@ -2,6 +2,9 @@ export type {
   DecoderConfig,
   DecoderEvents,
   DecoderStats,
+  EnvelopeConfig,
+  EnvelopeState,
+  GoertzelConfig,
   GoertzelResult,
   MorseElement,
   MorseGap,
@@ -14,3 +17,6 @@ export {
 } from "./constants.js";
 
 export { getMorseForChar, lookupMorse } from "./morse-tree.js";
+
+export { createEnvelopeDetector } from "./envelope-detector.js";
+export { createGoertzelFilter } from "./goertzel.js";

@@ -2,11 +2,34 @@ export type MorseElement = "dit" | "dah";
 
 export type MorseGap = "element" | "character" | "word";
 
+export interface GoertzelConfig {
+  /** Target frequency to detect in Hz */
+  targetFrequency: number;
+  /** Audio sample rate in Hz */
+  sampleRate: number;
+}
+
 export interface GoertzelResult {
   /** Linear magnitude of the detected frequency */
   magnitude: number;
   /** Magnitude in decibels full scale */
   magnitudeDb: number;
+}
+
+export interface EnvelopeConfig {
+  /** Magnitude threshold to transition tone ON (hysteresis high threshold) */
+  onThreshold: number;
+  /** Magnitude threshold to transition tone OFF (hysteresis low threshold) */
+  offThreshold: number;
+}
+
+export interface EnvelopeState {
+  /** Whether a tone is currently detected as active */
+  toneActive: boolean;
+  /** Duration in milliseconds spent in the current state */
+  durationMs: number;
+  /** Signal-to-noise ratio in dB */
+  snrDb: number;
 }
 
 export interface DecoderConfig {
