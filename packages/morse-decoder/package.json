@@ -1,0 +1,29 @@
+{
+  "name": "@moris-bot/morse-decoder",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint --flag unstable_native_nodejs_ts_config",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "devDependencies": {
+    "@moris-bot/eslint-config": "workspace:*",
+    "@moris-bot/prettier-config": "workspace:*",
+    "@moris-bot/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  },
+  "prettier": "@moris-bot/prettier-config"
+}
