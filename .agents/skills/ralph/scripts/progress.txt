@@ -1,3 +1,16 @@
+## 2026-03-14 - US-008
+- Replaced demo posts/auth showcase in apps/nextjs/src/app/page.tsx with DecoderPanel
+- Created apps/nextjs/src/app/_components/decoder-panel.tsx as 'use client' component
+- DecoderPanel composes useAudioInput and useMorseDecoder hooks, wiring onSamples to processSamples
+- Start/Stop button toggles recording; Clear button resets decoded text; error display; decoded text output area
+- Typecheck passed (16/16 tasks, 15 cached)
+- Browser verification: manual verification needed (no browser tool available in this environment)
+- **Learnings for future iterations:**
+  - onSamples callback ref pattern already in useAudioInput — pass a stable wrapper via useRef to avoid re-registering
+  - performance.now() used for timestampMs since Audio API callbacks don't provide timestamps directly
+  - page.tsx is a Server Component — only DecoderPanel needs 'use client' directive
+---
+
 ## 2026-03-14 - US-007
 - Created apps/nextjs/src/hooks/use-morse-decoder.ts: useMorseDecoder(config) hook
 - Wraps createDecoder() in a useRef to avoid recreating on every render

@@ -149,7 +149,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": false,
+      "passes": true,
       "notes": "This creates the minimal working decoder page. Subsequent stories add spectrogram, stats, and controls."
     },
     {
