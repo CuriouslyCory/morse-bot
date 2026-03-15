@@ -43,6 +43,18 @@
   - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
 ---
 
+## 2026-03-14 - US-018
+- Added responsive layout (spectrogram+stats side-by-side at lg:) and dark signal-processing theme
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Wrapped spectrogram+stats in `flex flex-col gap-4 lg:flex-row lg:items-start` container; spectrogram gets `flex-1`, stats get `lg:w-56 lg:shrink-0`
+  - `apps/nextjs/src/app/_components/decoded-text.tsx`: Added `dark:bg-zinc-950 dark:text-green-400` for signal-processing aesthetic; in-progress elements use `dark:text-green-700`
+  - `apps/nextjs/src/app/_components/signal-stats.tsx`: Added `dark:border-zinc-700 dark:bg-zinc-950` to container; stats values use `dark:text-green-400`
+- **Learnings for future iterations:**
+  - Tailwind `lg:` = 1024px+ (desktop); `md:` = 768px+ (tablet) — criteria: stacked at tablet, side-by-side at desktop → use only `lg:flex-row`
+  - For signal-processing dark theme: `zinc-950` background + `green-400` monospace text is a clean CRT aesthetic
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-017
 - Created sessions list page with expand/collapse, export, and delete
 - Files changed:

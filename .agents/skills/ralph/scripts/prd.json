@@ -339,7 +339,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 18,
-      "passes": false,
+      "passes": true,
       "notes": "Final polish story. Mobile web should be functional but the Expo app is the intended mobile experience."
     }
   ]
