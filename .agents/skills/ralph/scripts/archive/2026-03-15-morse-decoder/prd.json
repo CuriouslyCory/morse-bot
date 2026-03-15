@@ -1,0 +1,346 @@
+{
+  "project": "Moris Bot",
+  "branchName": "feat/morse-decoder",
+  "description": "Real-time morse code decoder web app with microphone/file input, spectrogram visualization, adaptive CW decoding, text-to-morse encoding, and session persistence for authenticated users",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Rename package scope from @acme to @moris-bot",
+      "description": "As a developer, I need the monorepo packages renamed from @acme to @moris-bot so the project has its own identity before building features.",
+      "acceptanceCriteria": [
+        "All @acme/ references replaced with @moris-bot/ across all files (package.json, tsconfig, eslint configs, source imports, CSS imports)",
+        "turbo/generators/config.ts updated: .startsWith('@acme/') and .replace('@acme/', '') changed to @moris-bot, 'Acme Monorepo' text updated",
+        "Root package.json name updated from create-t3-turbo to moris-bot",
+        "App metadata (layout titles, descriptions) updated from 'Create T3 Turbo' to 'Moris Bot'",
+        "pnpm-lock.yaml deleted and regenerated via pnpm install",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "This is a mechanical global find-and-replace. Must be done first so all subsequent work uses the new scope."
+    },
+    {
+      "id": "US-002",
+      "title": "Create morse-decoder package scaffold with types, constants, and morse tree",
+      "description": "As a developer, I need the foundational morse-decoder package with shared types, configuration constants, and the ITU morse code lookup tree.",
+      "acceptanceCriteria": [
+        "New package at packages/morse-decoder with name @moris-bot/morse-decoder",
+        "package.json follows existing conventions (exports, scripts, devDependencies on @moris-bot/eslint-config, @moris-bot/prettier-config, @moris-bot/tsconfig)",
+        "tsconfig.json extends @moris-bot/tsconfig/base.json",
+        "eslint.config.ts uses @moris-bot/eslint-config/base",
+        "src/types.ts exports: DecoderConfig, DecoderEvents, DecoderStats, MorseElement ('dit' | 'dah'), MorseGap ('element' | 'character' | 'word'), GoertzelResult interfaces",
+        "src/constants.ts exports default values: targetFrequency (600), sampleRate (8000), blockSize (256), initialWpm (15), timing ratios (dit=1, dah=3, charGap=3, wordGap=7)",
+        "src/morse-tree.ts exports lookupMorse(elements: MorseElement[]): string | null and getMorseForChar(char: string): MorseElement[] | null covering A-Z, 0-9, and standard punctuation",
+        "src/index.ts re-exports all public API",
+        "Package has zero runtime dependencies",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Foundation package. The morse tree is a binary tree: left=dit, right=dah. Must cover full ITU international morse code."
+    },
+    {
+      "id": "US-003",
+      "title": "Implement Goertzel filter and envelope detector",
+      "description": "As a developer, I need the Goertzel single-frequency detector and envelope detector so audio samples can be analyzed for morse tone presence.",
+      "acceptanceCriteria": [
+        "src/goertzel.ts exports createGoertzelFilter(config: GoertzelConfig) returning { process(samples: Float32Array): GoertzelResult }",
+        "Goertzel filter correctly detects magnitude at target frequency using the standard second-order IIR algorithm",
+        "GoertzelResult includes magnitude (linear) and magnitudeDb (dBFS)",
+        "src/envelope-detector.ts exports createEnvelopeDetector(config: EnvelopeConfig) returning { process(magnitude: number, timestampMs: number): EnvelopeState }",
+        "Envelope detector uses dual-threshold hysteresis (separate on/off thresholds) to avoid jitter",
+        "EnvelopeState includes toneActive (boolean), durationMs (time in current state), snrDb",
+        "Both modules exported from src/index.ts",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Goertzel is ~30 lines of arithmetic. Envelope detector compares magnitude against thresholds and tracks state transitions with timestamps."
+    },
+    {
+      "id": "US-004",
+      "title": "Implement timing analyzer and decoder state machine",
+      "description": "As a developer, I need the timing analyzer and main decoder orchestrator so the full pipeline from audio samples to decoded text is functional.",
+      "acceptanceCriteria": [
+        "src/timing-analyzer.ts exports createTimingAnalyzer(config: TimingConfig) with onToneEnd(durationMs) returning MorseElement and onSilenceEnd(durationMs) returning MorseGap",
+        "Timing analyzer classifies durations using configurable WPM-derived unit timing",
+        "Adaptive mode uses exponential moving average on observed dit durations to track sender speed",
+        "getCurrentWpm() returns the current estimated WPM",
+        "src/decoder.ts exports createDecoder(config: DecoderConfig, events: DecoderEvents) returning MorseDecoder",
+        "MorseDecoder has methods: processSamples(samples: Float32Array, timestampMs: number), getDecodedText(), reset(), updateConfig(partial)",
+        "processSamples orchestrates: Goertzel -> envelope detector -> timing analyzer -> morse tree lookup",
+        "Events fire correctly: onCharacter, onWordBoundary, onElement, onToneChange, onStats",
+        "Both modules exported from src/index.ts",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "This completes the decode pipeline. The decoder state machine tracks accumulated elements and flushes characters on character/word gaps."
+    },
+    {
+      "id": "US-005",
+      "title": "Implement morse encoder module",
+      "description": "As a developer, I need a morse encoding module so text can be converted to morse timing data for audio playback.",
+      "acceptanceCriteria": [
+        "src/encoder.ts exports createEncoder(config: { wpm: number; frequency: number }) returning MorseEncoder",
+        "MorseEncoder has encode(text: string) method returning array of { type: 'tone' | 'silence'; durationMs: number }",
+        "Uses getMorseForChar from morse-tree.ts for character lookup",
+        "Timing derived from WPM: dit duration = 1200/wpm ms, dah = 3x dit, element gap = 1x dit, character gap = 3x dit, word gap = 7x dit",
+        "Unknown characters are skipped without error",
+        "Exported from src/index.ts",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Create AudioWorklet sample forwarder and useAudioInput hook",
+      "description": "As a developer, I need Web Audio API microphone capture with an AudioWorklet so audio samples can be forwarded to the decoder on the main thread.",
+      "acceptanceCriteria": [
+        "apps/nextjs/public/audio-worklet/sample-forwarder.js created as a minimal AudioWorklet processor",
+        "Worklet process() method posts Float32Array input samples via this.port.postMessage()",
+        "apps/nextjs/src/hooks/use-audio-input.ts exports useAudioInput() hook",
+        "Hook provides: isRecording (boolean), error (string | null), startRecording(), stopRecording()",
+        "startRecording() calls getUserMedia({ audio: true }), creates AudioContext, registers worklet, connects nodes",
+        "stopRecording() disconnects nodes, closes AudioContext, stops media tracks",
+        "Hook accepts an onSamples callback ref that receives Float32Array chunks from the worklet",
+        "Graceful error handling for permission denial and unsupported browsers",
+        "@moris-bot/morse-decoder added to apps/nextjs/package.json dependencies and next.config.js transpilePackages",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "The worklet must be a plain .js file in public/ because AudioWorklet requires a URL, not a bundled module. Sample rate should be 8000 Hz for efficiency."
+    },
+    {
+      "id": "US-007",
+      "title": "Create useMorseDecoder hook",
+      "description": "As a developer, I need a React hook that wraps the @moris-bot/morse-decoder package with React state management.",
+      "acceptanceCriteria": [
+        "apps/nextjs/src/hooks/use-morse-decoder.ts exports useMorseDecoder(config: DecoderConfig) hook",
+        "Hook creates and manages a MorseDecoder instance via createDecoder()",
+        "Exposes processSamples(samples: Float32Array, timestampMs: number) for the audio hook to call",
+        "Maintains React state for: decodedText (string), stats (DecoderStats), currentElements (MorseElement[])",
+        "State updates throttled via requestAnimationFrame to avoid excessive re-renders",
+        "Exposes reset() to clear decoded text and reset decoder",
+        "Exposes updateConfig(partial) to update decoder settings",
+        "Decoder instance recreated when config changes",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Remove demo content and create decoder page shell",
+      "description": "As a user, I want the decoder to be the home page instead of the demo posts content.",
+      "acceptanceCriteria": [
+        "Demo posts CRUD UI removed from apps/nextjs/src/app/page.tsx",
+        "Demo auth showcase component removed from home page",
+        "apps/nextjs/src/app/page.tsx renders a new DecoderPanel client component",
+        "apps/nextjs/src/app/_components/decoder-panel.tsx created as 'use client' component",
+        "DecoderPanel composes useAudioInput and useMorseDecoder hooks, wiring onSamples to processSamples",
+        "DecoderPanel renders a basic layout: start/stop button at top, decoded text area at bottom",
+        "Existing infrastructure (auth, db, tRPC) remains functional and accessible",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "This creates the minimal working decoder page. Subsequent stories add spectrogram, stats, and controls."
+    },
+    {
+      "id": "US-009",
+      "title": "Add decoded text output component",
+      "description": "As a user, I want to see decoded morse code as readable text with auto-scrolling and in-progress element display.",
+      "acceptanceCriteria": [
+        "apps/nextjs/src/app/_components/decoded-text.tsx created",
+        "Scrollable text area displays decoded characters in monospace font",
+        "Text area auto-scrolls to bottom as new characters arrive",
+        "Shows in-progress element accumulation (dots and dashes for current unfinished character) at the end",
+        "Word boundaries rendered as spaces",
+        "Component integrated into DecoderPanel",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-010",
+      "title": "Add signal statistics display component",
+      "description": "As a user, I want to see signal statistics (dBFS, frequency, SNR, WPM) so I can monitor decoding quality.",
+      "acceptanceCriteria": [
+        "apps/nextjs/src/app/_components/signal-stats.tsx created",
+        "Displays current signal level in dBFS",
+        "Displays target frequency in Hz",
+        "Displays signal-to-noise ratio in dB",
+        "Displays current detected/estimated WPM",
+        "Receives DecoderStats as props from DecoderPanel",
+        "Uses @moris-bot/ui components for styling (labels, separators)",
+        "Component integrated into DecoderPanel layout",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-011",
+      "title": "Add decoder controls component",
+      "description": "As a user, I want controls to adjust decoder settings like frequency, speed, and threshold.",
+      "acceptanceCriteria": [
+        "apps/nextjs/src/app/_components/decoder-controls.tsx created",
+        "Target frequency slider/input with range 300-1200 Hz (default 600)",
+        "WPM speed preset selector with options: 5, 10, 13, 15, 20, 25, 30",
+        "Adaptive mode toggle (on by default)",
+        "Detection threshold adjustment slider",
+        "Clear/reset button to clear decoded text and reset decoder state",
+        "Controls built using @moris-bot/ui components (Button, Input, Label)",
+        "Control changes call updateConfig on the decoder via DecoderPanel",
+        "Component integrated into DecoderPanel layout (top controls bar)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-012",
+      "title": "Add spectrogram/waterfall canvas display",
+      "description": "As a user, I want a visual spectrogram showing signal magnitude over time so I can see morse code patterns.",
+      "acceptanceCriteria": [
+        "apps/nextjs/src/app/_components/spectrogram.tsx created",
+        "HTML canvas element with 2D rendering context",
+        "Scrolling waterfall: new data drawn as column on right, existing data scrolls left",
+        "Signal intensity represented by color gradient (dark = silence, bright/green = tone)",
+        "Renders via requestAnimationFrame, independent of React render cycle",
+        "Receives magnitude data from DecoderStats via a callback or ref pattern",
+        "Canvas sized responsively to container width",
+        "Component integrated into DecoderPanel layout (middle section)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": "Use a ring buffer or ImageData shift pattern for efficient scrolling. Canvas rendering must not cause React re-renders."
+    },
+    {
+      "id": "US-013",
+      "title": "Add audio file upload and decoding",
+      "description": "As a user, I want to upload audio files containing morse code to decode recordings.",
+      "acceptanceCriteria": [
+        "File upload input added to decoder controls accepting .wav, .mp3, .ogg, .m4a formats",
+        "Uploaded file decoded via Web Audio API decodeAudioData",
+        "Decoded samples fed into @moris-bot/morse-decoder processSamples() in chunks (matching blockSize)",
+        "Processing runs asynchronously with progress indicator",
+        "Decoded text displayed in the same decoded-text component as live decoding",
+        "User can stop/cancel file processing mid-stream",
+        "Cannot use mic and file input simultaneously (file stops mic, mic stops file)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Use setTimeout or requestAnimationFrame to chunk processing so the UI remains responsive during file decode."
+    },
+    {
+      "id": "US-014",
+      "title": "Add text-to-morse encoder with audio playback",
+      "description": "As a user, I want to type text and hear it played as morse code audio.",
+      "acceptanceCriteria": [
+        "Encoder section added below decoder (accessible via tab or toggle)",
+        "Text input area for entering text to encode",
+        "Play button generates morse code audio using Web Audio API OscillatorNode",
+        "Uses createEncoder() from @moris-bot/morse-decoder to produce timing events",
+        "Playback frequency matches decoder target frequency setting",
+        "Playback WPM configurable (uses decoder WPM setting by default)",
+        "Stop button halts playback mid-stream",
+        "Visual indication of current character being played (highlight in input text)",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": "Schedule OscillatorNode start/stop times using AudioContext.currentTime for precise timing. Do not use setTimeout for tone timing."
+    },
+    {
+      "id": "US-015",
+      "title": "Add decoded sessions database schema and tRPC router",
+      "description": "As a developer, I need a database table and API endpoints for saving decoded sessions.",
+      "acceptanceCriteria": [
+        "New decoded_sessions table in packages/db/src/schema.ts with columns: id, userId, decodedText, durationMs, source ('mic' | 'file'), settings (JSON), createdAt",
+        "userId references the auth user table",
+        "Zod schema generated via drizzle-zod for the new table",
+        "New tRPC router in packages/api/src/router/session.ts with protected procedures: save, list, getById, delete",
+        "Session router added to the app router in packages/api/src/root.ts",
+        "List procedure returns sessions for the authenticated user only, ordered by createdAt desc",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "notes": "Use protectedProcedure from the existing tRPC setup to ensure auth. Settings column stores decoder config as JSON."
+    },
+    {
+      "id": "US-016",
+      "title": "Add save session button to decoder (authenticated users)",
+      "description": "As an authenticated user, I want to save my decoded session so I can review it later.",
+      "acceptanceCriteria": [
+        "Save Session button visible in decoder controls area only when user is authenticated",
+        "Unauthenticated users see a subtle 'Sign in to save sessions' link instead",
+        "Clicking Save Session calls the session.save tRPC mutation with current decoded text, duration, source, and settings",
+        "Success toast shown after saving via @moris-bot/ui toast component",
+        "Error toast shown if save fails",
+        "Button disabled when there is no decoded text to save",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 16,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-017",
+      "title": "Add sessions list page with view and export",
+      "description": "As an authenticated user, I want to view my saved sessions and export them as text files.",
+      "acceptanceCriteria": [
+        "New page at apps/nextjs/src/app/sessions/page.tsx",
+        "Sessions list shows saved sessions with timestamp, duration, source type, and preview text (first 100 chars)",
+        "Click a session to expand and view full decoded text",
+        "Export button downloads the session's decoded text as a .txt file",
+        "Delete button removes a session with confirmation dialog",
+        "Only shows sessions belonging to the authenticated user",
+        "Redirects to home if not authenticated",
+        "Navigation link to /sessions visible when authenticated",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 17,
+      "passes": true,
+      "notes": ""
+    },
+    {
+      "id": "US-018",
+      "title": "Responsive layout and theme polish",
+      "description": "As a user, I want the decoder page to be well-organized and usable across screen sizes with proper theme support.",
+      "acceptanceCriteria": [
+        "Decoder layout: controls bar (top), spectrogram + stats side-by-side (middle), text output (bottom), encoder toggle (below decoder)",
+        "Responsive breakpoints: desktop (1024px+) shows full layout, tablet (768px+) stacks spectrogram above stats",
+        "Dark/light theme works correctly via existing ThemeProvider and ThemeToggle",
+        "Dark theme uses signal-processing aesthetic (dark background, bright signal colors, monospace text)",
+        "All components visually consistent and properly spaced",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": "Final polish story. Mobile web should be functional but the Expo app is the intended mobile experience."
+    }
+  ]
+}
