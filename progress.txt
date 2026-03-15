@@ -1,3 +1,12 @@
+## 2026-03-15 - US-010
+- Added `<Suspense fallback={<p>Loading sessions...</p>}>` wrapper around `<SessionsList />` in sessions page
+- Imported `Suspense` from `react`
+- Files changed:
+  - `apps/nextjs/src/app/sessions/page.tsx`: added Suspense import and wrapper
+- **Learnings for future iterations:**
+  - Components using `useSuspenseQuery` must be wrapped in a Suspense boundary or React will throw on client-side navigation
+---
+
 ## 2026-03-15 - US-009
 - Replaced `while(queue.length > 0) { queue.shift() }` with `queue.splice(0)` to drain atomically in O(1)
 - Added `items.slice(-CANVAS_WIDTH)` to skip excess entries when more data arrives than pixels available
