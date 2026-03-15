@@ -4,6 +4,7 @@
 - pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
 - Package scope is @moris-bot/ (was @acme/ in the t3-turbo template).
 - Root package.json name is "moris-bot".
+- The `public/` directory in apps/nextjs must be excluded from tsconfig.json to avoid TS errors on plain JS worklet files.
 
 # Ralph Progress Log
 Started: Sat Mar 14 08:55:18 PM MST 2026
@@ -78,4 +79,17 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
   - Word gaps: insert wordGap silence BETWEEN words (not before first word, not after last); use index check + events.length guard
   - Char gaps: insert charGap silence BETWEEN encoded characters within a word (not before first char)
   - Element gaps: insert elementGap silence BETWEEN elements within a character (not before first element)
+---
+
+## 2026-03-14 - US-006
+- Created apps/nextjs/public/audio-worklet/sample-forwarder.js: minimal AudioWorkletProcessor that forwards Float32Array input samples via this.port.postMessage()
+- Created apps/nextjs/src/hooks/use-audio-input.ts: useAudioInput hook with startRecording/stopRecording, isRecording/error state, onSamples callback ref pattern
+- Added @moris-bot/morse-decoder to apps/nextjs/package.json dependencies and next.config.js transpilePackages
+- Added "public" to tsconfig.json exclude to prevent TS errors on plain JS worklet file
+- Typecheck passed (16/16 tasks)
+- **Learnings for future iterations:**
+  - AudioWorklet files must be plain .js in public/ (URL-loaded, not bundled) — exclude public/ from tsconfig to avoid TS errors
+  - Use a callback ref pattern (useRef for onSamples) so the worklet message handler always calls the latest callback without re-registering the listener
+  - AudioContext sampleRate must be set at construction time; 8000 Hz is sufficient for morse (narrow-band CW tone)
+  - workletNode must be connected to destination even if we don't want output; otherwise some browsers suspend the AudioContext
 ---

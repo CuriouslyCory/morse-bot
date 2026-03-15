@@ -111,7 +111,7 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "The worklet must be a plain .js file in public/ because AudioWorklet requires a URL, not a bundled module. Sample rate should be 8000 Hz for efficiency."
     },
     {
