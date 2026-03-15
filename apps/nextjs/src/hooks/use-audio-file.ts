@@ -33,6 +33,7 @@ export function useAudioFile({
     async (file: File) => {
       setError(null);
       setProgress(0);
+      setIsProcessing(true);
       cancelledRef.current = false;
 
       let arrayBuffer: ArrayBuffer;
@@ -58,8 +59,6 @@ export function useAudioFile({
         // Use the first channel (mono)
         const channelData = audioBuffer.getChannelData(0);
         const totalSamples = channelData.length;
-
-        setIsProcessing(true);
 
         for (let offset = 0; offset < totalSamples; offset += chunkSize) {
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
