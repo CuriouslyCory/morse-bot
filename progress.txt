@@ -1,3 +1,14 @@
+## 2026-03-15 - US-011
+- Moved `setIsProcessing(true)` to before first `await` in useAudioFile so isProcessing is true during file.arrayBuffer() read
+- Removed duplicate `setIsProcessing(true)` that was after decodeAudioData
+- Verified `trpc.session.pathFilter()` exists in tRPC 11.7.1 — no change needed
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-file.ts`: moved setIsProcessing(true) up, removed duplicate
+- **Learnings for future iterations:**
+  - `trpc.session.pathFilter()` is available in @trpc/tanstack-react-query 11.7.1 — no replacement needed
+  - `setIsProcessing(true)` must be called before any await so the UI shows loading state during async file reads
+---
+
 ## 2026-03-15 - US-010
 - Added `<Suspense fallback={<p>Loading sessions...</p>}>` wrapper around `<SessionsList />` in sessions page
 - Imported `Suspense` from `react`
