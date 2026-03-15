@@ -89,13 +89,13 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 **Description:** As a user, I want to see a visual representation of the audio signal so I can identify morse code patterns and tune the frequency.
 
 **Acceptance Criteria:**
-- [ ] Canvas-based scrolling waterfall display showing signal magnitude over time
-- [ ] New data drawn as a column on the right, existing data scrolls left
-- [ ] Signal intensity represented by color (dark = silence, bright = tone)
-- [ ] Renders via `requestAnimationFrame`, independent of React render cycle
-- [ ] Display updates in real-time during live decoding
-- [ ] Display shows signal during file playback
-- [ ] Typecheck passes
+- [x] Canvas-based scrolling waterfall display showing signal magnitude over time
+- [x] New data drawn as a column on the right, existing data scrolls left
+- [x] Signal intensity represented by color (dark = silence, bright = tone)
+- [x] Renders via `requestAnimationFrame`, independent of React render cycle
+- [x] Display updates in real-time during live decoding
+- [x] Display shows signal during file playback
+- [x] Typecheck passes
 - [ ] Verify in browser using dev-browser skill
 
 ### US-007: Signal statistics display
@@ -262,3 +262,6 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 - What prosigns should be supported beyond the standard ITU set?
 - Should saved sessions include the decoder settings used, to allow replay with the same configuration?
 - Should there be a "practice mode" that generates random morse and scores the user's manual decoding?
+
+---
+<!-- Progress tracking appended by Ralph agent -->

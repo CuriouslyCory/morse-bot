@@ -10,6 +10,18 @@
 
 ---
 
+## 2026-03-14 - US-006
+- Implemented canvas-based scrolling waterfall display for signal magnitude over time
+- Files changed:
+  - `apps/nextjs/src/app/_components/waterfall.tsx` (new): Waterfall component using ImageData pixel-shift for scrolling, rAF-driven render loop, black→green→yellow color gradient mapped to dBFS
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added `<Waterfall stats={stats} />` above SignalStats
+- **Learnings for future iterations:**
+  - TypeScript doesn't narrow non-null types across inner `function` declarations; capture narrowed types as explicitly-typed `const` variables (e.g., `const ctx: CanvasRenderingContext2D = context`) before defining inner functions
+  - `queue.shift()` returns `T | undefined` — check for `undefined` explicitly instead of trusting `queue.length > 0` guard
+  - `@typescript-eslint/no-non-null-assertion` bans `!` but `as Type` casts are allowed; use explicit typed consts instead of either
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## 2026-03-14 - US-005
 - Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
 - Files changed:
