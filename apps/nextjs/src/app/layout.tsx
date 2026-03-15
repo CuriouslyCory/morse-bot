@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { cn } from "@moris-bot/ui";
@@ -6,6 +7,7 @@ import { ThemeProvider, ThemeToggle } from "@moris-bot/ui/theme";
 import { Toaster } from "@moris-bot/ui/toast";
 
 import { env } from "~/env";
+import { getSession } from "~/auth/server";
 import { TRPCReactProvider } from "~/trpc/react";
 
 import "~/app/styles.css";
@@ -47,7 +49,9 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const session = await getSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -58,6 +62,16 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider>
+          {session && (
+            <nav className="border-b px-4 py-2">
+              <Link
+                href="/sessions"
+                className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+              >
+                My Sessions
+              </Link>
+            </nav>
+          )}
           <TRPCReactProvider>{props.children}</TRPCReactProvider>
           <div className="absolute right-4 bottom-4">
             <ThemeToggle />
