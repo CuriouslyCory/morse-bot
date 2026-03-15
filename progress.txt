@@ -1,3 +1,12 @@
+## 2026-03-15 - US-005
+- Fixed AudioContext and MediaStream leak in useAudioInput catch block
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-input.ts`: Added cleanup in catch block: close audioContextRef, stop stream tracks, null all refs
+- **Learnings for future iterations:**
+  - Cleanup order in catch: close context first, stop tracks, then null refs
+  - Lint error count remains at 13 (no new errors)
+---
+
 ## Codebase Patterns
 - Package scope: @moris-bot (renamed from @acme)
 - All hooks use `useRef` + `onSamplesRef.current = onSamples` pattern to keep callbacks fresh — this triggers `react-hooks/refs` ESLint errors in custom hooks but is the established pattern in this codebase

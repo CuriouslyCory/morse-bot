@@ -72,7 +72,7 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "If addModule or createMediaStreamSource throws, the AudioContext and stream are leaked since isRecording stays false and stopRecording won't be called."
     },
     {
