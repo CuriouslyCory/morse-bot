@@ -1,3 +1,13 @@
+## 2026-03-15 - US-009
+- Replaced `while(queue.length > 0) { queue.shift() }` with `queue.splice(0)` to drain atomically in O(1)
+- Added `items.slice(-CANVAS_WIDTH)` to skip excess entries when more data arrives than pixels available
+- Files changed:
+  - `apps/nextjs/src/app/_components/spectrogram.tsx`: tick() now uses splice(0) + slice(-CANVAS_WIDTH) + for..of loop
+- **Learnings for future iterations:**
+  - `queue.shift()` in a tight loop is O(n²) for large queues; `splice(0)` drains entire array in O(1) and replaces the array reference atomically
+  - During audio file processing, stats updates arrive much faster than rAF (60fps); must cap render entries to avoid canvas thrashing
+---
+
 ## 2026-03-15 - US-008
 - Reset transition state (prevToneActive, lastTransitionMs, currentElements) in updateConfig after rebuilding DSP components
 - decodedText is NOT cleared — only in-flight transition state is reset

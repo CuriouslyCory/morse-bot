@@ -128,7 +128,7 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 9,
-      "passes": false,
+      "passes": true,
       "notes": "During file processing, samples arrive faster than 60fps rAF can consume. queue.shift() is O(n) and the queue grows unboundedly."
     },
     {
