@@ -1,4 +1,4 @@
-import type { DecoderConfig } from "./types.js";
+import type { DecoderConfig } from "./types";
 
 /** Default decoder configuration values */
 export const DEFAULT_CONFIG: DecoderConfig = {

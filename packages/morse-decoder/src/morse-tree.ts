@@ -1,4 +1,4 @@
-import type { MorseElement } from "./types.js";
+import type { MorseElement } from "./types";
 
 /**
  * ITU Morse code mapping: dot-dash sequence string -> character.

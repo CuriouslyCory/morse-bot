@@ -3,12 +3,12 @@ import type {
   DecoderEvents,
   MorseDecoder,
   MorseElement,
-} from "./types.js";
-import { DEFAULT_CONFIG } from "./constants.js";
-import { createEnvelopeDetector } from "./envelope-detector.js";
-import { createGoertzelFilter } from "./goertzel.js";
-import { lookupMorse } from "./morse-tree.js";
-import { createTimingAnalyzer } from "./timing-analyzer.js";
+} from "./types";
+import { DEFAULT_CONFIG } from "./constants";
+import { createEnvelopeDetector } from "./envelope-detector";
+import { createGoertzelFilter } from "./goertzel";
+import { lookupMorse } from "./morse-tree";
+import { createTimingAnalyzer } from "./timing-analyzer";
 
 function buildComponents(cfg: DecoderConfig) {
   return {

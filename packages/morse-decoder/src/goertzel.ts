@@ -1,4 +1,4 @@
-import type { GoertzelConfig, GoertzelResult } from "./types.js";
+import type { GoertzelConfig, GoertzelResult } from "./types";
 
 /**
  * Creates a Goertzel single-frequency detector.

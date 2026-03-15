@@ -10,19 +10,19 @@ export type {
   MorseElement,
   MorseGap,
   TimingConfig,
-} from "./types.js";
+} from "./types";
 
 export {
   DEFAULT_CONFIG,
   ditDurationMs,
   TIMING_RATIOS,
-} from "./constants.js";
+} from "./constants";
 
-export { getMorseForChar, lookupMorse } from "./morse-tree.js";
+export { getMorseForChar, lookupMorse } from "./morse-tree";
 
-export { createEnvelopeDetector } from "./envelope-detector.js";
-export { createGoertzelFilter } from "./goertzel.js";
-export { createDecoder } from "./decoder.js";
-export { createEncoder } from "./encoder.js";
-export type { EncoderConfig, MorseEncoder, ToneEvent } from "./encoder.js";
-export { createTimingAnalyzer } from "./timing-analyzer.js";
+export { createEnvelopeDetector } from "./envelope-detector";
+export { createGoertzelFilter } from "./goertzel";
+export { createDecoder } from "./decoder";
+export { createEncoder } from "./encoder";
+export type { EncoderConfig, MorseEncoder, ToneEvent } from "./encoder";
+export { createTimingAnalyzer } from "./timing-analyzer";

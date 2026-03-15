@@ -1,4 +1,4 @@
-import type { EnvelopeConfig, EnvelopeState } from "./types.js";
+import type { EnvelopeConfig, EnvelopeState } from "./types";
 
 /**
  * Creates an envelope detector with dual-threshold hysteresis.

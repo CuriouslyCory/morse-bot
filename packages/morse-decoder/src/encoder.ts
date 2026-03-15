@@ -1,5 +1,5 @@
-import { ditDurationMs, TIMING_RATIOS } from "./constants.js";
-import { getMorseForChar } from "./morse-tree.js";
+import { ditDurationMs, TIMING_RATIOS } from "./constants";
+import { getMorseForChar } from "./morse-tree";
 
 export interface EncoderConfig {
   wpm: number;

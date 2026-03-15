@@ -1,5 +1,5 @@
-import type { MorseElement, MorseGap, TimingConfig } from "./types.js";
-import { ditDurationMs } from "./constants.js";
+import type { MorseElement, MorseGap, TimingConfig } from "./types";
+import { ditDurationMs } from "./constants";
 
 /**
  * Creates a timing analyzer that classifies tone and silence durations
