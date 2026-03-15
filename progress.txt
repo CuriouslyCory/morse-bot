@@ -1,3 +1,16 @@
+## 2026-03-15 - US-007
+- Added `elementGap: 1` to `TIMING_RATIOS` in constants.ts
+- Updated encoder.ts to use `TIMING_RATIOS.elementGap` instead of `TIMING_RATIOS.dit` for element gap
+- Removed `".-...": "&"` (ITU AS prosign) and `"...-..-": "$"` (non-ITU) from MORSE_TO_CHAR with explanatory comments
+- Files changed:
+  - `packages/morse-decoder/src/constants.ts`: added `elementGap: 1` to TIMING_RATIOS
+  - `packages/morse-decoder/src/encoder.ts`: `TIMING_RATIOS.dit` → `TIMING_RATIOS.elementGap`
+  - `packages/morse-decoder/src/morse-tree.ts`: commented out `&` and `$` prosign mappings
+- **Learnings for future iterations:**
+  - TIMING_RATIOS.dit and elementGap are both 1 numerically, but using elementGap is semantically correct
+  - ITU prosigns like AS (.-...) and SX (...-..-) collide with printable ASCII if mapped — omitting is correct
+---
+
 ## 2026-03-15 - US-006
 - Exposed `actualSampleRate` from `useAudioInput` and synced it to the decoder
 - Files changed:

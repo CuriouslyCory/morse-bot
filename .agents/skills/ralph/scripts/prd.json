@@ -101,7 +101,7 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
+      "passes": true,
       "notes": "Two small fixes in the morse-decoder package combined into one story since they're both quick constant/data changes."
     },
     {
