@@ -10,6 +10,15 @@
 
 ---
 
+## 2026-03-15 - US-002
+- Updated README.md to remove stale @acme references
+- Files changed:
+  - `README.md`: Updated line 72 paragraph from @acme placeholder explanation to @moris-bot scope note; line 105 `@acme/auth` → `@moris-bot/auth`; line 117 `@acme/db` → `@moris-bot/db`
+- **Learnings for future iterations:**
+  - Remaining @acme references in `tasks/*.md` and `.agents/.../prd.json` are in meta-documentation describing the rename history — these are intentional and not actual code references
+  - The grep check for zero @acme results applies to source/config files; documentation about the rename process naturally uses @acme in its descriptions
+---
+
 ## 2026-03-14 - US-006
 - Implemented canvas-based scrolling waterfall display for signal magnitude over time
 - Files changed:
