@@ -1,8 +1,8 @@
 "use client";
 
+import type { DecoderConfig } from "@morse-bot/morse-decoder";
 import { useCallback, useState } from "react";
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
-import type { DecoderConfig } from "@morse-bot/morse-decoder";
 import { Button } from "@morse-bot/ui/button";
 import { Input } from "@morse-bot/ui/input";
 import { Label } from "@morse-bot/ui/label";
@@ -125,7 +125,7 @@ export function DecoderControls({
             checked={adaptive}
             onChange={handleAdaptiveChange}
             disabled={isDisabled}
-            className="h-4 w-4 cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-50"
+            className="accent-primary h-4 w-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
           />
         </div>
       </div>

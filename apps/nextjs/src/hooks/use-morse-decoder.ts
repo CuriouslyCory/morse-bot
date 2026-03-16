@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  createDecoder,
-  DEFAULT_CONFIG,
-  type DecoderConfig,
-  type DecoderStats,
-  type MorseElement,
+import type {
+  DecoderConfig,
+  DecoderStats,
+  MorseElement,
 } from "@morse-bot/morse-decoder";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createDecoder, DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 
 interface UseMorseDecoderResult {
   decodedText: string;
@@ -135,5 +134,12 @@ export function useMorseDecoder(
     };
   }, []);
 
-  return { decodedText, stats, currentElements, processSamples, reset, updateConfig };
+  return {
+    decodedText,
+    stats,
+    currentElements,
+    processSamples,
+    reset,
+    updateConfig,
+  };
 }

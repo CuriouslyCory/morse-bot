@@ -1,27 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-
-import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import type { DecoderConfig } from "@morse-bot/morse-decoder";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import { Button } from "@morse-bot/ui/button";
 import { toast } from "@morse-bot/ui/toast";
+import { useMutation } from "@tanstack/react-query";
 
 import { authClient } from "~/auth/client";
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { useTRPC } from "~/trpc/react";
-import { DecoderControls } from "./decoder-controls";
 import { DecodedText } from "./decoded-text";
+import { DecoderControls } from "./decoder-controls";
 import { EncoderPanel } from "./encoder-panel";
 import { SignalStats } from "./signal-stats";
 import { Spectrogram } from "./spectrogram";
 
 export function DecoderPanel() {
-  const { decodedText, currentElements, stats, processSamples, reset, updateConfig } =
-    useMorseDecoder();
+  const {
+    decodedText,
+    currentElements,
+    stats,
+    processSamples,
+    reset,
+    updateConfig,
+  } = useMorseDecoder();
 
   // Track frequency and wpm so the encoder panel can mirror decoder settings
   const [encoderFrequency, setEncoderFrequency] = useState(
@@ -73,8 +78,13 @@ export function DecoderPanel() {
     [processSamples],
   );
 
-  const { isRecording, actualSampleRate, error: micError, startRecording, stopRecording } =
-    useAudioInput({ onSamples: onSamplesFromMic });
+  const {
+    isRecording,
+    actualSampleRate,
+    error: micError,
+    startRecording,
+    stopRecording,
+  } = useAudioInput({ onSamples: onSamplesFromMic });
 
   // Sync actual AudioContext sample rate to decoder when recording starts
   useEffect(() => {
@@ -143,7 +153,7 @@ export function DecoderPanel() {
         <button
           onClick={isRecording ? stopRecording : () => void handleStartMic()}
           disabled={isProcessing}
-          className="rounded bg-primary px-4 py-2 font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-4 py-2 font-semibold disabled:opacity-50"
         >
           {isRecording ? "Stop Mic" : "Start Mic"}
         </button>
@@ -151,7 +161,7 @@ export function DecoderPanel() {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isActive}
-          className="rounded border px-4 py-2 font-semibold hover:bg-muted disabled:opacity-50"
+          className="hover:bg-muted rounded border px-4 py-2 font-semibold disabled:opacity-50"
         >
           Open File…
         </button>
@@ -166,19 +176,19 @@ export function DecoderPanel() {
         {isProcessing && (
           <button
             onClick={stopProcessing}
-            className="rounded border border-destructive px-4 py-2 font-semibold text-destructive hover:bg-destructive/10"
+            className="border-destructive text-destructive hover:bg-destructive/10 rounded border px-4 py-2 font-semibold"
           >
             Stop
           </button>
         )}
 
-        {error && <span className="text-sm text-destructive">{error}</span>}
+        {error && <span className="text-destructive text-sm">{error}</span>}
       </div>
 
       {isProcessing && (
-        <div className="h-2 w-full overflow-hidden rounded bg-muted">
+        <div className="bg-muted h-2 w-full overflow-hidden rounded">
           <div
-            className="h-full bg-primary transition-all"
+            className="bg-primary h-full transition-all"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
@@ -219,7 +229,7 @@ export function DecoderPanel() {
                 callbackURL: "/",
               })
             }
-            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            className="text-muted-foreground text-sm underline-offset-4 hover:underline"
           >
             Sign in to save sessions
           </button>
@@ -230,7 +240,7 @@ export function DecoderPanel() {
       <div>
         <button
           onClick={() => setShowEncoder((v) => !v)}
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground text-sm"
         >
           {showEncoder ? "▲ Hide encoder" : "▼ Show encoder"}
         </button>

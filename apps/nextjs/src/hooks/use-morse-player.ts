@@ -1,14 +1,13 @@
 "use client";
 
+import type { MorseElement } from "@morse-bot/morse-decoder";
 import { useCallback, useRef, useState } from "react";
-
 import {
   createEncoder,
   ditDurationMs,
   getMorseForChar,
   TIMING_RATIOS,
 } from "@morse-bot/morse-decoder";
-import type { MorseElement } from "@morse-bot/morse-decoder";
 
 interface CharTiming {
   charIndex: number;
