@@ -1,6 +1,6 @@
 "use client";
 
-import { type DecoderStats } from "@morse-bot/morse-decoder";
+import type {DecoderStats} from "@morse-bot/morse-decoder";
 import { Separator } from "@morse-bot/ui/separator";
 
 interface SignalStatsProps {
