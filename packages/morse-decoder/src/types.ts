@@ -21,6 +21,8 @@ export interface EnvelopeConfig {
   onThreshold: number;
   /** Magnitude threshold to transition tone OFF (hysteresis low threshold) */
   offThreshold: number;
+  /** Whether to adaptively adjust thresholds based on observed signal levels */
+  adaptive?: boolean;
 }
 
 export interface EnvelopeState {

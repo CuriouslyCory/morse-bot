@@ -1,17 +1,17 @@
 {
-  "project": "Moris Bot",
+  "project": "morse Bot",
   "branchName": "feat/morse-decoder",
   "description": "Real-time morse code decoder web app with microphone/file input, spectrogram visualization, adaptive CW decoding, text-to-morse encoding, and session persistence for authenticated users",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Rename package scope from @acme to @moris-bot",
-      "description": "As a developer, I need the monorepo packages renamed from @acme to @moris-bot so the project has its own identity before building features.",
+      "title": "Rename package scope from @acme to @morse-bot",
+      "description": "As a developer, I need the monorepo packages renamed from @acme to @morse-bot so the project has its own identity before building features.",
       "acceptanceCriteria": [
-        "All @acme/ references replaced with @moris-bot/ across all files (package.json, tsconfig, eslint configs, source imports, CSS imports)",
-        "turbo/generators/config.ts updated: .startsWith('@acme/') and .replace('@acme/', '') changed to @moris-bot, 'Acme Monorepo' text updated",
-        "Root package.json name updated from create-t3-turbo to moris-bot",
-        "App metadata (layout titles, descriptions) updated from 'Create T3 Turbo' to 'Moris Bot'",
+        "All @acme/ references replaced with @morse-bot/ across all files (package.json, tsconfig, eslint configs, source imports, CSS imports)",
+        "turbo/generators/config.ts updated: .startsWith('@acme/') and .replace('@acme/', '') changed to @morse-bot, 'Acme Monorepo' text updated",
+        "Root package.json name updated from create-t3-turbo to morse-bot",
+        "App metadata (layout titles, descriptions) updated from 'Create T3 Turbo' to 'morse Bot'",
         "pnpm-lock.yaml deleted and regenerated via pnpm install",
         "Typecheck passes"
       ],
@@ -24,10 +24,10 @@
       "title": "Create morse-decoder package scaffold with types, constants, and morse tree",
       "description": "As a developer, I need the foundational morse-decoder package with shared types, configuration constants, and the ITU morse code lookup tree.",
       "acceptanceCriteria": [
-        "New package at packages/morse-decoder with name @moris-bot/morse-decoder",
-        "package.json follows existing conventions (exports, scripts, devDependencies on @moris-bot/eslint-config, @moris-bot/prettier-config, @moris-bot/tsconfig)",
-        "tsconfig.json extends @moris-bot/tsconfig/base.json",
-        "eslint.config.ts uses @moris-bot/eslint-config/base",
+        "New package at packages/morse-decoder with name @morse-bot/morse-decoder",
+        "package.json follows existing conventions (exports, scripts, devDependencies on @morse-bot/eslint-config, @morse-bot/prettier-config, @morse-bot/tsconfig)",
+        "tsconfig.json extends @morse-bot/tsconfig/base.json",
+        "eslint.config.ts uses @morse-bot/eslint-config/base",
         "src/types.ts exports: DecoderConfig, DecoderEvents, DecoderStats, MorseElement ('dit' | 'dah'), MorseGap ('element' | 'character' | 'word'), GoertzelResult interfaces",
         "src/constants.ts exports default values: targetFrequency (600), sampleRate (8000), blockSize (256), initialWpm (15), timing ratios (dit=1, dah=3, charGap=3, wordGap=7)",
         "src/morse-tree.ts exports lookupMorse(elements: MorseElement[]): string | null and getMorseForChar(char: string): MorseElement[] | null covering A-Z, 0-9, and standard punctuation",
@@ -107,7 +107,7 @@
         "stopRecording() disconnects nodes, closes AudioContext, stops media tracks",
         "Hook accepts an onSamples callback ref that receives Float32Array chunks from the worklet",
         "Graceful error handling for permission denial and unsupported browsers",
-        "@moris-bot/morse-decoder added to apps/nextjs/package.json dependencies and next.config.js transpilePackages",
+        "@morse-bot/morse-decoder added to apps/nextjs/package.json dependencies and next.config.js transpilePackages",
         "Typecheck passes"
       ],
       "priority": 6,
@@ -117,7 +117,7 @@
     {
       "id": "US-007",
       "title": "Create useMorseDecoder hook",
-      "description": "As a developer, I need a React hook that wraps the @moris-bot/morse-decoder package with React state management.",
+      "description": "As a developer, I need a React hook that wraps the @morse-bot/morse-decoder package with React state management.",
       "acceptanceCriteria": [
         "apps/nextjs/src/hooks/use-morse-decoder.ts exports useMorseDecoder(config: DecoderConfig) hook",
         "Hook creates and manages a MorseDecoder instance via createDecoder()",
@@ -181,7 +181,7 @@
         "Displays signal-to-noise ratio in dB",
         "Displays current detected/estimated WPM",
         "Receives DecoderStats as props from DecoderPanel",
-        "Uses @moris-bot/ui components for styling (labels, separators)",
+        "Uses @morse-bot/ui components for styling (labels, separators)",
         "Component integrated into DecoderPanel layout",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
@@ -201,7 +201,7 @@
         "Adaptive mode toggle (on by default)",
         "Detection threshold adjustment slider",
         "Clear/reset button to clear decoded text and reset decoder state",
-        "Controls built using @moris-bot/ui components (Button, Input, Label)",
+        "Controls built using @morse-bot/ui components (Button, Input, Label)",
         "Control changes call updateConfig on the decoder via DecoderPanel",
         "Component integrated into DecoderPanel layout (top controls bar)",
         "Typecheck passes",
@@ -238,7 +238,7 @@
       "acceptanceCriteria": [
         "File upload input added to decoder controls accepting .wav, .mp3, .ogg, .m4a formats",
         "Uploaded file decoded via Web Audio API decodeAudioData",
-        "Decoded samples fed into @moris-bot/morse-decoder processSamples() in chunks (matching blockSize)",
+        "Decoded samples fed into @morse-bot/morse-decoder processSamples() in chunks (matching blockSize)",
         "Processing runs asynchronously with progress indicator",
         "Decoded text displayed in the same decoded-text component as live decoding",
         "User can stop/cancel file processing mid-stream",
@@ -258,7 +258,7 @@
         "Encoder section added below decoder (accessible via tab or toggle)",
         "Text input area for entering text to encode",
         "Play button generates morse code audio using Web Audio API OscillatorNode",
-        "Uses createEncoder() from @moris-bot/morse-decoder to produce timing events",
+        "Uses createEncoder() from @morse-bot/morse-decoder to produce timing events",
         "Playback frequency matches decoder target frequency setting",
         "Playback WPM configurable (uses decoder WPM setting by default)",
         "Stop button halts playback mid-stream",
@@ -295,7 +295,7 @@
         "Save Session button visible in decoder controls area only when user is authenticated",
         "Unauthenticated users see a subtle 'Sign in to save sessions' link instead",
         "Clicking Save Session calls the session.save tRPC mutation with current decoded text, duration, source, and settings",
-        "Success toast shown after saving via @moris-bot/ui toast component",
+        "Success toast shown after saving via @morse-bot/ui toast component",
         "Error toast shown if save fails",
         "Button disabled when there is no decoded text to save",
         "Typecheck passes",

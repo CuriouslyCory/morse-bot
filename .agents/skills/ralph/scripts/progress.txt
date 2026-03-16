@@ -2,20 +2,20 @@
 - This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
 - sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
 - pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
-- Package scope is @moris-bot/ (was @acme/ in the t3-turbo template).
-- Root package.json name is "moris-bot".
+- Package scope is @morse-bot/ (was @acme/ in the t3-turbo template).
+- Root package.json name is "morse-bot".
 - The `public/` directory in apps/nextjs must be excluded from tsconfig.json to avoid TS errors on plain JS worklet files.
 - TypeScript imports must NOT use .js extensions — project uses bundler module resolution
-- Package tsconfig must extend @moris-bot/tsconfig/compiled-package.json (not base.json) to emit dist/ output
+- Package tsconfig must extend @morse-bot/tsconfig/compiled-package.json (not base.json) to emit dist/ output
 - All tRPC mutations/queries that access user-owned data must include userId in where clause
-- @moris-bot/db re-exports drizzle-orm helpers (eq, and, desc, etc.)
+- @morse-bot/db re-exports drizzle-orm helpers (eq, and, desc, etc.)
 
 # Ralph Progress Log
 Started: Sat Mar 15 2026 — Code Review Remediation
 ---
 
 ## 2026-03-15 - US-001
-- Replaced all remaining @acme/ references with @moris-bot/ in turbo generator templates and Expo postcss config
+- Replaced all remaining @acme/ references with @morse-bot/ in turbo generator templates and Expo postcss config
 - Files changed:
   - turbo/generators/templates/package.json.hbs (lines 2, 18, 19, 20, 25)
   - turbo/generators/templates/eslint.config.ts.hbs (line 3)

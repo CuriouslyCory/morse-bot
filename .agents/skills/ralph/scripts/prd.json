@@ -1,5 +1,5 @@
 {
-  "project": "Moris Bot",
+  "project": "morse Bot",
   "branchName": "feat/morse-decoder",
   "description": "Fix 13 issues from code review: incomplete @acme rename, broken tsconfig, IDOR security vulnerability, AudioContext leaks, Safari sampleRate, encoder constants, morse tree collisions, decoder state corruption, spectrogram performance, missing Suspense boundary, and more",
   "userStories": [
@@ -8,10 +8,10 @@
       "title": "Fix incomplete @acme rename in turbo generator templates and Expo postcss",
       "description": "As a developer, I need the remaining @acme references in turbo templates and Expo config fixed so the rename is complete.",
       "acceptanceCriteria": [
-        "turbo/generators/templates/package.json.hbs: all @acme/ replaced with @moris-bot/ (lines 2, 18, 19, 20, 25)",
-        "turbo/generators/templates/eslint.config.ts.hbs line 3: @acme/eslint-config/base changed to @moris-bot/eslint-config/base",
-        "turbo/generators/templates/tsconfig.json.hbs line 2: @acme/tsconfig/compiled-package.json changed to @moris-bot/tsconfig/compiled-package.json",
-        "apps/expo/postcss.config.mjs line 1: @acme/tailwind-config changed to @moris-bot/tailwind-config",
+        "turbo/generators/templates/package.json.hbs: all @acme/ replaced with @morse-bot/ (lines 2, 18, 19, 20, 25)",
+        "turbo/generators/templates/eslint.config.ts.hbs line 3: @acme/eslint-config/base changed to @morse-bot/eslint-config/base",
+        "turbo/generators/templates/tsconfig.json.hbs line 2: @acme/tsconfig/compiled-package.json changed to @morse-bot/tsconfig/compiled-package.json",
+        "apps/expo/postcss.config.mjs line 1: @acme/tailwind-config changed to @morse-bot/tailwind-config",
         "Typecheck passes"
       ],
       "priority": 1,
@@ -21,11 +21,11 @@
     {
       "id": "US-002",
       "title": "Update README to remove stale @acme references",
-      "description": "As a developer, I need the README updated so documentation commands reference @moris-bot instead of @acme.",
+      "description": "As a developer, I need the README updated so documentation commands reference @morse-bot instead of @acme.",
       "acceptanceCriteria": [
         "README.md line 72: remove or update the 'rename @acme' paragraph since rename is already done",
-        "README.md line 105: @acme/auth changed to @moris-bot/auth",
-        "README.md line 117: @acme/db changed to @moris-bot/db",
+        "README.md line 105: @acme/auth changed to @morse-bot/auth",
+        "README.md line 117: @acme/db changed to @morse-bot/db",
         "grep -r '@acme' across all source files (*.ts, *.tsx, *.json, *.mjs, *.hbs, *.md, *.css) returns zero results excluding node_modules and pnpm-lock.yaml",
         "Typecheck passes"
       ],
@@ -38,8 +38,8 @@
       "title": "Fix morse-decoder tsconfig to emit dist output",
       "description": "As a developer, I need the morse-decoder package tsconfig to extend compiled-package.json so tsc actually produces declaration files in dist/.",
       "acceptanceCriteria": [
-        "packages/morse-decoder/tsconfig.json: 'extends' changed from '@moris-bot/tsconfig/base.json' to '@moris-bot/tsconfig/compiled-package.json'",
-        "Running 'pnpm --filter @moris-bot/morse-decoder build' produces files in packages/morse-decoder/dist/",
+        "packages/morse-decoder/tsconfig.json: 'extends' changed from '@morse-bot/tsconfig/base.json' to '@morse-bot/tsconfig/compiled-package.json'",
+        "Running 'pnpm --filter @morse-bot/morse-decoder build' produces files in packages/morse-decoder/dist/",
         "packages/morse-decoder/dist/index.d.ts exists after build",
         "Typecheck passes"
       ],
@@ -54,7 +54,7 @@
       "acceptanceCriteria": [
         "packages/api/src/router/session.ts delete mutation: where clause uses and(eq(DecodedSession.id, input), eq(DecodedSession.userId, ctx.session.user.id))",
         "packages/api/src/router/session.ts getById query: where clause uses and(eq(DecodedSession.id, input.id), eq(DecodedSession.userId, ctx.session.user.id))",
-        "'and' imported from @moris-bot/db or drizzle-orm",
+        "'and' imported from @morse-bot/db or drizzle-orm",
         "Typecheck passes"
       ],
       "priority": 4,

@@ -1,12 +1,12 @@
 ## 2026-03-14 - US-010
 - Created apps/nextjs/src/app/_components/signal-stats.tsx: 4-stat display (signal dBFS, frequency Hz, SNR dB, speed WPM)
-- Uses @moris-bot/ui/separator (vertical) between stat items; StatItem subcomponent for label+value layout
+- Uses @morse-bot/ui/separator (vertical) between stat items; StatItem subcomponent for label+value layout
 - isFinite() guard to display "— dBFS" / "— dB" when values are -Infinity/non-finite (e.g. before recording starts)
 - Updated DecoderPanel to import SignalStats and pass stats from useMorseDecoder()
 - Typecheck passed (16/16 tasks, 15 cached)
 - Browser verification: manual verification needed (no browser tool available)
 - **Learnings for future iterations:**
-  - @moris-bot/ui/separator supports `orientation="vertical"` with explicit `className="h-8"` for fixed height
+  - @morse-bot/ui/separator supports `orientation="vertical"` with explicit `className="h-8"` for fixed height
   - Use `isFinite()` for -Infinity guard on dBFS/dB values before calling .toFixed()
   - tabular-nums class keeps number widths consistent as values update
 ---
@@ -56,8 +56,8 @@
 - This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
 - sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
 - pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
-- Package scope is @moris-bot/ (was @acme/ in the t3-turbo template).
-- Root package.json name is "moris-bot".
+- Package scope is @morse-bot/ (was @acme/ in the t3-turbo template).
+- Root package.json name is "morse-bot".
 - The `public/` directory in apps/nextjs must be excluded from tsconfig.json to avoid TS errors on plain JS worklet files.
 
 # Ralph Progress Log
@@ -65,10 +65,10 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
 ---
 
 ## 2026-03-14 - US-001
-- Renamed all @acme/ references to @moris-bot/ across all files
-- Updated root package.json name from create-t3-turbo to moris-bot
-- Updated turbo/generators/config.ts description from "Acme Monorepo" to "Moris Bot Monorepo"
-- Updated apps/nextjs/src/app/layout.tsx metadata titles/descriptions/URLs from "Create T3 Turbo" to "Moris Bot"
+- Renamed all @acme/ references to @morse-bot/ across all files
+- Updated root package.json name from create-t3-turbo to morse-bot
+- Updated turbo/generators/config.ts description from "Acme Monorepo" to "morse Bot Monorepo"
+- Updated apps/nextjs/src/app/layout.tsx metadata titles/descriptions/URLs from "Create T3 Turbo" to "morse Bot"
 - Fixed alphabetical ordering in packages/auth/package.json and apps/tanstack-start/package.json (required by sherif)
 - Deleted and regenerated pnpm-lock.yaml via pnpm install
 - Typecheck passed (14/14 tasks)
@@ -106,9 +106,9 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
 ---
 
 ## 2026-03-14 - US-002
-- Created packages/morse-decoder with name @moris-bot/morse-decoder
+- Created packages/morse-decoder with name @morse-bot/morse-decoder
 - package.json follows existing validators pattern: "type": "module", exports with types+default, no runtime dependencies
-- tsconfig.json extends @moris-bot/tsconfig/base.json (not compiled-package.json as PRD specified base.json)
+- tsconfig.json extends @morse-bot/tsconfig/base.json (not compiled-package.json as PRD specified base.json)
 - eslint.config.ts mirrors packages/validators/eslint.config.ts (baseConfig only, no react)
 - src/types.ts exports: MorseElement, MorseGap, GoertzelResult, DecoderConfig, DecoderEvents, DecoderStats
 - src/constants.ts exports: DEFAULT_CONFIG, TIMING_RATIOS, ditDurationMs()
@@ -138,7 +138,7 @@ Started: Sat Mar 14 08:55:18 PM MST 2026
 ## 2026-03-14 - US-006
 - Created apps/nextjs/public/audio-worklet/sample-forwarder.js: minimal AudioWorkletProcessor that forwards Float32Array input samples via this.port.postMessage()
 - Created apps/nextjs/src/hooks/use-audio-input.ts: useAudioInput hook with startRecording/stopRecording, isRecording/error state, onSamples callback ref pattern
-- Added @moris-bot/morse-decoder to apps/nextjs/package.json dependencies and next.config.js transpilePackages
+- Added @morse-bot/morse-decoder to apps/nextjs/package.json dependencies and next.config.js transpilePackages
 - Added "public" to tsconfig.json exclude to prevent TS errors on plain JS worklet file
 - Typecheck passed (16/16 tasks)
 - **Learnings for future iterations:**

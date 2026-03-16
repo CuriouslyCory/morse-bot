@@ -69,7 +69,7 @@ tooling
       └─ shared tsconfig you can extend from
 ```
 
-> This template uses `@moris-bot` as the package scope throughout the monorepo.
+> This template uses `@morse-bot` as the package scope throughout the monorepo.
 
 ## Quick Start
 
@@ -102,7 +102,7 @@ This project uses [Better Auth](https://www.better-auth.com) for authentication.
 
 ```bash
 # Generate the Better Auth schema
-pnpm --filter @moris-bot/auth generate
+pnpm --filter @morse-bot/auth generate
 ```
 
 This command runs the Better Auth CLI with the following configuration:
@@ -114,7 +114,7 @@ The generation process:
 
 1. Reads the Better Auth configuration from `packages/auth/script/auth-cli.ts`
 2. Generates the appropriate database schema based on your auth setup
-3. Outputs a Drizzle-compatible schema file to the `@moris-bot/db` package
+3. Outputs a Drizzle-compatible schema file to the `@morse-bot/db` package
 
 > **Note**: The `auth-cli.ts` file is placed in the `script/` directory (instead of `src/`) to prevent accidental imports from other parts of the codebase. This file is exclusively for CLI schema generation and should **not** be used directly in your application. For runtime authentication, use the configuration from `packages/auth/src/index.ts`.
 

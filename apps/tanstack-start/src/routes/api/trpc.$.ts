@@ -1,7 +1,6 @@
+import { appRouter, createTRPCContext } from "@morse-bot/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-
-import { appRouter, createTRPCContext } from "@moris-bot/api";
 
 import { auth } from "~/auth/server";
 
