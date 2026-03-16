@@ -1,12 +1,15 @@
-import { DecoderPanel } from "./_components/decoder-panel";
+import { MorseApp } from "./_components/morse-app";
 
 export default function HomePage() {
   return (
     <main className="container py-8">
-      <h1 className="mb-6 text-3xl font-extrabold tracking-tight">
-        Moris Bot — Morse Decoder
-      </h1>
-      <DecoderPanel />
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Morse Code Studio</h1>
+        <p className="text-muted-foreground mt-1">
+          Decode audio signals or encode text into morse code
+        </p>
+      </div>
+      <MorseApp />
     </main>
   );
 }

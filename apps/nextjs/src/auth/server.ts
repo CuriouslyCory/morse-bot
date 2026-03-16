@@ -2,9 +2,8 @@ import "server-only";
 
 import { cache } from "react";
 import { headers } from "next/headers";
-import { nextCookies } from "better-auth/next-js";
-
 import { initAuth } from "@morse-bot/auth";
+import { nextCookies } from "better-auth/next-js";
 
 import { env } from "~/env";
 

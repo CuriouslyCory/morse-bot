@@ -1,7 +1,6 @@
 import type { NextRequest } from "next/server";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-
 import { appRouter, createTRPCContext } from "@morse-bot/api";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 import { auth } from "~/auth/server";
 

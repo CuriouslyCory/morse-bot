@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "dev-browser": {
+      "source": "SawyerHood/dev-browser",
+      "sourceType": "github",
+      "computedHash": "fa7eafb147f195fe4f416ab0d2ea3f805b6ee04dc0738a6c73ad22a687d41bd1"
+    },
     "prd": {
       "source": "CuriouslyCory/skills",
       "sourceType": "github",

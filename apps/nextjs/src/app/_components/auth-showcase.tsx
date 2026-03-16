@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-
 import { Button } from "@morse-bot/ui/button";
 
 import { auth, getSession } from "~/auth/server";

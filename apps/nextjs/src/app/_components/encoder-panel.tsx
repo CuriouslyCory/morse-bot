@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 
 import { Button } from "@morse-bot/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@morse-bot/ui/card";
 import { Label } from "@morse-bot/ui/label";
 
 import { useMorsePlayer } from "~/hooks/use-morse-player";
@@ -40,70 +41,82 @@ export function EncoderPanel({
   const chars = [...text];
 
   return (
-    <div className="flex flex-col gap-3 rounded border p-3">
-      <div className="flex items-center justify-between">
-        <Label className="font-semibold">Text to Morse</Label>
-        <div className="flex items-center gap-2">
-          <Label htmlFor="encoder-wpm" className="text-xs">
-            WPM
-          </Label>
-          <select
-            id="encoder-wpm"
-            value={playWpm}
-            onChange={handleWpmChange}
-            disabled={isPlaying}
-            className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-7 rounded-md border px-2 text-xs shadow-xs outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
-          >
-            {WPM_PRESETS.map((preset) => (
-              <option key={preset} value={preset}>
-                {preset}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        disabled={isPlaying}
-        placeholder="Type text to encode as morse code…"
-        rows={3}
-        className="bg-background focus-visible:ring-ring min-h-16 rounded-md border px-3 py-2 font-mono text-sm shadow-xs outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
-      />
-
-      {/* Character highlight display — shown while playing */}
-      {isPlaying && chars.length > 0 && (
-        <div className="bg-muted rounded border px-3 py-2 font-mono text-sm leading-relaxed break-all">
-          {chars.map((char, i) => (
-            <span
-              key={i}
-              className={
-                i === currentCharIndex
-                  ? "bg-primary text-primary-foreground rounded px-0.5"
-                  : ""
-              }
+    <div className="flex flex-col gap-6 pt-4">
+      <Card>
+        <CardHeader className="flex-row items-center justify-between">
+          <CardTitle>Text to Morse</CardTitle>
+          <div className="flex items-center gap-3">
+            <Label htmlFor="encoder-wpm" className="text-muted-foreground text-xs">
+              Speed
+            </Label>
+            <select
+              id="encoder-wpm"
+              value={playWpm}
+              onChange={handleWpmChange}
+              disabled={isPlaying}
+              className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 h-8 rounded-lg border px-3 text-xs shadow-xs outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50"
             >
-              {char}
+              {WPM_PRESETS.map((preset) => (
+                <option key={preset} value={preset}>
+                  {preset} WPM
+                </option>
+              ))}
+            </select>
+            <span className="text-muted-foreground font-mono text-xs">
+              {frequency} Hz
             </span>
-          ))}
-        </div>
-      )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            disabled={isPlaying}
+            placeholder="Type text to encode as morse code..."
+            rows={4}
+            className="border-input bg-background focus-visible:ring-ring min-h-24 w-full rounded-lg border px-4 py-3 font-mono text-sm shadow-xs outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
+          />
 
-      <div className="flex gap-2">
-        {isPlaying ? (
-          <Button variant="outline" size="sm" onClick={stop}>
-            Stop
-          </Button>
-        ) : (
-          <Button size="sm" onClick={handlePlay} disabled={!text.trim()}>
-            Play
-          </Button>
-        )}
-        <span className="text-muted-foreground self-center font-mono text-xs">
-          {frequency} Hz
-        </span>
-      </div>
+          {isPlaying && chars.length > 0 && (
+            <div className="bg-muted mt-4 rounded-lg p-4 font-mono text-sm leading-relaxed break-all">
+              {chars.map((char, i) => (
+                <span
+                  key={i}
+                  className={
+                    i === currentCharIndex
+                      ? "bg-primary text-primary-foreground rounded px-0.5"
+                      : ""
+                  }
+                >
+                  {char}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-4 flex gap-3">
+            {isPlaying ? (
+              <Button
+                variant="destructive"
+                size="lg"
+                onClick={stop}
+                className="rounded-full px-8"
+              >
+                Stop
+              </Button>
+            ) : (
+              <Button
+                size="lg"
+                onClick={handlePlay}
+                disabled={!text.trim()}
+                className="rounded-full px-8"
+              >
+                Play
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -7,11 +7,10 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import type { Auth } from "@morse-bot/auth";
+import { db } from "@morse-bot/db/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { z, ZodError } from "zod/v4";
-
-import { db } from "@morse-bot/db/client";
 
 /**
  * 1. CONTEXT

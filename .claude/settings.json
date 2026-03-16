@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /home/curiouslycory/workspace/active-personal/moris-bot*)",
+      "Bash(find /home/curiouslycory/workspace/active-personal/morse-bot*)",
       "Bash(find:*)",
       "Bash(gh auth:*)",
       "Bash(gh pr view *)",
@@ -10,8 +10,8 @@
       "Bash(git ls-files *)",
       "Bash(git pull:*)",
       "Bash(grep:*)",
-      "Bash(ls /home/curiouslycory/workspace/active-personal/moris-bot*)",
-      "Bash(ls -la /home/curiouslycory/workspace/active-personal/moris-bot*)",
+      "Bash(ls /home/curiouslycory/workspace/active-personal/morse-bot*)",
+      "Bash(ls -la /home/curiouslycory/workspace/active-personal/morse-bot*)",
       "Bash(npx prisma generate)",
       "Bash(pnpm build)",
       "Bash(pnpm check:*)",
@@ -28,11 +28,13 @@
       "WebSearch",
       "Bash(pnpm --filter @morse-bot/morse-decoder test)",
       "Bash(pnpm test:*)",
-      "Bash(pnpm format:*)"
+      "Bash(pnpm format:*)",
+      "WebFetch(domain:v0.app)",
+      "Bash(pnpm typecheck:*)"
     ],
     "additionalDirectories": [
-      "/home/curiouslycory/workspace/active-personal/moris-bot",
-      "/home/curiouslycory/workspace/active-personal/moris-bot/.claude/skills/ralph/scripts/"
+      "/home/curiouslycory/workspace/active-personal/morse-bot",
+      "/home/curiouslycory/workspace/active-personal/morse-bot/.claude/skills/ralph/scripts/"
     ]
   }
 }

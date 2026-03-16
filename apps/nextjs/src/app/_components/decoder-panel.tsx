@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import { Button } from "@morse-bot/ui/button";
+import { Card, CardContent } from "@morse-bot/ui/card";
 import { toast } from "@morse-bot/ui/toast";
 
 import { authClient } from "~/auth/client";
@@ -15,11 +16,18 @@ import { useMorseDecoder } from "~/hooks/use-morse-decoder";
 import { useTRPC } from "~/trpc/react";
 import { DecodedText } from "./decoded-text";
 import { DecoderControls } from "./decoder-controls";
-import { EncoderPanel } from "./encoder-panel";
 import { SignalStats } from "./signal-stats";
 import { Spectrogram } from "./spectrogram";
 
-export function DecoderPanel() {
+interface DecoderPanelProps {
+  onFrequencyChange?: (freq: number) => void;
+  onWpmChange?: (wpm: number) => void;
+}
+
+export function DecoderPanel({
+  onFrequencyChange,
+  onWpmChange,
+}: DecoderPanelProps) {
   const {
     decodedText,
     currentElements,
@@ -29,14 +37,11 @@ export function DecoderPanel() {
     updateConfig,
   } = useMorseDecoder();
 
-  // Track frequency and wpm so the encoder panel can mirror decoder settings
   const [encoderFrequency, setEncoderFrequency] = useState(
     DEFAULT_CONFIG.targetFrequency,
   );
   const [encoderWpm, setEncoderWpm] = useState(DEFAULT_CONFIG.wpm);
-  const [showEncoder, setShowEncoder] = useState(false);
 
-  // Track session timing and source for save functionality
   const sessionStartRef = useRef<number | null>(null);
   const [lastSource, setLastSource] = useState<"mic" | "file">("mic");
 
@@ -58,11 +63,16 @@ export function DecoderPanel() {
   const handleUpdateConfig = useCallback(
     (partial: Partial<DecoderConfig>) => {
       updateConfig(partial);
-      if (partial.targetFrequency !== undefined)
+      if (partial.targetFrequency !== undefined) {
         setEncoderFrequency(partial.targetFrequency);
-      if (partial.wpm !== undefined) setEncoderWpm(partial.wpm);
+        onFrequencyChange?.(partial.targetFrequency);
+      }
+      if (partial.wpm !== undefined) {
+        setEncoderWpm(partial.wpm);
+        onWpmChange?.(partial.wpm);
+      }
     },
-    [updateConfig],
+    [updateConfig, onFrequencyChange, onWpmChange],
   );
 
   const onSamplesFromMic = useCallback(
@@ -87,7 +97,6 @@ export function DecoderPanel() {
     stopRecording,
   } = useAudioInput({ onSamples: onSamplesFromMic });
 
-  // Sync actual AudioContext sample rate to decoder when recording starts
   useEffect(() => {
     if (actualSampleRate !== null) {
       updateConfig({ sampleRate: actualSampleRate });
@@ -143,29 +152,39 @@ export function DecoderPanel() {
   const isActive = isRecording || isProcessing;
 
   return (
-    <div className="flex flex-col gap-4 p-4">
-      <DecoderControls
-        onUpdateConfig={handleUpdateConfig}
-        onReset={reset}
-        isDisabled={isActive}
-      />
+    <div className="flex flex-col gap-6 pt-4">
+      {/* Controls */}
+      <Card>
+        <CardContent className="pt-6">
+          <DecoderControls
+            onUpdateConfig={handleUpdateConfig}
+            onReset={reset}
+            isDisabled={isActive}
+          />
+        </CardContent>
+      </Card>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <button
+      {/* Action Bar */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Button
           onClick={isRecording ? stopRecording : () => void handleStartMic()}
           disabled={isProcessing}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded px-4 py-2 font-semibold disabled:opacity-50"
+          variant={isRecording ? "destructive" : "default"}
+          size="lg"
+          className="rounded-full px-6"
         >
           {isRecording ? "Stop Mic" : "Start Mic"}
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={() => fileInputRef.current?.click()}
           disabled={isActive}
-          className="hover:bg-muted rounded border px-4 py-2 font-semibold disabled:opacity-50"
+          variant="outline"
+          size="lg"
+          className="rounded-full px-6"
         >
-          Open File…
-        </button>
+          Open File...
+        </Button>
         <input
           ref={fileInputRef}
           type="file"
@@ -175,36 +194,44 @@ export function DecoderPanel() {
         />
 
         {isProcessing && (
-          <button
+          <Button
             onClick={stopProcessing}
-            className="border-destructive text-destructive hover:bg-destructive/10 rounded border px-4 py-2 font-semibold"
+            variant="destructive"
+            size="lg"
+            className="rounded-full px-6"
           >
             Stop
-          </button>
+          </Button>
         )}
 
         {error && <span className="text-destructive text-sm">{error}</span>}
       </div>
 
+      {/* Progress bar */}
       {isProcessing && (
-        <div className="bg-muted h-2 w-full overflow-hidden rounded">
+        <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
           <div
-            className="bg-primary h-full transition-all"
+            className="bg-primary h-full rounded-full transition-all"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
       )}
 
-      {/* Middle section: spectrogram (left) + stats (right) on desktop, stacked on tablet */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <div className="min-w-0 flex-1">
-          <Spectrogram stats={stats} />
-        </div>
-        <div className="lg:w-56 lg:shrink-0">
-          <SignalStats stats={stats} />
-        </div>
-      </div>
+      {/* Visualization */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+            <div className="min-w-0 flex-1">
+              <Spectrogram stats={stats} />
+            </div>
+            <div className="lg:w-60 lg:shrink-0">
+              <SignalStats stats={stats} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* Decoded output */}
       <DecodedText
         decodedText={decodedText}
         currentElements={currentElements}
@@ -215,12 +242,12 @@ export function DecoderPanel() {
       <div className="flex items-center gap-3">
         {isAuthenticated ? (
           <Button
-            variant="outline"
-            size="sm"
+            variant="secondary"
             disabled={!decodedText.trim() || saveSession.isPending}
             onClick={handleSave}
+            className="rounded-full"
           >
-            {saveSession.isPending ? "Saving…" : "Save Session"}
+            {saveSession.isPending ? "Saving..." : "Save Session"}
           </Button>
         ) : (
           <button
@@ -234,21 +261,6 @@ export function DecoderPanel() {
           >
             Sign in to save sessions
           </button>
-        )}
-      </div>
-
-      {/* Encoder section */}
-      <div>
-        <button
-          onClick={() => setShowEncoder((v) => !v)}
-          className="text-muted-foreground hover:text-foreground text-sm"
-        >
-          {showEncoder ? "▲ Hide encoder" : "▼ Show encoder"}
-        </button>
-        {showEncoder && (
-          <div className="mt-2">
-            <EncoderPanel frequency={encoderFrequency} wpm={encoderWpm} />
-          </div>
         )}
       </div>
     </div>

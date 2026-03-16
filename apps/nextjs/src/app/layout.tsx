@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-
 import { cn } from "@morse-bot/ui";
 import { ThemeProvider, ThemeToggle } from "@morse-bot/ui/theme";
 import { Toaster } from "@morse-bot/ui/toast";
@@ -15,16 +14,16 @@ import "~/app/styles.css";
 export const metadata: Metadata = {
   metadataBase: new URL(
     env.VERCEL_ENV === "production"
-      ? "https://moris-bot.vercel.app"
+      ? "https://morse-bot.vercel.app"
       : "http://localhost:3000",
   ),
-  title: "Moris Bot",
+  title: "morse Bot",
   description: "Real-time morse code decoder web app",
   openGraph: {
-    title: "Moris Bot",
+    title: "morse Bot",
     description: "Real-time morse code decoder web app",
-    url: "https://moris-bot.vercel.app",
-    siteName: "Moris Bot",
+    url: "https://morse-bot.vercel.app",
+    siteName: "morse Bot",
   },
   twitter: {
     card: "summary_large_image",
@@ -62,20 +61,34 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider>
-          {session && (
-            <nav className="border-b px-4 py-2">
-              <Link
-                href="/sessions"
-                className="text-muted-foreground text-sm underline-offset-4 hover:underline"
-              >
-                My Sessions
-              </Link>
-            </nav>
-          )}
+          <header className="border-b">
+            <div className="container flex h-14 items-center justify-between">
+              <div className="flex items-center gap-6">
+                <Link href="/" className="flex items-center gap-2">
+                  <span className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg font-mono text-sm font-bold">
+                    .-
+                  </span>
+                  <span className="text-lg font-bold tracking-tight">
+                    morse Bot
+                  </span>
+                </Link>
+                {session && (
+                  <nav>
+                    <Link
+                      href="/sessions"
+                      className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
+                    >
+                      My Sessions
+                    </Link>
+                  </nav>
+                )}
+              </div>
+              <div className="flex items-center gap-3">
+                <ThemeToggle />
+              </div>
+            </div>
+          </header>
           <TRPCReactProvider>{props.children}</TRPCReactProvider>
-          <div className="absolute right-4 bottom-4">
-            <ThemeToggle />
-          </div>
           <Toaster />
         </ThemeProvider>
       </body>
