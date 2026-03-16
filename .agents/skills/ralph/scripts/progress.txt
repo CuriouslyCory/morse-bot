@@ -68,3 +68,16 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - Define header components outside the layout function to use hooks
   - authClient.signIn.social takes { provider, callbackURL } options
 ---
+
+## 2026-03-15 - US-005
+- Created apps/expo/src/utils/wav-parser.ts with parseWav(buffer: ArrayBuffer) function
+- Ported directly from packages/morse-decoder/src/__tests__/helpers/read-wav.ts
+- Main difference: accepts ArrayBuffer instead of file path (no node:fs dependency)
+- Returns WavData: { samples: Float32Array, sampleRate, channels, bitsPerSample }
+- Supports 16-bit and 32-bit PCM, extracts first channel, normalizes to [-1, 1]
+- Throws descriptive errors for all invalid WAV conditions
+- Files changed: apps/expo/src/utils/wav-parser.ts (new)
+- **Learnings for future iterations:**
+  - React Native has DataView globally available (same Web API)
+  - Pure DataView-based parsing works identically in RN and Node
+---

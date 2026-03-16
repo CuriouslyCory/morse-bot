@@ -83,7 +83,7 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "The existing read-wav.ts in the test helpers uses DataView-based RIFF/WAV parsing. Port the parsing logic but accept ArrayBuffer instead of file path. Do NOT use .js extensions in imports."
     },
     {
