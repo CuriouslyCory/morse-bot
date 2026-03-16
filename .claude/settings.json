@@ -26,7 +26,7 @@
       "WebFetch(domain:platejs.org)",
       "WebFetch(domain:www.npmjs.com)",
       "WebSearch",
-      "Bash(pnpm --filter @moris-bot/morse-decoder test)",
+      "Bash(pnpm --filter @morse-bot/morse-decoder test)",
       "Bash(pnpm test:*)"
     ],
     "additionalDirectories": [

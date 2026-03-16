@@ -3,7 +3,7 @@ import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 
-import type { AppRouter } from "@moris-bot/api";
+import type { AppRouter } from "@morse-bot/api";
 
 import { authClient } from "./auth";
 import { getBaseUrl } from "./base-url";
@@ -47,4 +47,4 @@ export const trpc = createTRPCOptionsProxy<AppRouter>({
   queryClient,
 });
 
-export type { RouterInputs, RouterOutputs } from "@moris-bot/api";
+export type { RouterInputs, RouterOutputs } from "@morse-bot/api";

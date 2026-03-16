@@ -4,7 +4,7 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import { nextCookies } from "better-auth/next-js";
 
-import { initAuth } from "@moris-bot/auth";
+import { initAuth } from "@morse-bot/auth";
 
 import { env } from "~/env";
 

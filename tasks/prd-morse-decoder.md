@@ -25,7 +25,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 **Description:** As a developer, I need the monorepo packages renamed from `@acme` to `@moris-bot` so the project has its own identity before building features.
 
 **Acceptance Criteria:**
-- [ ] All `@acme/` references replaced with `@moris-bot/` across all files (package.json, tsconfig, eslint configs, source imports, CSS imports, generator templates)
+- [ ] All `@acme/` references replaced with `@morse-bot/` across all files (package.json, tsconfig, eslint configs, source imports, CSS imports, generator templates)
 - [ ] Root package.json name updated from `create-t3-turbo` to `moris-bot`
 - [ ] App metadata (titles, descriptions) updated from "Create T3 Turbo" to "Moris Bot"
 - [ ] `pnpm-lock.yaml` regenerated via `pnpm install`
@@ -36,7 +36,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 **Description:** As a developer, I need a platform-agnostic morse decoding library so the core algorithms can be shared between web and mobile apps.
 
 **Acceptance Criteria:**
-- [ ] New package at `packages/morse-decoder` with name `@moris-bot/morse-decoder`
+- [ ] New package at `packages/morse-decoder` with name `@morse-bot/morse-decoder`
 - [ ] Goertzel single-frequency detector implemented (accepts Float32Array samples, returns magnitude)
 - [ ] Envelope detector implemented (magnitude stream to binary on/off state with hysteresis)
 - [ ] Timing analyzer implemented (classifies on/off durations as dit/dah/element-gap/character-gap/word-gap)
@@ -65,7 +65,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 - [ ] Audio captured via Web Audio API `getUserMedia`
 - [ ] AudioWorklet processor forwards sample chunks to main thread via MessagePort
 - [ ] Worklet file served from `public/audio-worklet/sample-forwarder.js`
-- [ ] Audio samples fed into `@moris-bot/morse-decoder` `processSamples()` method
+- [ ] Audio samples fed into `@morse-bot/morse-decoder` `processSamples()` method
 - [ ] Graceful error message shown if microphone permission is denied
 - [ ] Graceful error message shown if browser does not support AudioWorklet
 - [ ] Start/Stop button toggles recording state
@@ -78,7 +78,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 **Acceptance Criteria:**
 - [ ] File upload input accepts common audio formats (.wav, .mp3, .ogg, .m4a)
 - [ ] Uploaded file decoded via Web Audio API `decodeAudioData`
-- [ ] Decoded samples fed into `@moris-bot/morse-decoder` `processSamples()` in chunks
+- [ ] Decoded samples fed into `@morse-bot/morse-decoder` `processSamples()` in chunks
 - [ ] Progress indicator shown during file processing
 - [ ] Decoded text displayed the same way as live decoding
 - [ ] User can stop/cancel file processing
@@ -131,7 +131,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 - [ ] Adaptive mode toggle (on by default)
 - [ ] Detection threshold adjustment
 - [ ] Clear/reset button to clear decoded text and reset decoder state
-- [ ] Controls built using existing `@moris-bot/ui` components (Button, Input, Label)
+- [ ] Controls built using existing `@morse-bot/ui` components (Button, Input, Label)
 - [ ] Typecheck passes
 - [ ] Verify in browser using dev-browser skill
 
@@ -216,7 +216,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 - FR-14: The system must allow authenticated users to view, review, and export saved sessions as .txt files
 - FR-15: The system must allow authenticated users to delete saved sessions
 - FR-16: The decoder must be fully functional without authentication (save/export requires auth)
-- FR-17: The shared `@moris-bot/morse-decoder` package must have zero platform-specific dependencies
+- FR-17: The shared `@morse-bot/morse-decoder` package must have zero platform-specific dependencies
 
 ## Non-Goals
 
@@ -232,7 +232,7 @@ The project also includes renaming the monorepo package scope from `@acme` to `@
 ## Design Considerations
 
 - The decoder UI should evoke a radio/signal processing aesthetic (dark theme preferred, monospace text, signal-style visualizations)
-- Reuse existing `@moris-bot/ui` components (Button, Input, Label, Separator, Theme, Toast) wherever possible
+- Reuse existing `@morse-bot/ui` components (Button, Input, Label, Separator, Theme, Toast) wherever possible
 - The spectrogram is custom canvas rendering, not a UI library component
 - Layout should be information-dense but not cluttered, similar to the "Morse Expert" screenshot
 

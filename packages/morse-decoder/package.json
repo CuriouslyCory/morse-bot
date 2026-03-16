@@ -1,5 +1,5 @@
 {
-  "name": "@moris-bot/morse-decoder",
+  "name": "@morse-bot/morse-decoder",
   "private": true,
   "type": "module",
   "exports": {
@@ -19,13 +19,13 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "devDependencies": {
-    "@moris-bot/eslint-config": "workspace:*",
-    "@moris-bot/prettier-config": "workspace:*",
-    "@moris-bot/tsconfig": "workspace:*",
+    "@morse-bot/eslint-config": "workspace:*",
+    "@morse-bot/prettier-config": "workspace:*",
+    "@morse-bot/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:",
     "vitest": "^3.2.1"
   },
-  "prettier": "@moris-bot/prettier-config"
+  "prettier": "@morse-bot/prettier-config"
 }

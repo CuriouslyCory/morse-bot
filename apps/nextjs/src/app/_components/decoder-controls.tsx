@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { DEFAULT_CONFIG } from "@moris-bot/morse-decoder";
-import type { DecoderConfig } from "@moris-bot/morse-decoder";
-import { Button } from "@moris-bot/ui/button";
-import { Input } from "@moris-bot/ui/input";
-import { Label } from "@moris-bot/ui/label";
+import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
+import type { DecoderConfig } from "@morse-bot/morse-decoder";
+import { Button } from "@morse-bot/ui/button";
+import { Input } from "@morse-bot/ui/input";
+import { Label } from "@morse-bot/ui/label";
 
 const WPM_PRESETS = [5, 10, 13, 15, 20, 25, 30] as const;
 

@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import { DEFAULT_CONFIG } from "@moris-bot/morse-decoder";
-import type { DecoderConfig } from "@moris-bot/morse-decoder";
-import { Button } from "@moris-bot/ui/button";
-import { toast } from "@moris-bot/ui/toast";
+import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
+import type { DecoderConfig } from "@morse-bot/morse-decoder";
+import { Button } from "@morse-bot/ui/button";
+import { toast } from "@morse-bot/ui/toast";
 
 import { authClient } from "~/auth/client";
 import { useAudioFile } from "~/hooks/use-audio-file";

@@ -18,16 +18,16 @@ A comprehensive code review of the moris-bot project uncovered 13 issues across 
 **Description:** As a developer, I need the turbo generator templates updated so that new packages scaffolded by `turbo generate` use the `@moris-bot` scope.
 
 **Acceptance Criteria:**
-- [ ] `turbo/generators/templates/package.json.hbs` lines 2, 18, 19, 20, 25: all `@acme/` replaced with `@moris-bot/`
-- [ ] `turbo/generators/templates/eslint.config.ts.hbs` line 3: `@acme/eslint-config/base` changed to `@moris-bot/eslint-config/base`
-- [ ] `turbo/generators/templates/tsconfig.json.hbs` line 2: `@acme/tsconfig/compiled-package.json` changed to `@moris-bot/tsconfig/compiled-package.json`
+- [ ] `turbo/generators/templates/package.json.hbs` lines 2, 18, 19, 20, 25: all `@acme/` replaced with `@morse-bot/`
+- [ ] `turbo/generators/templates/eslint.config.ts.hbs` line 3: `@acme/eslint-config/base` changed to `@morse-bot/eslint-config/base`
+- [ ] `turbo/generators/templates/tsconfig.json.hbs` line 2: `@acme/tsconfig/compiled-package.json` changed to `@morse-bot/tsconfig/compiled-package.json`
 - [ ] Typecheck passes
 
 ### US-002: Fix incomplete @acme rename in Expo postcss config
 **Description:** As a developer, I need the Expo app's PostCSS config to reference the renamed tailwind package so the build doesn't break.
 
 **Acceptance Criteria:**
-- [ ] `apps/expo/postcss.config.mjs` line 1: `@acme/tailwind-config` changed to `@moris-bot/tailwind-config`
+- [ ] `apps/expo/postcss.config.mjs` line 1: `@acme/tailwind-config` changed to `@morse-bot/tailwind-config`
 - [ ] Typecheck passes
 
 ### US-003: Update README to remove stale @acme references
@@ -35,16 +35,16 @@ A comprehensive code review of the moris-bot project uncovered 13 issues across 
 
 **Acceptance Criteria:**
 - [ ] `README.md` line 72: remove or update the "rename @acme" paragraph (rename is already done)
-- [ ] `README.md` line 105: `@acme/auth` changed to `@moris-bot/auth`
-- [ ] `README.md` line 117: `@acme/db` changed to `@moris-bot/db`
+- [ ] `README.md` line 105: `@acme/auth` changed to `@morse-bot/auth`
+- [ ] `README.md` line 117: `@acme/db` changed to `@morse-bot/db`
 - [ ] `grep -r "@acme" --include="*.ts" --include="*.tsx" --include="*.json" --include="*.mjs" --include="*.hbs" --include="*.md" --include="*.css" .` returns zero results (excluding node_modules and pnpm-lock.yaml)
 
 ### US-004: Fix morse-decoder tsconfig to emit dist output
 **Description:** As a developer, I need the morse-decoder package's TypeScript build to actually produce declaration files in `dist/` so consuming packages can resolve the types export.
 
 **Acceptance Criteria:**
-- [ ] `packages/morse-decoder/tsconfig.json` line 2: changed from `@moris-bot/tsconfig/base.json` to `@moris-bot/tsconfig/compiled-package.json`
-- [ ] Running `pnpm --filter @moris-bot/morse-decoder build` produces files in `packages/morse-decoder/dist/`
+- [ ] `packages/morse-decoder/tsconfig.json` line 2: changed from `@morse-bot/tsconfig/base.json` to `@morse-bot/tsconfig/compiled-package.json`
+- [ ] Running `pnpm --filter @morse-bot/morse-decoder build` produces files in `packages/morse-decoder/dist/`
 - [ ] `packages/morse-decoder/dist/index.d.ts` exists after build
 - [ ] Typecheck passes
 
@@ -54,7 +54,7 @@ A comprehensive code review of the moris-bot project uncovered 13 issues across 
 **Acceptance Criteria:**
 - [ ] `packages/api/src/router/session.ts` `delete` mutation: where clause changed from `eq(DecodedSession.id, input)` to `and(eq(DecodedSession.id, input), eq(DecodedSession.userId, ctx.session.user.id))`
 - [ ] `packages/api/src/router/session.ts` `getById` query: where clause changed from `eq(DecodedSession.id, input.id)` to `and(eq(DecodedSession.id, input.id), eq(DecodedSession.userId, ctx.session.user.id))`
-- [ ] `and` imported from `@moris-bot/db` (or `drizzle-orm`)
+- [ ] `and` imported from `@morse-bot/db` (or `drizzle-orm`)
 - [ ] Typecheck passes
 
 ### US-006: Fix AudioContext leak on recording setup error
@@ -158,7 +158,7 @@ A comprehensive code review of the moris-bot project uncovered 13 issues across 
 ## Technical Considerations
 
 - The tsconfig fix (US-004) is the most critical — without it, the morse-decoder package produces no build output, which could cascade into import resolution failures in Next.js
-- The IDOR fix (US-005) requires importing `and` from drizzle-orm — verify this is re-exported from `@moris-bot/db` or import directly
+- The IDOR fix (US-005) requires importing `and` from drizzle-orm — verify this is re-exported from `@morse-bot/db` or import directly
 - The Safari sampleRate fix (US-007) changes the `useAudioInput` hook's return type, which will require updating the consuming component (`decoder-panel.tsx`)
 - The morse tree fix (US-009) changes decoder behavior — characters previously decoded as `&` or `$` will now be skipped or show prosign notation
 

@@ -10,8 +10,8 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { z, ZodError } from "zod/v4";
 
-import type { Auth } from "@moris-bot/auth";
-import { db } from "@moris-bot/db/client";
+import type { Auth } from "@morse-bot/auth";
+import { db } from "@morse-bot/db/client";
 
 /**
  * 1. CONTEXT

@@ -1,5 +1,5 @@
 {
-  "extends": "@moris-bot/tsconfig/base.json",
+  "extends": "@morse-bot/tsconfig/base.json",
   "compilerOptions": {
     "lib": ["ES2022", "dom", "dom.iterable"],
     "jsx": "preserve",

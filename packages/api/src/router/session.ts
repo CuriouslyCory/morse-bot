@@ -1,11 +1,11 @@
 import type { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod/v4";
 
-import { and, desc, eq } from "@moris-bot/db";
+import { and, desc, eq } from "@morse-bot/db";
 import {
   CreateDecodedSessionSchema,
   DecodedSession,
-} from "@moris-bot/db/schema";
+} from "@morse-bot/db/schema";
 
 import { protectedProcedure } from "../trpc";
 

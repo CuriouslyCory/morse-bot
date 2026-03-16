@@ -2,8 +2,8 @@
 
 import { useCallback, useState } from "react";
 
-import { Button } from "@moris-bot/ui/button";
-import { Label } from "@moris-bot/ui/label";
+import { Button } from "@morse-bot/ui/button";
+import { Label } from "@morse-bot/ui/label";
 
 import { useMorsePlayer } from "~/hooks/use-morse-player";
 

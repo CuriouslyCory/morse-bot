@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import type { DecoderStats } from "@moris-bot/morse-decoder";
+import type { DecoderStats } from "@morse-bot/morse-decoder";
 
 interface SpectrogramProps {
   stats: DecoderStats;

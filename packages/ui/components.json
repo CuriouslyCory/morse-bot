@@ -10,7 +10,7 @@
     "cssVariables": true
   },
   "aliases": {
-    "utils": "@moris-bot/ui",
+    "utils": "@morse-bot/ui",
     "components": "src/",
     "ui": "src/"
   }

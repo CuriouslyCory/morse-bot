@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import type { MorseElement } from "@moris-bot/morse-decoder";
+import type { MorseElement } from "@morse-bot/morse-decoder";
 
 interface DecodedTextProps {
   decodedText: string;

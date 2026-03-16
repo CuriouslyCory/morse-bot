@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
-import { Button } from "@moris-bot/ui/button";
-import { toast } from "@moris-bot/ui/toast";
+import { Button } from "@morse-bot/ui/button";
+import { toast } from "@morse-bot/ui/toast";
 
 import { useTRPC } from "~/trpc/react";
 

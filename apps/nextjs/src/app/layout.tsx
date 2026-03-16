@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { cn } from "@moris-bot/ui";
-import { ThemeProvider, ThemeToggle } from "@moris-bot/ui/theme";
-import { Toaster } from "@moris-bot/ui/toast";
+import { cn } from "@morse-bot/ui";
+import { ThemeProvider, ThemeToggle } from "@morse-bot/ui/theme";
+import { Toaster } from "@morse-bot/ui/toast";
 
 import { env } from "~/env";
 import { getSession } from "~/auth/server";

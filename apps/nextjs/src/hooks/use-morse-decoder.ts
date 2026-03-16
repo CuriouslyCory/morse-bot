@@ -7,7 +7,7 @@ import {
   type DecoderConfig,
   type DecoderStats,
   type MorseElement,
-} from "@moris-bot/morse-decoder";
+} from "@morse-bot/morse-decoder";
 
 interface UseMorseDecoderResult {
   decodedText: string;

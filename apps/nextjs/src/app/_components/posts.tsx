@@ -7,19 +7,19 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import type { RouterOutputs } from "@moris-bot/api";
-import { CreatePostSchema } from "@moris-bot/db/schema";
-import { cn } from "@moris-bot/ui";
-import { Button } from "@moris-bot/ui/button";
+import type { RouterOutputs } from "@morse-bot/api";
+import { CreatePostSchema } from "@morse-bot/db/schema";
+import { cn } from "@morse-bot/ui";
+import { Button } from "@morse-bot/ui/button";
 import {
   Field,
   FieldContent,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@moris-bot/ui/field";
-import { Input } from "@moris-bot/ui/input";
-import { toast } from "@moris-bot/ui/toast";
+} from "@morse-bot/ui/field";
+import { Input } from "@morse-bot/ui/input";
+import { toast } from "@morse-bot/ui/toast";
 
 import { useTRPC } from "~/trpc/react";
 

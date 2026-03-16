@@ -1,4 +1,4 @@
-import { cn } from "@moris-bot/ui";
+import { cn } from "@morse-bot/ui";
 
 export function Input({
   className,

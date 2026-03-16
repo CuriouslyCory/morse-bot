@@ -7,8 +7,8 @@ import {
   ditDurationMs,
   getMorseForChar,
   TIMING_RATIOS,
-} from "@moris-bot/morse-decoder";
-import type { MorseElement } from "@moris-bot/morse-decoder";
+} from "@morse-bot/morse-decoder";
+import type { MorseElement } from "@morse-bot/morse-decoder";
 
 interface CharTiming {
   charIndex: number;

@@ -1,5 +1,5 @@
 {
-  "name": "@moris-bot/api",
+  "name": "@morse-bot/api",
   "private": true,
   "type": "module",
   "exports": {
@@ -18,20 +18,20 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@moris-bot/auth": "workspace:*",
-    "@moris-bot/db": "workspace:*",
-    "@moris-bot/validators": "workspace:*",
+    "@morse-bot/auth": "workspace:*",
+    "@morse-bot/db": "workspace:*",
+    "@morse-bot/validators": "workspace:*",
     "@trpc/server": "catalog:",
     "superjson": "2.2.3",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@moris-bot/eslint-config": "workspace:*",
-    "@moris-bot/prettier-config": "workspace:*",
-    "@moris-bot/tsconfig": "workspace:*",
+    "@morse-bot/eslint-config": "workspace:*",
+    "@morse-bot/prettier-config": "workspace:*",
+    "@morse-bot/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@moris-bot/prettier-config"
+  "prettier": "@morse-bot/prettier-config"
 }

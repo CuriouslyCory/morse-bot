@@ -17,7 +17,7 @@ const config = {
     "<THIRD_PARTY_MODULES>",
     "",
     "<TYPES>^@moris-bot",
-    "^@moris-bot/(.*)$",
+    "^@morse-bot/(.*)$",
     "",
     "<TYPES>^[.|..|~]",
     "^~/",

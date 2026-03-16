@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 
-import { Button } from "@moris-bot/ui/button";
+import { Button } from "@morse-bot/ui/button";
 
 import { authClient } from "~/auth/client";
 
