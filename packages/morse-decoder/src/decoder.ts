@@ -17,7 +17,7 @@ import { createTimingAnalyzer } from "./timing-analyzer";
 function computeGoertzelWindowSize(
   sampleRate: number,
   targetFrequency: number,
-  minCycles: number = 8,
+  minCycles = 8,
 ): number {
   const samplesPerCycle = sampleRate / targetFrequency;
   const minSamples = Math.ceil(minCycles * samplesPerCycle);
@@ -165,8 +165,7 @@ export function createDecoder(
       // Process overlapping windows
       while (sampleBuffer.length >= goertzelWindowSize) {
         const window = sampleBuffer.slice(0, goertzelWindowSize);
-        const windowTimestampMs =
-          (bufferStartSample / cfg.sampleRate) * 1000;
+        const windowTimestampMs = (bufferStartSample / cfg.sampleRate) * 1000;
 
         processGoertzelWindow(window, windowTimestampMs);
 

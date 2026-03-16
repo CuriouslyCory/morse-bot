@@ -2,6 +2,7 @@
 
 import type { DecoderConfig } from "@morse-bot/morse-decoder";
 import { useCallback, useState } from "react";
+
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import { Button } from "@morse-bot/ui/button";
 import { Input } from "@morse-bot/ui/input";

@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 import type { MorseElement } from "@morse-bot/morse-decoder";
+import { useEffect, useRef } from "react";
 
 interface DecodedTextProps {
   decodedText: string;
@@ -34,7 +33,7 @@ export function DecodedText({
   return (
     <div
       ref={containerRef}
-      className="min-h-48 w-full overflow-y-auto rounded border bg-muted p-4 font-mono text-lg dark:bg-zinc-950 dark:text-green-400"
+      className="bg-muted min-h-48 w-full overflow-y-auto rounded border p-4 font-mono text-lg dark:bg-zinc-950 dark:text-green-400"
     >
       {decodedText || inProgress ? (
         <span>

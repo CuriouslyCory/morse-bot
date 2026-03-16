@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 import type { DecoderStats } from "@morse-bot/morse-decoder";
+import { useEffect, useRef } from "react";
 
 interface SpectrogramProps {
   stats: DecoderStats;

@@ -102,5 +102,11 @@ export function useAudioInput({
     setActualSampleRate(null);
   }, []);
 
-  return { isRecording, actualSampleRate, error, startRecording, stopRecording };
+  return {
+    isRecording,
+    actualSampleRate,
+    error,
+    startRecording,
+    stopRecording,
+  };
 }

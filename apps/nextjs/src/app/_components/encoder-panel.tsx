@@ -14,7 +14,10 @@ interface EncoderPanelProps {
   wpm: number;
 }
 
-export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) {
+export function EncoderPanel({
+  frequency,
+  wpm: defaultWpm,
+}: EncoderPanelProps) {
   const [text, setText] = useState("");
   const [playWpm, setPlayWpm] = useState(defaultWpm);
 
@@ -66,18 +69,18 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
         disabled={isPlaying}
         placeholder="Type text to encode as morse code…"
         rows={3}
-        className="min-h-16 rounded-md border bg-background px-3 py-2 font-mono text-sm shadow-xs outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        className="bg-background focus-visible:ring-ring min-h-16 rounded-md border px-3 py-2 font-mono text-sm shadow-xs outline-none focus-visible:ring-1 disabled:pointer-events-none disabled:opacity-50"
       />
 
       {/* Character highlight display — shown while playing */}
       {isPlaying && chars.length > 0 && (
-        <div className="break-all rounded border bg-muted px-3 py-2 font-mono text-sm leading-relaxed">
+        <div className="bg-muted rounded border px-3 py-2 font-mono text-sm leading-relaxed break-all">
           {chars.map((char, i) => (
             <span
               key={i}
               className={
                 i === currentCharIndex
-                  ? "rounded bg-primary px-0.5 text-primary-foreground"
+                  ? "bg-primary text-primary-foreground rounded px-0.5"
                   : ""
               }
             >
@@ -97,7 +100,7 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
             Play
           </Button>
         )}
-        <span className="self-center font-mono text-xs text-muted-foreground">
+        <span className="text-muted-foreground self-center font-mono text-xs">
           {frequency} Hz
         </span>
       </div>

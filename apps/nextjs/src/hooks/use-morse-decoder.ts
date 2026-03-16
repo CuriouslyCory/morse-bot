@@ -6,6 +6,7 @@ import type {
   MorseElement,
 } from "@morse-bot/morse-decoder";
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { createDecoder, DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 
 interface UseMorseDecoderResult {

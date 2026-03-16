@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { getMorseForChar, lookupMorse } from "../morse-tree";
+
 import type { MorseElement } from "../types";
+import { getMorseForChar, lookupMorse } from "../morse-tree";
 
 describe("lookupMorse", () => {
   it("decodes all letters A-Z", () => {
@@ -61,7 +62,9 @@ describe("lookupMorse", () => {
   });
 
   it("returns null for unrecognized sequences", () => {
-    expect(lookupMorse(["dit", "dit", "dit", "dit", "dit", "dit", "dit"])).toBeNull();
+    expect(
+      lookupMorse(["dit", "dit", "dit", "dit", "dit", "dit", "dit"]),
+    ).toBeNull();
     expect(lookupMorse([])).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 "use client";
 
-import { Separator } from "@morse-bot/ui/separator";
 import { type DecoderStats } from "@morse-bot/morse-decoder";
+import { Separator } from "@morse-bot/ui/separator";
 
 interface SignalStatsProps {
   stats: DecoderStats;
@@ -10,7 +10,7 @@ interface SignalStatsProps {
 function StatItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <span className="text-muted-foreground text-xs uppercase tracking-wider">
+      <span className="text-muted-foreground text-xs tracking-wider uppercase">
         {label}
       </span>
       <span className="font-mono text-sm font-semibold tabular-nums dark:text-green-400">
@@ -24,9 +24,7 @@ export function SignalStats({ stats }: SignalStatsProps) {
   const signalDb = isFinite(stats.signalDb)
     ? `${stats.signalDb.toFixed(1)} dBFS`
     : "— dBFS";
-  const snrDb = isFinite(stats.snrDb)
-    ? `${stats.snrDb.toFixed(1)} dB`
-    : "— dB";
+  const snrDb = isFinite(stats.snrDb) ? `${stats.snrDb.toFixed(1)} dB` : "— dB";
   const frequency = `${stats.frequency.toFixed(0)} Hz`;
   const wpm = `${stats.wpm.toFixed(0)} WPM`;
 

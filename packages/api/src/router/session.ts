@@ -37,16 +37,14 @@ export const sessionRouter = {
       });
     }),
 
-  delete: protectedProcedure
-    .input(z.string())
-    .mutation(({ ctx, input }) => {
-      return ctx.db
-        .delete(DecodedSession)
-        .where(
-          and(
-            eq(DecodedSession.id, input),
-            eq(DecodedSession.userId, ctx.session.user.id),
-          ),
-        );
-    }),
+  delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {
+    return ctx.db
+      .delete(DecodedSession)
+      .where(
+        and(
+          eq(DecodedSession.id, input),
+          eq(DecodedSession.userId, ctx.session.user.id),
+        ),
+      );
+  }),
 } satisfies TRPCRouterRecord;

@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { Button } from "@morse-bot/ui/button";
 import { toast } from "@morse-bot/ui/toast";
@@ -73,7 +77,7 @@ export function SessionsList() {
           <div key={session.id} className="rounded-lg border p-4">
             <div className="flex items-start justify-between gap-2">
               <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center gap-3 text-sm">
                   <span>{createdAt}</span>
                   <span>·</span>
                   <span>{formatDuration(session.durationMs)}</span>
@@ -88,8 +92,10 @@ export function SessionsList() {
                 </p>
                 {hasMore && (
                   <button
-                    onClick={() => setExpandedId(isExpanded ? null : session.id)}
-                    className="mt-1 self-start text-xs text-muted-foreground underline-offset-2 hover:underline"
+                    onClick={() =>
+                      setExpandedId(isExpanded ? null : session.id)
+                    }
+                    className="text-muted-foreground mt-1 self-start text-xs underline-offset-2 hover:underline"
                   >
                     {isExpanded ? "Show less" : "Show more"}
                   </button>

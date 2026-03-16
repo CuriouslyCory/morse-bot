@@ -27,7 +27,8 @@
       "WebFetch(domain:www.npmjs.com)",
       "WebSearch",
       "Bash(pnpm --filter @morse-bot/morse-decoder test)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(pnpm format:*)"
     ],
     "additionalDirectories": [
       "/home/curiouslycory/workspace/active-personal/moris-bot",

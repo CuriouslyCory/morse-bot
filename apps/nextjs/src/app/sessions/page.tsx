@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
@@ -18,7 +17,7 @@ export default async function SessionsPage() {
         </h1>
         <Link
           href="/"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          className="text-muted-foreground text-sm underline-offset-4 hover:underline"
         >
           ← Back to decoder
         </Link>

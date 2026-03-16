@@ -13,7 +13,11 @@ export interface WavData {
  */
 export function readWav(filePath: string): WavData {
   const buffer = readFileSync(filePath);
-  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength,
+  );
 
   // Verify RIFF header
   const riff = String.fromCharCode(
@@ -22,7 +26,8 @@ export function readWav(filePath: string): WavData {
     view.getUint8(2),
     view.getUint8(3),
   );
-  if (riff !== "RIFF") throw new Error("Not a valid WAV file: missing RIFF header");
+  if (riff !== "RIFF")
+    throw new Error("Not a valid WAV file: missing RIFF header");
 
   const wave = String.fromCharCode(
     view.getUint8(8),
@@ -30,7 +35,8 @@ export function readWav(filePath: string): WavData {
     view.getUint8(10),
     view.getUint8(11),
   );
-  if (wave !== "WAVE") throw new Error("Not a valid WAV file: missing WAVE format");
+  if (wave !== "WAVE")
+    throw new Error("Not a valid WAV file: missing WAVE format");
 
   // Find fmt and data chunks
   let offset = 12;
@@ -51,7 +57,10 @@ export function readWav(filePath: string): WavData {
 
     if (chunkId === "fmt ") {
       const audioFormat = view.getUint16(offset + 8, true);
-      if (audioFormat !== 1) throw new Error(`Unsupported audio format: ${audioFormat} (only PCM supported)`);
+      if (audioFormat !== 1)
+        throw new Error(
+          `Unsupported audio format: ${audioFormat} (only PCM supported)`,
+        );
       channels = view.getUint16(offset + 10, true);
       sampleRate = view.getUint32(offset + 12, true);
       bitsPerSample = view.getUint16(offset + 22, true);

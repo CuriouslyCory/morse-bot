@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { ditDurationMs } from "../constants";
 import { createTimingAnalyzer } from "../timing-analyzer";
 

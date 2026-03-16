@@ -2,6 +2,7 @@
 
 import type { MorseElement } from "@morse-bot/morse-decoder";
 import { useCallback, useRef, useState } from "react";
+
 import {
   createEncoder,
   ditDurationMs,

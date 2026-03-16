@@ -1,5 +1,6 @@
 "use client";
 
+import type { RouterOutputs } from "@morse-bot/api";
 import { useForm } from "@tanstack/react-form";
 import {
   useMutation,
@@ -7,7 +8,6 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 
-import type { RouterOutputs } from "@morse-bot/api";
 import { CreatePostSchema } from "@morse-bot/db/schema";
 import { cn } from "@morse-bot/ui";
 import { Button } from "@morse-bot/ui/button";

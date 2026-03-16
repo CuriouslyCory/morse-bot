@@ -60,8 +60,7 @@ export function createEnvelopeDetector(config: EnvelopeConfig): {
         noiseFloor = noiseFloor * 0.99 + magnitude * 0.01;
       }
 
-      const snrDb =
-        20 * Math.log10((magnitude + 1e-10) / (noiseFloor + 1e-10));
+      const snrDb = 20 * Math.log10((magnitude + 1e-10) / (noiseFloor + 1e-10));
 
       return {
         toneActive,

@@ -1,7 +1,8 @@
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { createDecoder } from "../decoder";
+
 import type { DecoderConfig, DecoderEvents, MorseElement } from "../types";
+import { createDecoder } from "../decoder";
 import { readWav } from "./helpers/read-wav";
 
 const SAMPLE_AUDIO_DIR = resolve(__dirname, "../../../../sample-audio");
@@ -50,9 +51,10 @@ function similarity(a: string, b: string): number {
   );
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i]![j] = a[i - 1] === b[j - 1]
-        ? dp[i - 1]![j - 1]! + 1
-        : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
+      dp[i]![j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1]![j - 1]! + 1
+          : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
     }
   }
   const lcsLength = dp[m]![n]!;
@@ -99,10 +101,15 @@ function decodeWavFile(
 
     // Process chunk in blockSize sub-chunks (matching decoder expectations)
     const blockSize = config.blockSize ?? 256;
-    for (let blockOffset = 0; blockOffset < chunk.length; blockOffset += blockSize) {
+    for (
+      let blockOffset = 0;
+      blockOffset < chunk.length;
+      blockOffset += blockSize
+    ) {
       const blockEnd = Math.min(blockOffset + blockSize, chunk.length);
       const block = chunk.slice(blockOffset, blockEnd);
-      const blockTimestampMs = timestampMs + (blockOffset / wav.sampleRate) * 1000;
+      const blockTimestampMs =
+        timestampMs + (blockOffset / wav.sampleRate) * 1000;
       decoder.processSamples(block, blockTimestampMs);
     }
   }
@@ -135,8 +142,12 @@ describe("Audio file decoding (adaptive)", () => {
 
         console.log(`\n[${testCase.file}] Decoded: "${result.text}"`);
         console.log(`[${testCase.file}] Expected: "${testCase.expectedText}"`);
-        console.log(`[${testCase.file}] Characters decoded: ${result.characters.length}`);
-        console.log(`[${testCase.file}] Elements detected: ${result.elements.length}`);
+        console.log(
+          `[${testCase.file}] Characters decoded: ${result.characters.length}`,
+        );
+        console.log(
+          `[${testCase.file}] Elements detected: ${result.elements.length}`,
+        );
 
         expect(result.text.length).toBeGreaterThan(0);
         expect(result.elements.length).toBeGreaterThan(0);
@@ -153,7 +164,9 @@ describe("Audio file decoding (adaptive)", () => {
         const expected = testCase.expectedText.toUpperCase().trim();
         const sim = similarity(decoded, expected);
 
-        console.log(`\n[${testCase.file}] Similarity: ${(sim * 100).toFixed(1)}%`);
+        console.log(
+          `\n[${testCase.file}] Similarity: ${(sim * 100).toFixed(1)}%`,
+        );
         console.log(`[${testCase.file}] Decoded:  "${decoded}"`);
         console.log(`[${testCase.file}] Expected: "${expected}"`);
 
@@ -171,7 +184,9 @@ describe("Audio file decoding (adaptive)", () => {
         const expected = testCase.expectedText.toUpperCase().trim();
         const sim = similarity(decoded, expected);
 
-        console.log(`\n[${testCase.file}] Non-adaptive similarity: ${(sim * 100).toFixed(1)}%`);
+        console.log(
+          `\n[${testCase.file}] Non-adaptive similarity: ${(sim * 100).toFixed(1)}%`,
+        );
         console.log(`[${testCase.file}] Non-adaptive decoded: "${decoded}"`);
       });
     });
@@ -188,7 +203,9 @@ describe("Audio file decoding - exact match targets", () => {
         adaptive: true,
       });
 
-      expect(result.text.toUpperCase().trim()).toBe(testCase.expectedText.toUpperCase().trim());
+      expect(result.text.toUpperCase().trim()).toBe(
+        testCase.expectedText.toUpperCase().trim(),
+      );
     });
   }
 });

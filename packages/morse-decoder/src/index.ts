@@ -12,11 +12,7 @@ export type {
   TimingConfig,
 } from "./types";
 
-export {
-  DEFAULT_CONFIG,
-  ditDurationMs,
-  TIMING_RATIOS,
-} from "./constants";
+export { DEFAULT_CONFIG, ditDurationMs, TIMING_RATIOS } from "./constants";
 
 export { getMorseForChar, lookupMorse } from "./morse-tree";
 
