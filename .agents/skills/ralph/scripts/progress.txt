@@ -23,3 +23,19 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - react-native-audio-api adds a plugin requirement to app.config.ts (handled in US-002)
   - Unmet peer warnings are pre-existing and not blocking
 ---
+
+## 2026-03-15 - US-002
+- Updated apps/expo/app.config.ts:
+  - Changed app name from "expo" to "Morse Code Studio"
+  - Added iOS NSMicrophoneUsageDescription in infoPlist
+  - Added Android RECORD_AUDIO permission in permissions array
+  - Added @shopify/react-native-skia plugin
+  - Added react-native-audio-api plugin
+  - Added react-native-live-audio-stream plugin with microphonePermission config
+- Files changed: apps/expo/app.config.ts
+- **Learnings for future iterations:**
+  - react-native-live-audio-stream plugin accepts microphonePermission config option for iOS
+  - @shopify/react-native-skia and react-native-audio-api are simple string plugins (no config needed)
+  - iOS mic permission uses infoPlist.NSMicrophoneUsageDescription (not a plugin)
+  - Android mic permission uses android.permissions array with "android.permission.RECORD_AUDIO"
+---

@@ -30,7 +30,7 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "Check existing app.config.ts for the current plugin/permission format and follow the same pattern."
     },
     {
