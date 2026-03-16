@@ -2,7 +2,7 @@ import type { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: "expo",
+  name: "Morse Code Studio",
   slug: "expo",
   scheme: "expo",
   version: "0.1.0",
@@ -21,6 +21,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       light: "./assets/icon-light.png",
       dark: "./assets/icon-dark.png",
     },
+    infoPlist: {
+      NSMicrophoneUsageDescription:
+        "Morse Code Studio needs microphone access to decode morse code from audio input.",
+    },
   },
   android: {
     package: "your.bundle.identifier",
@@ -29,6 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       backgroundColor: "#1F104A",
     },
     edgeToEdgeEnabled: true,
+    permissions: ["android.permission.RECORD_AUDIO"],
   },
   // extra: {
   //   eas: {
@@ -54,6 +59,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           backgroundColor: "#18181B",
           image: "./assets/icon-dark.png",
         },
+      },
+    ],
+    "@shopify/react-native-skia",
+    "react-native-audio-api",
+    [
+      "react-native-live-audio-stream",
+      {
+        microphonePermission:
+          "Morse Code Studio needs microphone access to decode morse code from audio input.",
       },
     ],
   ],
