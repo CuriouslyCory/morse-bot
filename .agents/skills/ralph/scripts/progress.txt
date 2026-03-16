@@ -92,3 +92,17 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - requestAnimationFrame/cancelAnimationFrame work identically in React Native
   - @morse-bot/morse-decoder is pure JS, works unchanged in RN
 ---
+
+## 2026-03-15 - US-007
+- Created apps/expo/src/hooks/use-audio-input.ts using react-native-live-audio-stream
+- Configured for 8000 Hz, 1 channel (mono), 16-bit PCM
+- Converts base64 PCM data: atob -> Uint8Array -> DataView -> Int16 -> Float32Array / 32768
+- Android mic permission via PermissionsAndroid.request; iOS handled via Info.plist (NSMicrophoneUsageDescription)
+- Uses isRecordingRef to guard data events after stop, onSamplesRef to avoid stale closures
+- Files changed: apps/expo/src/hooks/use-audio-input.ts (new)
+- **Learnings for future iterations:**
+  - react-native-live-audio-stream API: init({ sampleRate, channels, bitsPerSample, wavFile }), on("data", cb), start(), stop()
+  - The "data" callback receives base64-encoded PCM string
+  - atob() is available globally in React Native for base64 decoding
+  - AudioRecord.stop() returns Promise<string>; void it to avoid unhandled promise
+---

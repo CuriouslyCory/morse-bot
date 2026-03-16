@@ -120,7 +120,7 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
+      "passes": true,
       "notes": "react-native-live-audio-stream emits 'data' events with base64-encoded PCM. The conversion chain: base64 string -> byte array -> Int16Array (little-endian) -> Float32Array (normalize by dividing by 32768). Use a ref for the onSamples callback to avoid stale closures."
     },
     {
