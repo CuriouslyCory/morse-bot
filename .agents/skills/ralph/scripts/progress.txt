@@ -9,6 +9,7 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
 - `@morse-bot/morse-decoder` is a workspace package: use `workspace:*` as version
 - For Expo SDK 54, expo-clipboard is ~8.x, expo-document-picker is ~14.x, expo-file-system is ~19.x, expo-sharing is ~14.x
 - react-native-live-audio-stream@^1.1.1 and react-native-audio-api@^0.11.6 are the versions compatible with this project
+- expo-file-system v19: use `import { File } from "expo-file-system"` and `new File(uri).bytes()` (NOT legacy readAsStringAsync)
 - @shopify/react-native-skia@2.2.12 and @react-native-community/slider@5.0.1 are SDK 54 compatible
 - Never use .js extensions in TS imports (bundler module resolution)
 
@@ -105,4 +106,18 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - The "data" callback receives base64-encoded PCM string
   - atob() is available globally in React Native for base64 decoding
   - AudioRecord.stop() returns Promise<string>; void it to avoid unhandled promise
+---
+
+## 2026-03-15 - US-008
+- Created apps/expo/src/hooks/use-audio-file.ts using expo-document-picker and new expo-file-system v19 API
+- Uses DocumentPicker.getDocumentAsync({ type: ['audio/wav', 'audio/x-wav'] }) for file selection
+- Uses new File(uri).bytes() to read file as Uint8Array (NOT the deprecated readAsStringAsync)
+- Passes bytes.buffer to parseWav() from ~/utils/wav-parser
+- Delivers samples in chunks of 4096 with progress reporting and setTimeout(0) yielding
+- Files changed: apps/expo/src/hooks/use-audio-file.ts (new)
+- **Learnings for future iterations:**
+  - expo-file-system v19 has a new API: `new File(uri).bytes()` returns Promise<Uint8Array>
+  - The old `FileSystem.readAsStringAsync` with EncodingType is in `expo-file-system/legacy` and throws at runtime if imported from main package
+  - `File` class is imported directly: `import { File } from "expo-file-system"`
+  - bytes.buffer has type ArrayBufferLike in TS; cast to ArrayBuffer with `bytes.buffer as ArrayBuffer`
 ---
