@@ -39,3 +39,16 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - iOS mic permission uses infoPlist.NSMicrophoneUsageDescription (not a plugin)
   - Android mic permission uses android.permissions array with "android.permission.RECORD_AUDIO"
 ---
+
+## 2026-03-15 - US-003
+- Created (tabs) tab navigator layout with Decoder (index) and Encoder tabs
+- Created placeholder Decoder screen at apps/expo/src/app/(tabs)/index.tsx
+- Created placeholder Encoder screen at apps/expo/src/app/(tabs)/encoder.tsx
+- Deleted apps/expo/src/app/index.tsx (old posts home screen)
+- Deleted apps/expo/src/app/post/[id].tsx (old post detail screen)
+- Files changed: apps/expo/src/app/(tabs)/_layout.tsx (new), apps/expo/src/app/(tabs)/index.tsx (new), apps/expo/src/app/(tabs)/encoder.tsx (new), apps/expo/src/app/index.tsx (deleted), apps/expo/src/app/post/[id].tsx (deleted)
+- **Learnings for future iterations:**
+  - expo-router (tabs) folder uses parentheses in filesystem; shell needs escaping: mkdir -p "path/(tabs)"
+  - tabBarPosition: "bottom" sets tab bar at bottom (Tabs screenOptions)
+  - Decoder tab is the default because it's index.tsx in the (tabs) folder
+---

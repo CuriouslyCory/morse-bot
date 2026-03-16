@@ -49,7 +49,7 @@
         "Lint passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Follow expo-router file-based routing conventions. The (tabs) directory creates a tab navigator. Root _layout.tsx already has QueryClientProvider - keep that wrapper."
     },
     {
