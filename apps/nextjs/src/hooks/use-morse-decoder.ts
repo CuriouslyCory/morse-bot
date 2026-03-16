@@ -103,10 +103,11 @@ export function useMorseDecoder(
   // Recreate decoder when config changes (config is compared by value via JSON)
   const configKey = JSON.stringify(fullConfig);
   const prevConfigKeyRef = useRef(configKey);
-  if (prevConfigKeyRef.current !== configKey) {
+
+  useEffect(() => {
+    if (prevConfigKeyRef.current === configKey) return;
     prevConfigKeyRef.current = configKey;
     // Recreate decoder with new config, preserving event callbacks
-    const prev = decoderRef.current;
     decoderRef.current = createDecoder(fullConfig, {
       onCharacter: (char) => {
         pendingTextRef.current += char;
@@ -123,8 +124,8 @@ export function useMorseDecoder(
         pendingStatsRef.current = s;
       },
     });
-    void prev; // previous decoder is GC'd
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [configKey]);
 
   // Cancel any pending rAF on unmount
   useEffect(() => {

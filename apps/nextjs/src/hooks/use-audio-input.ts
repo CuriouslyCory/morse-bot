@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseAudioInputOptions {
   onSamples: (samples: Float32Array) => void;
@@ -28,15 +28,12 @@ export function useAudioInput({
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const onSamplesRef = useRef(onSamples);
-  onSamplesRef.current = onSamples;
+  useEffect(() => {
+    onSamplesRef.current = onSamples;
+  }, [onSamples]);
 
   const startRecording = useCallback(async () => {
     setError(null);
-
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setError("Microphone access is not supported in this browser.");
-      return;
-    }
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

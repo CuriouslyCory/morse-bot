@@ -29,9 +29,7 @@ export function createEnvelopeDetector(config: EnvelopeConfig): {
   return {
     process(magnitude: number, timestampMs: number): EnvelopeState {
       // Initialize state start on first call
-      if (stateStartMs === null) {
-        stateStartMs = timestampMs;
-      }
+      stateStartMs ??= timestampMs;
 
       // Track peak of raw magnitude with slow decay
       if (magnitude > peakMagnitude) {

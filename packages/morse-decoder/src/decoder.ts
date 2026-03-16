@@ -155,7 +155,7 @@ export function createDecoder(
   }
 
   return {
-    processSamples(samples: Float32Array, timestampMs: number): void {
+    processSamples(samples: Float32Array, _timestampMs: number): void {
       // Append incoming samples to the internal buffer
       const newBuffer = new Float32Array(sampleBuffer.length + samples.length);
       newBuffer.set(sampleBuffer);

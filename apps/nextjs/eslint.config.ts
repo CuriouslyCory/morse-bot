@@ -6,7 +6,7 @@ import { reactConfig } from "@morse-bot/eslint-config/react";
 
 export default defineConfig(
   {
-    ignores: [".next/**"],
+    ignores: [".next/**", "public/**"],
   },
   baseConfig,
   reactConfig,

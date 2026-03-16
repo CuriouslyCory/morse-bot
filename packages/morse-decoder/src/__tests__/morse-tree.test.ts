@@ -91,7 +91,8 @@ describe("getMorseForChar", () => {
     for (const char of chars) {
       const elements = getMorseForChar(char);
       expect(elements).not.toBeNull();
-      expect(lookupMorse(elements!), `Roundtrip failed for ${char}`).toBe(char);
+      if (elements === null) continue;
+      expect(lookupMorse(elements), `Roundtrip failed for ${char}`).toBe(char);
     }
   });
 });
