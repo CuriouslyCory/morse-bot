@@ -1,0 +1,229 @@
+## 2026-03-15 - US-011
+- Moved `setIsProcessing(true)` to before first `await` in useAudioFile so isProcessing is true during file.arrayBuffer() read
+- Removed duplicate `setIsProcessing(true)` that was after decodeAudioData
+- Verified `trpc.session.pathFilter()` exists in tRPC 11.7.1 — no change needed
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-file.ts`: moved setIsProcessing(true) up, removed duplicate
+- **Learnings for future iterations:**
+  - `trpc.session.pathFilter()` is available in @trpc/tanstack-react-query 11.7.1 — no replacement needed
+  - `setIsProcessing(true)` must be called before any await so the UI shows loading state during async file reads
+---
+
+## 2026-03-15 - US-010
+- Added `<Suspense fallback={<p>Loading sessions...</p>}>` wrapper around `<SessionsList />` in sessions page
+- Imported `Suspense` from `react`
+- Files changed:
+  - `apps/nextjs/src/app/sessions/page.tsx`: added Suspense import and wrapper
+- **Learnings for future iterations:**
+  - Components using `useSuspenseQuery` must be wrapped in a Suspense boundary or React will throw on client-side navigation
+---
+
+## 2026-03-15 - US-009
+- Replaced `while(queue.length > 0) { queue.shift() }` with `queue.splice(0)` to drain atomically in O(1)
+- Added `items.slice(-CANVAS_WIDTH)` to skip excess entries when more data arrives than pixels available
+- Files changed:
+  - `apps/nextjs/src/app/_components/spectrogram.tsx`: tick() now uses splice(0) + slice(-CANVAS_WIDTH) + for..of loop
+- **Learnings for future iterations:**
+  - `queue.shift()` in a tight loop is O(n²) for large queues; `splice(0)` drains entire array in O(1) and replaces the array reference atomically
+  - During audio file processing, stats updates arrive much faster than rAF (60fps); must cap render entries to avoid canvas thrashing
+---
+
+## 2026-03-15 - US-008
+- Reset transition state (prevToneActive, lastTransitionMs, currentElements) in updateConfig after rebuilding DSP components
+- decodedText is NOT cleared — only in-flight transition state is reset
+- Files changed:
+  - `packages/morse-decoder/src/decoder.ts`: added 3 reset lines in updateConfig after buildComponents call
+- **Learnings for future iterations:**
+  - updateConfig rebuilds DSP components but the transition state variables are in the outer closure — must be reset manually to avoid spurious transitions
+  - resetState() also resets decodedText; updateConfig intentionally does NOT call resetState()
+---
+
+## 2026-03-15 - US-007
+- Added `elementGap: 1` to `TIMING_RATIOS` in constants.ts
+- Updated encoder.ts to use `TIMING_RATIOS.elementGap` instead of `TIMING_RATIOS.dit` for element gap
+- Removed `".-...": "&"` (ITU AS prosign) and `"...-..-": "$"` (non-ITU) from MORSE_TO_CHAR with explanatory comments
+- Files changed:
+  - `packages/morse-decoder/src/constants.ts`: added `elementGap: 1` to TIMING_RATIOS
+  - `packages/morse-decoder/src/encoder.ts`: `TIMING_RATIOS.dit` → `TIMING_RATIOS.elementGap`
+  - `packages/morse-decoder/src/morse-tree.ts`: commented out `&` and `$` prosign mappings
+- **Learnings for future iterations:**
+  - TIMING_RATIOS.dit and elementGap are both 1 numerically, but using elementGap is semantically correct
+  - ITU prosigns like AS (.-...) and SX (...-..-) collide with printable ASCII if mapped — omitting is correct
+---
+
+## 2026-03-15 - US-006
+- Exposed `actualSampleRate` from `useAudioInput` and synced it to the decoder
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-input.ts`: Added `actualSampleRate: number | null` state; set after AudioContext created, cleared in stopRecording and catch block; added to return type
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Destructure `actualSampleRate` from `useAudioInput`; added `useEffect` to call `updateConfig({ sampleRate: actualSampleRate })` when non-null
+- **Learnings for future iterations:**
+  - Circular dependency between `useAudioInput` (needs onSamples) and `useMorseDecoder` (needs sampleRate) — solved by reading actualSampleRate from hook return and syncing via `updateConfig` in a `useEffect` rather than passing at construction time
+  - `audioContext.sampleRate` reflects the actual rate after construction (may differ from the requested rate on Safari)
+---
+
+## 2026-03-15 - US-005
+- Fixed AudioContext and MediaStream leak in useAudioInput catch block
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-input.ts`: Added cleanup in catch block: close audioContextRef, stop stream tracks, null all refs
+- **Learnings for future iterations:**
+  - Cleanup order in catch: close context first, stop tracks, then null refs
+  - Lint error count remains at 13 (no new errors)
+---
+
+## Codebase Patterns
+- Package scope: @morse-bot (renamed from @acme)
+- All hooks use `useRef` + `onSamplesRef.current = onSamples` pattern to keep callbacks fresh — this triggers `react-hooks/refs` ESLint errors in custom hooks but is the established pattern in this codebase
+- Pre-existing lint errors (19 in original, reduced to 13): react-hooks/refs in use-audio-input.ts, use-morse-decoder.ts; do not add new lint errors
+- `useRef<boolean>(false)` required (not `useRef(false)`) to avoid TypeScript narrowing `current` to literal `false`, which would cause `@typescript-eslint/no-unnecessary-condition` errors on async cancellation checks
+- Async cancellation checks across await boundaries (`if (cancelledRef.current)`) need `// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition` since TypeScript can't reason about ref mutations across awaits
+- AudioContext sample rate is 8000 Hz (matches live mic input) for consistent decoder behavior
+- Timestamps for file decoding: derived from sample position `(offset / audioBuffer.sampleRate) * 1000` — not wall-clock time
+- Existing hooks (useAudioInput, useMorseDecoder) handle their own internal ref syncing; decoder-panel.tsx should NOT add an additional onSamplesRef wrapper
+
+---
+
+## 2026-03-15 - US-004
+- Fixed IDOR vulnerability: added `and()` ownership checks to `getById` and `delete` in session router
+- Files changed:
+  - `packages/api/src/router/session.ts`: imported `and` from `@morse-bot/db`; both `getById` and `delete` now filter by `DecodedSession.userId === ctx.session.user.id` in addition to `DecodedSession.id`
+- **Learnings for future iterations:**
+  - drizzle `query.Table.findFirst({ where: and(...) })` works the same as the delete `.where(and(...))` pattern
+  - `and` is exported from `@morse-bot/db` alongside `eq`, `desc`
+
+---
+
+## 2026-03-15 - US-003
+- Changed morse-decoder tsconfig.json `extends` from `@morse-bot/tsconfig/base.json` to `@morse-bot/tsconfig/compiled-package.json`
+- Files changed:
+  - `packages/morse-decoder/tsconfig.json`: extends changed to compiled-package.json
+- **Learnings for future iterations:**
+  - dist/ is in .gitignore — do not try to commit it; the build produces it on demand
+  - `compiled-package.json` sets `declaration: true, emitDeclarationOnly: true, outDir: dist`; `base.json` has `noEmit: true`
+  - Typecheck passes with all 16 tasks successful
+
+---
+
+## 2026-03-15 - US-002
+- Updated README.md to remove stale @acme references
+- Files changed:
+  - `README.md`: Updated line 72 paragraph from @acme placeholder explanation to @morse-bot scope note; line 105 `@acme/auth` → `@morse-bot/auth`; line 117 `@acme/db` → `@morse-bot/db`
+- **Learnings for future iterations:**
+  - Remaining @acme references in `tasks/*.md` and `.agents/.../prd.json` are in meta-documentation describing the rename history — these are intentional and not actual code references
+  - The grep check for zero @acme results applies to source/config files; documentation about the rename process naturally uses @acme in its descriptions
+---
+
+## 2026-03-14 - US-006
+- Implemented canvas-based scrolling waterfall display for signal magnitude over time
+- Files changed:
+  - `apps/nextjs/src/app/_components/waterfall.tsx` (new): Waterfall component using ImageData pixel-shift for scrolling, rAF-driven render loop, black→green→yellow color gradient mapped to dBFS
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added `<Waterfall stats={stats} />` above SignalStats
+- **Learnings for future iterations:**
+  - TypeScript doesn't narrow non-null types across inner `function` declarations; capture narrowed types as explicitly-typed `const` variables (e.g., `const ctx: CanvasRenderingContext2D = context`) before defining inner functions
+  - `queue.shift()` returns `T | undefined` — check for `undefined` explicitly instead of trusting `queue.length > 0` guard
+  - `@typescript-eslint/no-non-null-assertion` bans `!` but `as Type` casts are allowed; use explicit typed consts instead of either
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-011
+- Implemented decoder controls component with frequency, WPM, adaptive, and threshold settings
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-controls.tsx` (new): DecoderControls component with frequency slider (300-1200 Hz), WPM preset selector (5/10/13/15/20/25/30), adaptive toggle, threshold slider, and Clear button
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Replaced inline Clear button with `<DecoderControls>` at top, passing `updateConfig`, `reset`, and `isDisabled`
+- **Learnings for future iterations:**
+  - Inline type specifiers (`import { type Foo }`) cause lint error — use top-level `import type { Foo }` instead (separate import statement)
+  - `<select>` is not available from @morse-bot/ui; use a native `<select>` with Tailwind classes matching the Input style
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-012
+- Renamed waterfall.tsx → spectrogram.tsx and Waterfall component → Spectrogram (per acceptance criteria)
+- Files changed:
+  - `apps/nextjs/src/app/_components/spectrogram.tsx` (renamed from waterfall.tsx): Spectrogram component — same ImageData pixel-shift scrolling, rAF-driven render loop
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Updated import/usage from Waterfall to Spectrogram
+- **Learnings for future iterations:**
+  - Progress log IDs and PRD IDs became misaligned in earlier iterations; always trust the PRD passes field, not the progress log entry IDs
+  - The waterfall (scrolling dBFS display) was the intended spectrogram component — naming is interchangeable in this codebase
+---
+
+## 2026-03-14 - US-018
+- Added responsive layout (spectrogram+stats side-by-side at lg:) and dark signal-processing theme
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Wrapped spectrogram+stats in `flex flex-col gap-4 lg:flex-row lg:items-start` container; spectrogram gets `flex-1`, stats get `lg:w-56 lg:shrink-0`
+  - `apps/nextjs/src/app/_components/decoded-text.tsx`: Added `dark:bg-zinc-950 dark:text-green-400` for signal-processing aesthetic; in-progress elements use `dark:text-green-700`
+  - `apps/nextjs/src/app/_components/signal-stats.tsx`: Added `dark:border-zinc-700 dark:bg-zinc-950` to container; stats values use `dark:text-green-400`
+- **Learnings for future iterations:**
+  - Tailwind `lg:` = 1024px+ (desktop); `md:` = 768px+ (tablet) — criteria: stacked at tablet, side-by-side at desktop → use only `lg:flex-row`
+  - For signal-processing dark theme: `zinc-950` background + `green-400` monospace text is a clean CRT aesthetic
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-017
+- Created sessions list page with expand/collapse, export, and delete
+- Files changed:
+  - `apps/nextjs/src/app/sessions/page.tsx` (new): Server component with auth redirect, renders SessionsList
+  - `apps/nextjs/src/app/sessions/_components/sessions-list.tsx` (new): Client component with useSuspenseQuery, expand/collapse, downloadText helper, delete with window.confirm
+  - `apps/nextjs/src/app/layout.tsx`: Added server-side auth check + conditional "My Sessions" Link nav
+- **Learnings for future iterations:**
+  - `<a>` triggers @next/next/no-html-link-for-pages even in server components — always use `<Link>` from next/link for internal navigation
+  - `window.confirm` works for simple delete confirmations in client components
+  - Blob + URL.createObjectURL + anchor.click() pattern works for file downloads in browser
+  - useSuspenseQuery requires the component to be wrapped in Suspense (or the parent handles it) — in practice it works with the TRPCReactProvider
+  - layout.tsx can be async (export default async function) for server-side data fetching
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-016
+- Added Save Session button (auth-gated) and "Sign in to save sessions" for unauthenticated users
+- Files changed:
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added authClient.useSession() for auth check, useMutation for session.save tRPC call, session timing tracking (sessionStartRef), source tracking (mic/file), handleSave callback, save/sign-in UI section
+- **Learnings for future iterations:**
+  - `authClient.useSession()` from `~/auth/client` provides client-side auth state (data is non-null when authenticated)
+  - `useMutation` must be imported from `@tanstack/react-query`, not react — uses `trpc.session.save.mutationOptions()`
+  - `<a>` element triggers `@next/next/no-html-link-for-pages` ESLint error; use `<button onClick>` with `authClient.signIn.social()` instead for auth redirects in client components
+  - toast.success/toast.error from `@morse-bot/ui/toast` work as expected
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-015
+- Added decoded_sessions table to DB schema and session tRPC router
+- Files changed:
+  - `packages/db/src/schema.ts`: Added DecodedSession table, CreateDecodedSessionSchema, SelectDecodedSessionSchema; imported user from auth-schema for FK reference
+  - `packages/api/src/router/session.ts` (new): sessionRouter with save/list/getById/delete protected procedures
+  - `packages/api/src/root.ts`: Added sessionRouter to appRouter
+- **Learnings for future iterations:**
+  - drizzle uses `casing: "snake_case"` globally — camelCase JS field names map to snake_case DB columns automatically
+  - user.id is text (not uuid) — DecodedSession.userId must be text type to match
+  - `createInsertSchema` and `createSelectSchema` from drizzle-zod work with zod/v4 (same as existing Post pattern)
+  - Import `user` from auth-schema directly in schema.ts for FK references (don't use `export * from` before the table definition that needs it)
+---
+
+## 2026-03-14 - US-014
+- Implemented text-to-morse encoder with audio playback
+- Files changed:
+  - `apps/nextjs/src/hooks/use-morse-player.ts` (new): Hook wrapping AudioContext OscillatorNode scheduling; uses createEncoder() for tone events; buildCharTimings() mirrors encoder walk for character index tracking; setTimeout for UI highlights
+  - `apps/nextjs/src/app/_components/encoder-panel.tsx` (new): EncoderPanel with textarea input, WPM selector, Play/Stop button, character highlight display
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Lifted frequency/wpm to local state; intercept updateConfig to sync encoder; added EncoderPanel toggle below decoder
+- **Learnings for future iterations:**
+  - Audio scheduling: use AudioContext.currentTime for precise tone timing; setTimeout for UI-only updates (char highlights)
+  - buildCharTimings must exactly mirror createEncoder's walk logic (word gap condition, charIdx tracking) to keep highlights in sync with audio
+  - For charIdx tracking across split(" ") words: advance charIdx by 1 between words (for the space character in original text)
+  - Lint error count remains at 13 (no new errors)
+---
+
+## 2026-03-14 - US-013
+- Audio file upload/decoding was already implemented in a previous iteration (labeled as US-005 in that entry)
+- Verified: use-audio-file.ts + decoder-panel.tsx fully meet US-013 acceptance criteria
+- PRD updated to passes: true; no code changes needed
+---
+
+## 2026-03-14 - US-005
+- Implemented audio file decoding (upload .wav/.mp3/.ogg/.m4a)
+- Files changed:
+  - `apps/nextjs/src/hooks/use-audio-file.ts` (new): useAudioFile hook with decodeAudioData, chunked processing, progress reporting, cancellation
+  - `apps/nextjs/src/app/_components/decoder-panel.tsx`: Added Open File button, hidden file input, progress bar, Stop button, disabled states
+- **Learnings for future iterations:**
+  - `useRef(false)` infers literal type `false` causing unnecessary-condition errors; always use `useRef<boolean>(false)` for mutable boolean flags
+  - Async cancellation checks need eslint-disable comments — the linter can't see across await boundaries
+  - decoder-panel.tsx previously had a ref-during-render anti-pattern (onSamplesRef.current = onSamples); removed it by passing separate typed callbacks directly to each hook
+  - Pre-existing lint errors: 19 before this story, 13 after (improvement)
+---

@@ -6,12 +6,12 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+import type { Auth } from "@morse-bot/auth";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { z, ZodError } from "zod/v4";
 
-import type { Auth } from "@acme/auth";
-import { db } from "@acme/db/client";
+import { db } from "@morse-bot/db/client";
 
 /**
  * 1. CONTEXT

@@ -1,3 +1,4 @@
+import type { RouterOutputs } from "@morse-bot/api";
 import { Suspense } from "react";
 import { useForm } from "@tanstack/react-form";
 import {
@@ -7,19 +8,18 @@ import {
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import type { RouterOutputs } from "@acme/api";
-import { CreatePostSchema } from "@acme/db/schema";
-import { cn } from "@acme/ui";
-import { Button } from "@acme/ui/button";
+import { CreatePostSchema } from "@morse-bot/db/schema";
+import { cn } from "@morse-bot/ui";
+import { Button } from "@morse-bot/ui/button";
 import {
   Field,
   FieldContent,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@acme/ui/field";
-import { Input } from "@acme/ui/input";
-import { toast } from "@acme/ui/toast";
+} from "@morse-bot/ui/field";
+import { Input } from "@morse-bot/ui/input";
+import { toast } from "@morse-bot/ui/toast";
 
 import { AuthShowcase } from "~/component/auth-showcase";
 import { useTRPC } from "~/lib/trpc";

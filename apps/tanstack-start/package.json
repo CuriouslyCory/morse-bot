@@ -1,5 +1,5 @@
 {
-  "name": "@acme/tanstack-start",
+  "name": "@morse-bot/tanstack-start",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -13,12 +13,12 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@acme/api": "workspace:*",
-    "@acme/auth": "workspace:*",
-    "@acme/db": "workspace:*",
-    "@acme/ui": "workspace:*",
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
+    "@morse-bot/api": "workspace:*",
+    "@morse-bot/auth": "workspace:*",
+    "@morse-bot/db": "workspace:*",
+    "@morse-bot/ui": "workspace:*",
     "@t3-oss/env-core": "^0.13.8",
     "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
@@ -37,10 +37,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tailwind-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@morse-bot/eslint-config": "workspace:*",
+    "@morse-bot/prettier-config": "workspace:*",
+    "@morse-bot/tailwind-config": "workspace:*",
+    "@morse-bot/tsconfig": "workspace:*",
     "@tailwindcss/vite": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:react19",
@@ -53,5 +53,5 @@
     "vite": "catalog:",
     "vite-tsconfig-paths": "^5.1.4"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@morse-bot/prettier-config"
 }

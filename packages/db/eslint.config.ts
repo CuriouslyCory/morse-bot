@@ -1,6 +1,6 @@
 import { defineConfig } from "eslint/config";
 
-import { baseConfig } from "@acme/eslint-config/base";
+import { baseConfig } from "@morse-bot/eslint-config/base";
 
 export default defineConfig(
   {

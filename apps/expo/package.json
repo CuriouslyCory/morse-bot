@@ -1,5 +1,5 @@
 {
-  "name": "@acme/expo",
+  "name": "@morse-bot/expo",
   "private": true,
   "main": "index.ts",
   "scripts": {
@@ -44,16 +44,16 @@
     "superjson": "2.2.3"
   },
   "devDependencies": {
-    "@acme/api": "workspace:*",
-    "@acme/eslint-config": "workspace:*",
-    "@acme/prettier-config": "workspace:*",
-    "@acme/tailwind-config": "workspace:*",
-    "@acme/tsconfig": "workspace:*",
+    "@morse-bot/api": "workspace:*",
+    "@morse-bot/eslint-config": "workspace:*",
+    "@morse-bot/prettier-config": "workspace:*",
+    "@morse-bot/tailwind-config": "workspace:*",
+    "@morse-bot/tsconfig": "workspace:*",
     "@types/react": "catalog:react19",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:"
   },
-  "prettier": "@acme/prettier-config"
+  "prettier": "@morse-bot/prettier-config"
 }

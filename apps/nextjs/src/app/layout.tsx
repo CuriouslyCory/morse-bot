@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 
-import { cn } from "@acme/ui";
-import { ThemeProvider, ThemeToggle } from "@acme/ui/theme";
-import { Toaster } from "@acme/ui/toast";
+import { cn } from "@morse-bot/ui";
+import { ThemeProvider, ThemeToggle } from "@morse-bot/ui/theme";
+import { Toaster } from "@morse-bot/ui/toast";
 
+import { getSession } from "~/auth/server";
 import { env } from "~/env";
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -13,16 +15,16 @@ import "~/app/styles.css";
 export const metadata: Metadata = {
   metadataBase: new URL(
     env.VERCEL_ENV === "production"
-      ? "https://turbo.t3.gg"
+      ? "https://moris-bot.vercel.app"
       : "http://localhost:3000",
   ),
-  title: "Create T3 Turbo",
-  description: "Simple monorepo with shared backend for web & mobile apps",
+  title: "Moris Bot",
+  description: "Real-time morse code decoder web app",
   openGraph: {
-    title: "Create T3 Turbo",
-    description: "Simple monorepo with shared backend for web & mobile apps",
-    url: "https://create-t3-turbo.vercel.app",
-    siteName: "Create T3 Turbo",
+    title: "Moris Bot",
+    description: "Real-time morse code decoder web app",
+    url: "https://moris-bot.vercel.app",
+    siteName: "Moris Bot",
   },
   twitter: {
     card: "summary_large_image",
@@ -47,7 +49,9 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
 });
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const session = await getSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -58,6 +62,16 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         )}
       >
         <ThemeProvider>
+          {session && (
+            <nav className="border-b px-4 py-2">
+              <Link
+                href="/sessions"
+                className="text-muted-foreground text-sm underline-offset-4 hover:underline"
+              >
+                My Sessions
+              </Link>
+            </nav>
+          )}
           <TRPCReactProvider>{props.children}</TRPCReactProvider>
           <div className="absolute right-4 bottom-4">
             <ThemeToggle />
