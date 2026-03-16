@@ -52,3 +52,19 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - tabBarPosition: "bottom" sets tab bar at bottom (Tabs screenOptions)
   - Decoder tab is the default because it's index.tsx in the (tabs) folder
 ---
+
+## 2026-03-15 - US-004
+- Updated apps/expo/src/app/_layout.tsx:
+  - Added Stack screenOptions title: "Morse Code Studio" with white header title styling
+  - Created HeaderRight component using authClient.useSession() for conditional rendering
+  - When authenticated: shows "My Sessions" Link (navigates to /sessions) and "Sign Out" button
+  - When not authenticated: shows "Sign In" button that triggers Discord OAuth
+  - headerRight renders HeaderRight component in Stack screenOptions
+- Created apps/expo/src/app/sessions.tsx as placeholder screen
+- Files changed: apps/expo/src/app/_layout.tsx, apps/expo/src/app/sessions.tsx (new)
+- **Learnings for future iterations:**
+  - authClient.useSession() returns { data: session } - use `const { data: session } = authClient.useSession()`
+  - Stack headerRight accepts a function: `headerRight: () => <Component />`
+  - Define header components outside the layout function to use hooks
+  - authClient.signIn.social takes { provider, callbackURL } options
+---
