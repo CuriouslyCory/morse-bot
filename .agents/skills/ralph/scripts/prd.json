@@ -161,7 +161,7 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": false,
+      "passes": true,
       "notes": "Port logic from apps/nextjs/src/app/_components/decoder-controls.tsx. Replace HTML elements: <input type='range'> -> Slider, <select> -> custom picker using Modal+FlatList or simple Pressable dropdown, <input type='checkbox'> -> Switch. Import DEFAULT_CONFIG from @morse-bot/morse-decoder for initial values."
     },
     {
@@ -178,7 +178,7 @@
         "Typecheck passes"
       ],
       "priority": 10,
-      "passes": false,
+      "passes": true,
       "notes": "Direct port from apps/nextjs/src/app/_components/signal-stats.tsx. Replace <div>/<span> with <View>/<Text>. Same StatItem pattern. NativeWind supports the same Tailwind class names."
     },
     {
@@ -196,7 +196,7 @@
         "Typecheck passes"
       ],
       "priority": 11,
-      "passes": false,
+      "passes": true,
       "notes": "Use Skia Canvas with useCanvasRef or imperative drawing. The dbToColor() function is pure math and ports directly. For drawing, use canvas.drawRect() for each column with Skia.Paint colored by the dB value."
     },
     {
@@ -217,7 +217,7 @@
         "Typecheck passes"
       ],
       "priority": 12,
-      "passes": false,
+      "passes": true,
       "notes": "Port from apps/nextjs/src/app/_components/decoded-text.tsx. Replace navigator.clipboard with expo-clipboard. Replace div ref auto-scroll with ScrollView ref scrollToEnd(). elementsToSymbols maps 'dit'->'.' and 'dah'->'-'."
     },
     {
@@ -241,7 +241,7 @@
         "Typecheck passes"
       ],
       "priority": 13,
-      "passes": false,
+      "passes": true,
       "notes": "Port from apps/nextjs/src/app/_components/decoder-panel.tsx. This is the main orchestrator. Replace HTML <Button> with Pressable, <input type='file'> with useAudioFile().processFile(). The save session button will be added in a later story."
     },
     {
@@ -262,7 +262,7 @@
         "Typecheck passes"
       ],
       "priority": 14,
-      "passes": false,
+      "passes": true,
       "notes": "react-native-audio-api provides AudioContext, OscillatorNode, GainNode matching Web Audio API. The hook logic from apps/nextjs/src/hooks/use-morse-player.ts should port nearly 1:1. buildCharTimings is 100% portable (pure math)."
     },
     {
@@ -284,7 +284,7 @@
         "Typecheck passes"
       ],
       "priority": 15,
-      "passes": false,
+      "passes": true,
       "notes": "Port from apps/nextjs/src/app/_components/encoder-panel.tsx. Replace <textarea> with <TextInput multiline>. Replace <select> with same picker pattern used in decoder-controls. Character highlighting uses map over [...text] to create individually styled Text components."
     },
     {
@@ -298,7 +298,7 @@
         "Typecheck passes"
       ],
       "priority": 16,
-      "passes": false,
+      "passes": true,
       "notes": "Replace the placeholder content from US-003 with the actual panel components. Use Stack.Screen options for title. Import DEFAULT_CONFIG from @morse-bot/morse-decoder for initial frequency/wpm values."
     },
     {
@@ -317,7 +317,7 @@
         "Typecheck passes"
       ],
       "priority": 17,
-      "passes": false,
+      "passes": true,
       "notes": "The tRPC session.save mutation is already available via the configured client. Follow the same mutation pattern used in the existing Expo app (see apps/expo/src/app/index.tsx for useMutation examples with trpc)."
     },
     {
@@ -340,7 +340,7 @@
         "Typecheck passes"
       ],
       "priority": 18,
-      "passes": false,
+      "passes": true,
       "notes": "Port logic from apps/nextjs/src/app/sessions/_components/sessions-list.tsx. Replace window.confirm with Alert.alert. Replace Blob download with expo-file-system writeAsStringAsync + expo-sharing shareAsync. Use LegendList (already imported in existing index.tsx) for the sessions list."
     },
     {
@@ -355,7 +355,7 @@
         "No lint errors: pnpm --filter @morse-bot/expo lint"
       ],
       "priority": 19,
-      "passes": false,
+      "passes": true,
       "notes": "The Tailwind theme tokens are already shared via @morse-bot/tailwind-config and imported in apps/expo/src/styles.css. NativeWind translates these to React Native styles. Verify all new components use the correct theme tokens."
     }
   ]

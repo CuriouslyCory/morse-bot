@@ -9,6 +9,9 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
 - `@morse-bot/morse-decoder` is a workspace package: use `workspace:*` as version
 - For Expo SDK 54, expo-clipboard is ~8.x, expo-document-picker is ~14.x, expo-file-system is ~19.x, expo-sharing is ~14.x
 - react-native-live-audio-stream@^1.1.1 and react-native-audio-api@^0.11.6 are the versions compatible with this project
+- react-hooks/set-state-in-effect: setState must be called from callback (rAF/setTimeout/event), not directly in effect body
+- react-hooks/refs: Do NOT read ref.current during render; use state for render data
+- For Animated.Value: use `const [val] = useState(() => new Animated.Value(1))` not useRef
 - expo-file-system v19: use `import { File } from "expo-file-system"` and `new File(uri).bytes()` (NOT legacy readAsStringAsync)
 - @shopify/react-native-skia@2.2.12 and @react-native-community/slider@5.0.1 are SDK 54 compatible
 - Never use .js extensions in TS imports (bundler module resolution)
@@ -120,4 +123,61 @@ Started: Sun Mar 15 10:04:02 PM MST 2026
   - The old `FileSystem.readAsStringAsync` with EncodingType is in `expo-file-system/legacy` and throws at runtime if imported from main package
   - `File` class is imported directly: `import { File } from "expo-file-system"`
   - bytes.buffer has type ArrayBufferLike in TS; cast to ArrayBuffer with `bytes.buffer as ArrayBuffer`
+---
+
+## 2026-03-15 - US-009
+- Created apps/expo/src/components/decoder-controls.tsx
+- Replaced HTML inputs with: Slider (@react-native-community/slider), Pressable buttons for WPM presets, Switch for Adaptive
+- WPM uses Pressable preset buttons (no dropdown needed - simpler for mobile)
+- Files changed: apps/expo/src/components/decoder-controls.tsx (new)
+
+## 2026-03-15 - US-010
+- Created apps/expo/src/components/signal-stats.tsx
+- 2x2 grid layout using flex-row pairs
+- Files changed: apps/expo/src/components/signal-stats.tsx (new)
+
+## 2026-03-15 - US-011
+- Created apps/expo/src/components/spectrogram.tsx using @shopify/react-native-skia
+- Initially used useEffect+setState directly (triggered lint error: react-hooks/set-state-in-effect)
+- Fixed using rAF loop pattern: pendingRef accumulates in effect, rAF drains and calls setState from callback
+- Files changed: apps/expo/src/components/spectrogram.tsx (new)
+- **Learnings for future iterations:**
+  - react-hooks/set-state-in-effect: Do NOT call setState directly in useEffect body; call it from a callback (rAF, setTimeout, event handler)
+  - react-hooks/refs: Do NOT read ref.current during render; use state instead
+  - For `new Animated.Value()`, use `const [val] = useState(() => new Animated.Value(1))` instead of useRef to avoid ref-in-render lint errors
+  - Skia Canvas: `<Canvas>` with `<Rect>` children for declarative drawing; color prop accepts rgb() strings
+
+## 2026-03-15 - US-012
+- Created apps/expo/src/components/decoded-text.tsx
+- Uses Animated.Value via useState (not useRef) for blinking cursor
+- Uses ScrollView with scrollToEnd for auto-scroll
+- Uses expo-clipboard for copy
+- Files changed: apps/expo/src/components/decoded-text.tsx (new)
+
+## 2026-03-15 - US-013
+- Created apps/expo/src/components/decoder-panel.tsx orchestrating all decoder components
+- Does not include save session button (added in US-017)
+- Also fixed lint issues in use-audio-file.ts (onSamplesRef.current assignment moved to useEffect)
+- Files changed: apps/expo/src/components/decoder-panel.tsx (new), use-audio-file.ts (fix)
+---
+
+## 2026-03-15 - US-014
+- Created apps/expo/src/hooks/use-morse-player.ts
+- Imported AudioContext from react-native-audio-api (Web Audio API compatible)
+- Near-direct port from apps/nextjs/src/hooks/use-morse-player.ts
+- AudioContext.close() is async in react-native-audio-api; use void ctx.close()
+- Files changed: apps/expo/src/hooks/use-morse-player.ts (new)
+
+## 2026-03-15 - US-015 through US-019
+- US-015: encoder-panel.tsx with TextInput, WPM presets, char highlighting
+- US-016: Wired up (tabs)/index.tsx and encoder.tsx with panels
+- US-017: Added save session to decoder-panel.tsx using trpc.session.save mutation + Alert feedback
+- US-018: sessions.tsx with auth guard, LegendList, export/delete with expo-file-system+expo-sharing
+- US-019: Cleanup - removed unused queryClient import from decoder-panel.tsx; all components use NativeWind tokens
+- **Learnings for future iterations:**
+  - expo-file-system v19: cacheDirectory -> `Paths.cache` (not FileSystem.cacheDirectory)
+  - LegendList: requires data, keyExtractor, estimatedItemSize, renderItem props
+  - expo-sharing: check isAvailableAsync() before shareAsync()
+  - Interface vs type: use interface (lint rule @typescript-eslint/consistent-type-definitions)
+  - react-native-audio-api AudioContext.close() returns Promise, use void
 ---
