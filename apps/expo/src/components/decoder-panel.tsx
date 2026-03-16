@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import { authClient } from "~/utils/auth";
-import { trpc, queryClient } from "~/utils/api";
+import { trpc } from "~/utils/api";
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
@@ -122,9 +122,6 @@ export function DecoderPanel() {
 
   const error = micError ?? fileError;
   const isActive = isRecording || isProcessing;
-
-  // Suppress unused variable (queryClient used for future invalidation)
-  void queryClient;
 
   return (
     <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4">
