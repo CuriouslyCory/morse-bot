@@ -1,7 +1,10 @@
 import { useCallback, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Alert, Pressable, ScrollView, Text, View } from "react-native";
+import { useMutation } from "@tanstack/react-query";
 
+import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 import { authClient } from "~/utils/auth";
+import { trpc, queryClient } from "~/utils/api";
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
@@ -22,9 +25,37 @@ export function DecoderPanel() {
 
   const sessionStartRef = useRef<number | null>(null);
   const [lastSource, setLastSource] = useState<"mic" | "file">("mic");
+  const [decoderFrequency, setDecoderFrequency] = useState(
+    DEFAULT_CONFIG.targetFrequency,
+  );
+  const [decoderWpm, setDecoderWpm] = useState(DEFAULT_CONFIG.wpm);
 
   const { data: session } = authClient.useSession();
   const isAuthenticated = !!session;
+
+  const saveSession = useMutation(
+    trpc.session.save.mutationOptions({
+      onSuccess: () => {
+        Alert.alert("Success", "Session saved!");
+      },
+      onError: () => {
+        Alert.alert("Error", "Failed to save session.");
+      },
+    }),
+  );
+
+  const handleUpdateConfig = useCallback(
+    (partial: Parameters<typeof updateConfig>[0]) => {
+      updateConfig(partial);
+      if (partial.targetFrequency !== undefined) {
+        setDecoderFrequency(partial.targetFrequency);
+      }
+      if (partial.wpm !== undefined) {
+        setDecoderWpm(partial.wpm);
+      }
+    },
+    [updateConfig],
+  );
 
   const onSamplesFromMic = useCallback(
     (samples: Float32Array) => {
@@ -68,18 +99,39 @@ export function DecoderPanel() {
     await processFile();
   }, [processFile, reset]);
 
+  const handleSave = useCallback(() => {
+    const durationMs = sessionStartRef.current
+      ? Date.now() - sessionStartRef.current
+      : 0;
+    saveSession.mutate({
+      decodedText,
+      durationMs,
+      source: lastSource,
+      settings: {
+        targetFrequency: decoderFrequency,
+        wpm: decoderWpm,
+      },
+    });
+  }, [
+    decodedText,
+    decoderFrequency,
+    decoderWpm,
+    lastSource,
+    saveSession,
+  ]);
+
   const error = micError ?? fileError;
   const isActive = isRecording || isProcessing;
 
-  // Suppress unused variable warning for lastSource
-  void lastSource;
+  // Suppress unused variable (queryClient used for future invalidation)
+  void queryClient;
 
   return (
     <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4">
       {/* Controls */}
       <View className="rounded-lg border border-border bg-card p-4">
         <DecoderControls
-          onUpdateConfig={updateConfig}
+          onUpdateConfig={handleUpdateConfig}
           onReset={reset}
           isDisabled={isActive}
         />
@@ -92,7 +144,13 @@ export function DecoderPanel() {
           disabled={isProcessing}
           className={`rounded-full px-6 py-3 ${isRecording ? "bg-destructive" : "bg-primary"} ${isProcessing ? "opacity-50" : ""}`}
         >
-          <Text className={isRecording ? "text-destructive-foreground" : "text-primary-foreground"}>
+          <Text
+            className={
+              isRecording
+                ? "text-destructive-foreground"
+                : "text-primary-foreground"
+            }
+          >
             {isRecording ? "Stop Mic" : "Start Mic"}
           </Text>
         </Pressable>
@@ -130,7 +188,7 @@ export function DecoderPanel() {
       ) : null}
 
       {/* Visualization */}
-      <View className="rounded-lg border border-border bg-card p-4 gap-4">
+      <View className="gap-4 rounded-lg border border-border bg-card p-4">
         <Spectrogram stats={stats} />
         <SignalStats stats={stats} />
       </View>
@@ -142,21 +200,33 @@ export function DecoderPanel() {
         isRecording={isActive}
       />
 
-      {/* Auth status (save session added in US-017) */}
-      {!isAuthenticated ? (
-        <Pressable
-          onPress={() =>
-            void authClient.signIn.social({
-              provider: "discord",
-              callbackURL: "/",
-            })
-          }
-        >
-          <Text className="text-sm text-muted-foreground underline">
-            Sign in to save sessions
-          </Text>
-        </Pressable>
-      ) : null}
+      {/* Save session / auth */}
+      <View className="flex-row items-center gap-3">
+        {isAuthenticated ? (
+          <Pressable
+            onPress={handleSave}
+            disabled={!decodedText.trim() || saveSession.isPending}
+            className={`rounded-full bg-secondary px-6 py-3 ${!decodedText.trim() || saveSession.isPending ? "opacity-50" : ""}`}
+          >
+            <Text className="text-secondary-foreground">
+              {saveSession.isPending ? "Saving..." : "Save Session"}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            onPress={() =>
+              void authClient.signIn.social({
+                provider: "discord",
+                callbackURL: "/",
+              })
+            }
+          >
+            <Text className="text-sm text-muted-foreground underline">
+              Sign in to save sessions
+            </Text>
+          </Pressable>
+        )}
+      </View>
     </ScrollView>
   );
 }
