@@ -1,3 +1,25 @@
 # Ralph Progress Log
 Started: Sun Mar 15 10:04:02 PM MST 2026
 ---
+
+## Codebase Patterns
+- Use `npx expo install <packages>` to resolve SDK-compatible versions (auto-resolves based on expo version in package.json)
+- sherif enforces alphabetical ordering in package.json deps; always sort alphabetically
+- Use `catalog:` for packages in pnpm-workspace.yaml catalog, explicit versions for others
+- `@morse-bot/morse-decoder` is a workspace package: use `workspace:*` as version
+- For Expo SDK 54, expo-clipboard is ~8.x, expo-document-picker is ~14.x, expo-file-system is ~19.x, expo-sharing is ~14.x
+- react-native-live-audio-stream@^1.1.1 and react-native-audio-api@^0.11.6 are the versions compatible with this project
+- @shopify/react-native-skia@2.2.12 and @react-native-community/slider@5.0.1 are SDK 54 compatible
+- Never use .js extensions in TS imports (bundler module resolution)
+
+## 2026-03-15 22:xx MST - US-001
+- Installed all required dependencies using `npx expo install` (auto-resolved SDK 54 compatible versions)
+- Added @morse-bot/morse-decoder workspace:* to dependencies (was missing from file entirely)
+- Dependencies sorted alphabetically, sherif postinstall check passed
+- Files changed: apps/expo/package.json, pnpm-lock.yaml
+- **Learnings for future iterations:**
+  - Use `npx expo install <pkg>` instead of manually picking versions - it resolves the right SDK-compatible versions
+  - Expo SDK 54 uses higher numbered package versions than expected (expo-clipboard ~8.x not ~7.x, expo-file-system ~19.x not ~18.x)
+  - react-native-audio-api adds a plugin requirement to app.config.ts (handled in US-002)
+  - Unmet peer warnings are pre-existing and not blocking
+---

@@ -15,7 +15,7 @@
         "Typecheck passes: pnpm --filter @morse-bot/expo typecheck"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "The monorepo uses pnpm with catalog: versions in pnpm-workspace.yaml. For packages not in the catalog, use explicit versions. sherif enforces alphabetical ordering in package.json deps."
     },
     {
