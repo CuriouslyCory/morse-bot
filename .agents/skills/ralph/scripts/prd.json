@@ -101,7 +101,7 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
+      "passes": true,
       "notes": "This is a near-direct port from apps/nextjs/src/hooks/use-morse-decoder.ts. requestAnimationFrame and cancelAnimationFrame are available in React Native. Remove the 'use client' directive. All @morse-bot/morse-decoder imports work unchanged (pure JS package)."
     },
     {
