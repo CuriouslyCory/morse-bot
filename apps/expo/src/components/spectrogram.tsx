@@ -37,22 +37,44 @@ function dbToColor(db: number): string {
 
 export function Spectrogram({ stats }: SpectrogramProps) {
   const { width } = useWindowDimensions();
-  const bufferRef = useRef<number[]>(new Array(BUFFER_SIZE).fill(-Infinity));
-  const [renderTick, setRenderTick] = useState(0);
+  // Pending queue: filled by stats effect, drained by rAF
+  const pendingRef = useRef<number[]>([]);
+  const [displayBuffer, setDisplayBuffer] = useState<number[]>(() =>
+    new Array<number>(BUFFER_SIZE).fill(-Infinity),
+  );
+  const rafRef = useRef<number | null>(null);
 
+  // Enqueue new dB value without triggering a re-render
   useEffect(() => {
-    // Shift buffer left and append new value
-    bufferRef.current.push(stats.signalDb);
-    bufferRef.current = bufferRef.current.slice(-BUFFER_SIZE);
-    setRenderTick((t) => t + 1);
+    pendingRef.current.push(stats.signalDb);
   }, [stats]);
 
-  const buffer = bufferRef.current;
+  // rAF loop drains pending queue and updates display state from a callback
+  useEffect(() => {
+    function tick() {
+      const pending = pendingRef.current.splice(0);
+      if (pending.length > 0) {
+        setDisplayBuffer((prev) => {
+          const next = [...prev, ...pending];
+          return next.slice(-BUFFER_SIZE);
+        });
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    }
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, []);
+
   const rectWidth = width / BUFFER_SIZE;
 
   return (
-    <Canvas style={{ width, height: CANVAS_HEIGHT }} key={renderTick}>
-      {buffer.map((db, i) => (
+    <Canvas style={{ width, height: CANVAS_HEIGHT }}>
+      {displayBuffer.map((db, i) => (
         <Rect
           key={i}
           x={i * rectWidth}

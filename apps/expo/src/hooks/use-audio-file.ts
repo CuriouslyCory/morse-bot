@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 
@@ -27,7 +27,10 @@ export function useAudioFile({
 
   const cancelledRef = useRef(false);
   const onSamplesRef = useRef(onSamples);
-  onSamplesRef.current = onSamples;
+
+  useEffect(() => {
+    onSamplesRef.current = onSamples;
+  }, [onSamples]);
 
   const processFile = useCallback(async () => {
     setError(null);

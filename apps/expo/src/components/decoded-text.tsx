@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Pressable,
@@ -25,7 +25,7 @@ export function DecodedText({
   isRecording,
 }: DecodedTextProps) {
   const scrollViewRef = useRef<ScrollView>(null);
-  const cursorOpacity = useRef(new Animated.Value(1)).current;
+  const [cursorOpacity] = useState(() => new Animated.Value(1));
 
   // Blinking cursor animation
   useEffect(() => {
