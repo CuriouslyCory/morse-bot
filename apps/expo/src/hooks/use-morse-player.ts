@@ -1,6 +1,7 @@
+import type { MorseElement } from "@morse-bot/morse-decoder";
 import { useCallback, useRef, useState } from "react";
 import { AudioContext } from "react-native-audio-api";
-import type { MorseElement } from "@morse-bot/morse-decoder";
+
 import {
   createEncoder,
   ditDurationMs,

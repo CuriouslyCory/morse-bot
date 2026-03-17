@@ -3,11 +3,12 @@ import { Alert, Pressable, ScrollView, Text, View } from "react-native";
 import { useMutation } from "@tanstack/react-query";
 
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
-import { authClient } from "~/utils/auth";
-import { trpc } from "~/utils/api";
+
 import { useAudioFile } from "~/hooks/use-audio-file";
 import { useAudioInput } from "~/hooks/use-audio-input";
 import { useMorseDecoder } from "~/hooks/use-morse-decoder";
+import { trpc } from "~/utils/api";
+import { authClient } from "~/utils/auth";
 import { DecodedText } from "./decoded-text";
 import { DecoderControls } from "./decoder-controls";
 import { SignalStats } from "./signal-stats";
@@ -112,13 +113,7 @@ export function DecoderPanel() {
         wpm: decoderWpm,
       },
     });
-  }, [
-    decodedText,
-    decoderFrequency,
-    decoderWpm,
-    lastSource,
-    saveSession,
-  ]);
+  }, [decodedText, decoderFrequency, decoderWpm, lastSource, saveSession]);
 
   const error = micError ?? fileError;
   const isActive = isRecording || isProcessing;
@@ -126,7 +121,7 @@ export function DecoderPanel() {
   return (
     <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4">
       {/* Controls */}
-      <View className="rounded-lg border border-border bg-card p-4">
+      <View className="border-border bg-card rounded-lg border p-4">
         <DecoderControls
           onUpdateConfig={handleUpdateConfig}
           onReset={reset}
@@ -155,7 +150,7 @@ export function DecoderPanel() {
         <Pressable
           onPress={() => void handleOpenFile()}
           disabled={isActive}
-          className={`rounded-full border border-border px-6 py-3 ${isActive ? "opacity-50" : ""}`}
+          className={`border-border rounded-full border px-6 py-3 ${isActive ? "opacity-50" : ""}`}
         >
           <Text className="text-foreground">Open File</Text>
         </Pressable>
@@ -163,29 +158,29 @@ export function DecoderPanel() {
         {isProcessing ? (
           <Pressable
             onPress={stopProcessing}
-            className="rounded-full bg-destructive px-6 py-3"
+            className="bg-destructive rounded-full px-6 py-3"
           >
             <Text className="text-destructive-foreground">Stop</Text>
           </Pressable>
         ) : null}
 
         {error ? (
-          <Text className="text-sm text-destructive">{error}</Text>
+          <Text className="text-destructive text-sm">{error}</Text>
         ) : null}
       </View>
 
       {/* Progress bar */}
       {isProcessing ? (
-        <View className="h-2 w-full overflow-hidden rounded-full bg-muted">
+        <View className="bg-muted h-2 w-full overflow-hidden rounded-full">
           <View
-            className="h-full rounded-full bg-primary"
+            className="bg-primary h-full rounded-full"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </View>
       ) : null}
 
       {/* Visualization */}
-      <View className="gap-4 rounded-lg border border-border bg-card p-4">
+      <View className="border-border bg-card gap-4 rounded-lg border p-4">
         <Spectrogram stats={stats} />
         <SignalStats stats={stats} />
       </View>
@@ -203,7 +198,7 @@ export function DecoderPanel() {
           <Pressable
             onPress={handleSave}
             disabled={!decodedText.trim() || saveSession.isPending}
-            className={`rounded-full bg-secondary px-6 py-3 ${!decodedText.trim() || saveSession.isPending ? "opacity-50" : ""}`}
+            className={`bg-secondary rounded-full px-6 py-3 ${!decodedText.trim() || saveSession.isPending ? "opacity-50" : ""}`}
           >
             <Text className="text-secondary-foreground">
               {saveSession.isPending ? "Saving..." : "Save Session"}
@@ -218,7 +213,7 @@ export function DecoderPanel() {
               })
             }
           >
-            <Text className="text-sm text-muted-foreground underline">
+            <Text className="text-muted-foreground text-sm underline">
               Sign in to save sessions
             </Text>
           </Pressable>

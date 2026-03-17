@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
+
 import { EncoderPanel } from "~/components/encoder-panel";
 
 export default function EncoderScreen() {

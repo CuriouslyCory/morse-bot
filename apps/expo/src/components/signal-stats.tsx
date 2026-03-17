@@ -1,5 +1,5 @@
-import { Text, View } from "react-native";
 import type { DecoderStats } from "@morse-bot/morse-decoder";
+import { Text, View } from "react-native";
 
 interface SignalStatsProps {
   stats: DecoderStats;
@@ -15,11 +15,13 @@ function StatItem({
   color?: string;
 }) {
   return (
-    <View className="flex-1 items-center gap-1 rounded-lg bg-muted/50 px-4 py-3">
-      <Text className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+    <View className="bg-muted/50 flex-1 items-center gap-1 rounded-lg px-4 py-3">
+      <Text className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
         {label}
       </Text>
-      <Text className={`font-mono text-sm font-bold tabular-nums ${color ?? ""}`}>
+      <Text
+        className={`font-mono text-sm font-bold tabular-nums ${color ?? ""}`}
+      >
         {value}
       </Text>
     </View>

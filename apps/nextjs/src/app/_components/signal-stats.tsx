@@ -17,7 +17,7 @@ function StatItem({
 }) {
   return (
     <div className="bg-muted/50 flex flex-col items-center gap-1 rounded-lg px-4 py-3">
-      <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-widest">
+      <span className="text-muted-foreground text-[10px] font-semibold tracking-widest uppercase">
         {label}
       </span>
       <span

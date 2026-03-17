@@ -1,9 +1,10 @@
 import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { expo } from "@better-auth/expo";
-import { db } from "@morse-bot/db/client";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { oAuthProxy } from "better-auth/plugins";
+
+import { db } from "@morse-bot/db/client";
 
 export function initAuth<
   TExtraPlugins extends BetterAuthPlugin[] = [],

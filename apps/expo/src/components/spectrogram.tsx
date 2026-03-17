@@ -1,7 +1,7 @@
+import type { DecoderStats } from "@morse-bot/morse-decoder";
 import { useEffect, useRef, useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { Canvas, Rect } from "@shopify/react-native-skia";
-import type { DecoderStats } from "@morse-bot/morse-decoder";
 
 interface SpectrogramProps {
   stats: DecoderStats;

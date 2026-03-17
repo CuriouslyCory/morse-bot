@@ -1,13 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Animated,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import * as Clipboard from "expo-clipboard";
 import type { MorseElement } from "@morse-bot/morse-decoder";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Animated, Pressable, ScrollView, Text, View } from "react-native";
+import * as Clipboard from "expo-clipboard";
 
 interface DecodedTextProps {
   decodedText: string;
@@ -66,44 +60,44 @@ export function DecodedText({
   const hasContent = decodedText || inProgress;
 
   return (
-    <View className="overflow-hidden rounded-lg border border-border bg-card">
+    <View className="border-border bg-card overflow-hidden rounded-lg border">
       <View className="flex-row items-center justify-between px-4 py-3">
-        <Text className="text-sm font-medium text-card-foreground">
+        <Text className="text-card-foreground text-sm font-medium">
           Decoded Output
         </Text>
         {decodedText.trim() ? (
           <Pressable onPress={() => void handleCopy()}>
-            <Text className="text-xs text-muted-foreground">Copy</Text>
+            <Text className="text-muted-foreground text-xs">Copy</Text>
           </Pressable>
         ) : null}
       </View>
 
       <ScrollView
         ref={scrollViewRef}
-        className="min-h-48 bg-muted p-4"
+        className="bg-muted min-h-48 p-4"
         onContentSizeChange={() =>
           scrollViewRef.current?.scrollToEnd({ animated: false })
         }
       >
         {hasContent ? (
           <View className="flex-row flex-wrap">
-            <Text className="font-mono text-lg text-foreground">
+            <Text className="text-foreground font-mono text-lg">
               {decodedText}
             </Text>
             {inProgress ? (
-              <Text className="font-mono text-lg text-muted-foreground">
+              <Text className="text-muted-foreground font-mono text-lg">
                 {inProgress}
               </Text>
             ) : null}
             {isRecording ? (
               <Animated.View
                 style={{ opacity: cursorOpacity }}
-                className="ml-0.5 h-5 w-0.5 self-center bg-foreground"
+                className="bg-foreground ml-0.5 h-5 w-0.5 self-center"
               />
             ) : null}
           </View>
         ) : (
-          <Text className="font-mono text-lg text-muted-foreground">
+          <Text className="text-muted-foreground font-mono text-lg">
             {isRecording
               ? "Listening for morse code..."
               : "Press Start to begin decoding"}

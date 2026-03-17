@@ -46,7 +46,10 @@ export function EncoderPanel({
         <CardHeader className="flex-row items-center justify-between">
           <CardTitle>Text to Morse</CardTitle>
           <div className="flex items-center gap-3">
-            <Label htmlFor="encoder-wpm" className="text-muted-foreground text-xs">
+            <Label
+              htmlFor="encoder-wpm"
+              className="text-muted-foreground text-xs"
+            >
               Speed
             </Label>
             <select

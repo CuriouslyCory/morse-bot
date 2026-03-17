@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Platform, PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Platform } from "react-native";
 import { AudioRecorder } from "react-native-audio-api";
 
 interface UseAudioInputOptions {

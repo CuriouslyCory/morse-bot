@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+
 import { cn } from "@morse-bot/ui";
 import { ThemeProvider, ThemeToggle } from "@morse-bot/ui/theme";
 import { Toaster } from "@morse-bot/ui/toast";

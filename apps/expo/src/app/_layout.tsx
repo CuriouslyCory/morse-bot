@@ -19,9 +19,7 @@ function HeaderRight() {
             <Text className="text-white">My Sessions</Text>
           </Pressable>
         </Link>
-        <Pressable
-          onPress={() => authClient.signOut()}
-        >
+        <Pressable onPress={() => authClient.signOut()}>
           <Text className="text-white">Sign Out</Text>
         </Pressable>
       </View>

@@ -10,7 +10,10 @@ interface EncoderPanelProps {
   wpm: number;
 }
 
-export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) {
+export function EncoderPanel({
+  frequency,
+  wpm: defaultWpm,
+}: EncoderPanelProps) {
   const [text, setText] = useState("");
   const [playWpm, setPlayWpm] = useState(defaultWpm);
 
@@ -27,14 +30,14 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
 
   return (
     <ScrollView className="flex-1" contentContainerClassName="gap-4 p-4">
-      <View className="rounded-lg border border-border bg-card p-4 gap-4">
+      <View className="border-border bg-card gap-4 rounded-lg border p-4">
         {/* Header */}
-        <View className="flex-row items-center justify-between flex-wrap gap-2">
-          <Text className="text-lg font-semibold text-card-foreground">
+        <View className="flex-row flex-wrap items-center justify-between gap-2">
+          <Text className="text-card-foreground text-lg font-semibold">
             Text to Morse
           </Text>
           <View className="flex-row items-center gap-3">
-            <Text className="text-xs text-muted-foreground">Speed</Text>
+            <Text className="text-muted-foreground text-xs">Speed</Text>
             <View className="flex-row flex-wrap gap-1">
               {WPM_PRESETS.map((preset) => (
                 <Pressable
@@ -51,7 +54,7 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
                 </Pressable>
               ))}
             </View>
-            <Text className="font-mono text-xs text-muted-foreground">
+            <Text className="text-muted-foreground font-mono text-xs">
               {frequency} Hz
             </Text>
           </View>
@@ -66,12 +69,12 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
           placeholderTextColor="#888"
           multiline
           numberOfLines={4}
-          className={`min-h-24 rounded-lg border border-input bg-background px-4 py-3 font-mono text-sm text-foreground ${isPlaying ? "opacity-50" : ""}`}
+          className={`border-input bg-background text-foreground min-h-24 rounded-lg border px-4 py-3 font-mono text-sm ${isPlaying ? "opacity-50" : ""}`}
         />
 
         {/* Character highlighting during playback */}
         {isPlaying && chars.length > 0 ? (
-          <View className="flex-row flex-wrap rounded-lg bg-muted p-4">
+          <View className="bg-muted flex-row flex-wrap rounded-lg p-4">
             {chars.map((char, i) => (
               <Text
                 key={i}
@@ -92,7 +95,7 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
           {isPlaying ? (
             <Pressable
               onPress={stop}
-              className="rounded-full bg-destructive px-8 py-3"
+              className="bg-destructive rounded-full px-8 py-3"
             >
               <Text className="text-destructive-foreground">Stop</Text>
             </Pressable>
@@ -100,7 +103,7 @@ export function EncoderPanel({ frequency, wpm: defaultWpm }: EncoderPanelProps) 
             <Pressable
               onPress={handlePlay}
               disabled={!text.trim()}
-              className={`rounded-full bg-primary px-8 py-3 ${!text.trim() ? "opacity-50" : ""}`}
+              className={`bg-primary rounded-full px-8 py-3 ${!text.trim() ? "opacity-50" : ""}`}
             >
               <Text className="text-primary-foreground">Play</Text>
             </Pressable>

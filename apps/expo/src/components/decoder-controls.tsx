@@ -1,7 +1,8 @@
+import type { DecoderConfig } from "@morse-bot/morse-decoder";
 import { useCallback, useState } from "react";
 import { Pressable, Switch, Text, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import type { DecoderConfig } from "@morse-bot/morse-decoder";
+
 import { DEFAULT_CONFIG } from "@morse-bot/morse-decoder";
 
 const WPM_PRESETS = [5, 10, 13, 15, 20, 25, 30] as const;
@@ -60,7 +61,7 @@ export function DecoderControls({
     <View className="gap-4">
       {/* Frequency */}
       <View className="gap-1">
-        <Text className="text-xs font-medium uppercase tracking-wider text-foreground">
+        <Text className="text-foreground text-xs font-medium tracking-wider uppercase">
           Frequency
         </Text>
         <Slider
@@ -71,14 +72,14 @@ export function DecoderControls({
           onValueChange={handleFrequencyChange}
           disabled={isDisabled}
         />
-        <Text className="text-center font-mono text-xs tabular-nums text-muted-foreground">
+        <Text className="text-muted-foreground text-center font-mono text-xs tabular-nums">
           {frequency} Hz
         </Text>
       </View>
 
       {/* Speed (WPM) */}
       <View className="gap-1">
-        <Text className="text-xs font-medium uppercase tracking-wider text-foreground">
+        <Text className="text-foreground text-xs font-medium tracking-wider uppercase">
           Speed
         </Text>
         <View className="flex-row flex-wrap gap-2">
@@ -97,14 +98,14 @@ export function DecoderControls({
             </Pressable>
           ))}
         </View>
-        <Text className="text-center font-mono text-xs tabular-nums text-muted-foreground">
+        <Text className="text-muted-foreground text-center font-mono text-xs tabular-nums">
           {wpm} WPM
         </Text>
       </View>
 
       {/* Threshold */}
       <View className="gap-1">
-        <Text className="text-xs font-medium uppercase tracking-wider text-foreground">
+        <Text className="text-foreground text-xs font-medium tracking-wider uppercase">
           Threshold
         </Text>
         <Slider
@@ -115,14 +116,14 @@ export function DecoderControls({
           onValueChange={handleThresholdChange}
           disabled={isDisabled}
         />
-        <Text className="text-center font-mono text-xs tabular-nums text-muted-foreground">
+        <Text className="text-muted-foreground text-center font-mono text-xs tabular-nums">
           {threshold.toFixed(3)}
         </Text>
       </View>
 
       {/* Adaptive */}
       <View className="flex-row items-center justify-between gap-2">
-        <Text className="text-xs font-medium uppercase tracking-wider text-foreground">
+        <Text className="text-foreground text-xs font-medium tracking-wider uppercase">
           Adaptive
         </Text>
         <Switch
@@ -136,7 +137,7 @@ export function DecoderControls({
       <Pressable
         onPress={onReset}
         disabled={isDisabled}
-        className={`items-center rounded-full border border-border py-2 ${isDisabled ? "opacity-50" : ""}`}
+        className={`border-border items-center rounded-full border py-2 ${isDisabled ? "opacity-50" : ""}`}
       >
         <Text className="text-foreground">Clear</Text>
       </Pressable>

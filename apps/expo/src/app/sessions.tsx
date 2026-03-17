@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Alert, Pressable, SafeAreaView, Text, View } from "react-native";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LegendList } from "@legendapp/list";
 import { File, Paths } from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import { LegendList } from "@legendapp/list";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { authClient } from "~/utils/auth";
 import { trpc } from "~/utils/api";
+import { authClient } from "~/utils/auth";
 
 function formatDuration(ms: number): string {
   const s = Math.floor(ms / 1000);
@@ -58,24 +58,20 @@ export default function SessionsScreen() {
   };
 
   const handleDelete = (id: string) => {
-    Alert.alert(
-      "Delete this session?",
-      "This action cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => deleteSession.mutate(id),
-        },
-      ],
-    );
+    Alert.alert("Delete this session?", "This action cannot be undone.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => deleteSession.mutate(id),
+      },
+    ]);
   };
 
   if (!isAuthenticated) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center p-4">
-        <Text className="mb-4 text-center text-foreground">
+        <Text className="text-foreground mb-4 text-center">
           Sign in to view your saved sessions
         </Text>
         <Pressable
@@ -85,7 +81,7 @@ export default function SessionsScreen() {
               callbackURL: "/",
             })
           }
-          className="rounded-full bg-primary px-6 py-3"
+          className="bg-primary rounded-full px-6 py-3"
         >
           <Text className="text-primary-foreground">Sign in with Discord</Text>
         </Pressable>
@@ -104,7 +100,7 @@ export default function SessionsScreen() {
   if (!sessions || sessions.length === 0) {
     return (
       <SafeAreaView className="flex-1 items-center justify-center p-4">
-        <Text className="text-center text-muted-foreground">
+        <Text className="text-muted-foreground text-center">
           No saved sessions yet. Decode some morse code and click Save Session!
         </Text>
       </SafeAreaView>
@@ -125,23 +121,23 @@ export default function SessionsScreen() {
           const createdAt = new Date(item.createdAt).toLocaleString();
 
           return (
-            <View className="rounded-lg border border-border bg-card p-4">
+            <View className="border-border bg-card rounded-lg border p-4">
               <View className="flex-row items-start justify-between gap-2">
                 <View className="flex-1 gap-1">
                   <View className="flex-row flex-wrap gap-2">
-                    <Text className="text-sm text-muted-foreground">
+                    <Text className="text-muted-foreground text-sm">
                       {createdAt}
                     </Text>
-                    <Text className="text-sm text-muted-foreground">·</Text>
-                    <Text className="text-sm text-muted-foreground">
+                    <Text className="text-muted-foreground text-sm">·</Text>
+                    <Text className="text-muted-foreground text-sm">
                       {formatDuration(item.durationMs)}
                     </Text>
-                    <Text className="text-sm text-muted-foreground">·</Text>
-                    <Text className="text-sm capitalize text-muted-foreground">
+                    <Text className="text-muted-foreground text-sm">·</Text>
+                    <Text className="text-muted-foreground text-sm capitalize">
                       {item.source}
                     </Text>
                   </View>
-                  <Text className="mt-1 font-mono text-sm text-foreground">
+                  <Text className="text-foreground mt-1 font-mono text-sm">
                     {isExpanded ? item.decodedText : preview}
                     {!isExpanded && hasMore ? (
                       <Text className="text-muted-foreground">…</Text>
@@ -149,11 +145,9 @@ export default function SessionsScreen() {
                   </Text>
                   {hasMore ? (
                     <Pressable
-                      onPress={() =>
-                        setExpandedId(isExpanded ? null : item.id)
-                      }
+                      onPress={() => setExpandedId(isExpanded ? null : item.id)}
                     >
-                      <Text className="mt-1 text-xs text-muted-foreground underline">
+                      <Text className="text-muted-foreground mt-1 text-xs underline">
                         {isExpanded ? "Show less" : "Show more"}
                       </Text>
                     </Pressable>
@@ -162,16 +156,16 @@ export default function SessionsScreen() {
                 <View className="shrink-0 gap-2">
                   <Pressable
                     onPress={() => void handleExport(item)}
-                    className="rounded-md border border-border px-3 py-1.5"
+                    className="border-border rounded-md border px-3 py-1.5"
                   >
-                    <Text className="text-sm text-foreground">Export</Text>
+                    <Text className="text-foreground text-sm">Export</Text>
                   </Pressable>
                   <Pressable
                     onPress={() => handleDelete(item.id)}
                     disabled={deleteSession.isPending}
-                    className={`rounded-md border border-border px-3 py-1.5 ${deleteSession.isPending ? "opacity-50" : ""}`}
+                    className={`border-border rounded-md border px-3 py-1.5 ${deleteSession.isPending ? "opacity-50" : ""}`}
                   >
-                    <Text className="text-sm text-destructive">Delete</Text>
+                    <Text className="text-destructive text-sm">Delete</Text>
                   </Pressable>
                 </View>
               </View>
