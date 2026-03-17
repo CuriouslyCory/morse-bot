@@ -1,162 +1,362 @@
 {
-  "project": "morse Bot",
-  "branchName": "feat/morse-decoder",
-  "description": "Fix 13 issues from code review: incomplete @acme rename, broken tsconfig, IDOR security vulnerability, AudioContext leaks, Safari sampleRate, encoder constants, morse tree collisions, decoder state corruption, spectrogram performance, missing Suspense boundary, and more",
+  "project": "Morse Bot",
+  "branchName": "feat/expo-morse-studio",
+  "description": "Recreate the Next.js Morse Code Studio app 1:1 in the Expo mobile app with decoder, encoder, spectrogram, sessions, and auth",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Fix incomplete @acme rename in turbo generator templates and Expo postcss",
-      "description": "As a developer, I need the remaining @acme references in turbo templates and Expo config fixed so the rename is complete.",
+      "title": "Add new dependencies to Expo app",
+      "description": "As a developer, I need all required native dependencies installed so that audio, canvas, and file system features work correctly.",
       "acceptanceCriteria": [
-        "turbo/generators/templates/package.json.hbs: all @acme/ replaced with @morse-bot/ (lines 2, 18, 19, 20, 25)",
-        "turbo/generators/templates/eslint.config.ts.hbs line 3: @acme/eslint-config/base changed to @morse-bot/eslint-config/base",
-        "turbo/generators/templates/tsconfig.json.hbs line 2: @acme/tsconfig/compiled-package.json changed to @morse-bot/tsconfig/compiled-package.json",
-        "apps/expo/postcss.config.mjs line 1: @acme/tailwind-config changed to @morse-bot/tailwind-config",
-        "Typecheck passes"
+        "Add to apps/expo/package.json dependencies: react-native-live-audio-stream, react-native-audio-api, @shopify/react-native-skia, expo-document-picker, expo-clipboard, expo-file-system, expo-sharing, @react-native-community/slider",
+        "Move @morse-bot/morse-decoder from devDependencies to dependencies in apps/expo/package.json",
+        "Dependencies are sorted alphabetically in package.json (sherif enforces this)",
+        "pnpm install succeeds without errors",
+        "Typecheck passes: pnpm --filter @morse-bot/expo typecheck"
       ],
       "priority": 1,
       "passes": true,
-      "notes": "4 files were missed during the original rename. These are all simple string replacements."
+      "notes": "The monorepo uses pnpm with catalog: versions in pnpm-workspace.yaml. For packages not in the catalog, use explicit versions. sherif enforces alphabetical ordering in package.json deps."
     },
     {
       "id": "US-002",
-      "title": "Update README to remove stale @acme references",
-      "description": "As a developer, I need the README updated so documentation commands reference @morse-bot instead of @acme.",
+      "title": "Update Expo app.config.ts with microphone permissions and plugins",
+      "description": "As a developer, I need the Expo config updated with required native module plugins and permissions.",
       "acceptanceCriteria": [
-        "README.md line 72: remove or update the 'rename @acme' paragraph since rename is already done",
-        "README.md line 105: @acme/auth changed to @morse-bot/auth",
-        "README.md line 117: @acme/db changed to @morse-bot/db",
-        "grep -r '@acme' across all source files (*.ts, *.tsx, *.json, *.mjs, *.hbs, *.md, *.css) returns zero results excluding node_modules and pnpm-lock.yaml",
+        "apps/expo/app.config.ts: add iOS NSMicrophoneUsageDescription permission string",
+        "apps/expo/app.config.ts: add Android RECORD_AUDIO permission",
+        "Add required Expo plugins for new native modules (react-native-live-audio-stream, @shopify/react-native-skia, etc.)",
+        "Update app name to 'Morse Code Studio'",
         "Typecheck passes"
       ],
       "priority": 2,
       "passes": true,
-      "notes": ""
+      "notes": "Check existing app.config.ts for the current plugin/permission format and follow the same pattern."
     },
     {
       "id": "US-003",
-      "title": "Fix morse-decoder tsconfig to emit dist output",
-      "description": "As a developer, I need the morse-decoder package tsconfig to extend compiled-package.json so tsc actually produces declaration files in dist/.",
+      "title": "Create tab navigation structure and remove posts demo",
+      "description": "As a user, I want tab navigation between Decoder and Encoder modes, replacing the demo posts UI.",
       "acceptanceCriteria": [
-        "packages/morse-decoder/tsconfig.json: 'extends' changed from '@morse-bot/tsconfig/base.json' to '@morse-bot/tsconfig/compiled-package.json'",
-        "Running 'pnpm --filter @morse-bot/morse-decoder build' produces files in packages/morse-decoder/dist/",
-        "packages/morse-decoder/dist/index.d.ts exists after build",
-        "Typecheck passes"
+        "Create apps/expo/src/app/(tabs)/_layout.tsx with expo-router Tabs component, two tabs: 'Decoder' (index) and 'Encoder'",
+        "Tab bar at bottom of screen with descriptive labels",
+        "Decoder tab is the default/initial screen",
+        "Delete apps/expo/src/app/index.tsx (old posts home screen)",
+        "Delete apps/expo/src/app/post/[id].tsx (old post detail screen)",
+        "Create placeholder apps/expo/src/app/(tabs)/index.tsx that renders a SafeAreaView with Text 'Decoder' as temporary content",
+        "Create placeholder apps/expo/src/app/(tabs)/encoder.tsx that renders a SafeAreaView with Text 'Encoder' as temporary content",
+        "Typecheck passes",
+        "Lint passes"
       ],
       "priority": 3,
       "passes": true,
-      "notes": "base.json has noEmit: true which prevents any output. compiled-package.json overrides this with declaration: true, emitDeclarationOnly: true, outDir: dist."
+      "notes": "Follow expo-router file-based routing conventions. The (tabs) directory creates a tab navigator. Root _layout.tsx already has QueryClientProvider - keep that wrapper."
     },
     {
       "id": "US-004",
-      "title": "Fix IDOR vulnerability in session delete and getById",
-      "description": "As a developer, I need the session tRPC router to verify user ownership on delete and getById to prevent unauthorized access.",
+      "title": "Add auth-aware header with Sessions navigation",
+      "description": "As a user, I want to see the app title and navigate to My Sessions when signed in.",
       "acceptanceCriteria": [
-        "packages/api/src/router/session.ts delete mutation: where clause uses and(eq(DecodedSession.id, input), eq(DecodedSession.userId, ctx.session.user.id))",
-        "packages/api/src/router/session.ts getById query: where clause uses and(eq(DecodedSession.id, input.id), eq(DecodedSession.userId, ctx.session.user.id))",
-        "'and' imported from @morse-bot/db or drizzle-orm",
+        "Modify apps/expo/src/app/_layout.tsx: update Stack screenOptions to show 'Morse Code Studio' as header title",
+        "Add 'My Sessions' header button/link visible only when authenticated (use authClient.useSession() from ~/utils/auth)",
+        "My Sessions link navigates to /sessions route",
+        "Add Sign in / Sign out button in header using existing Discord OAuth flow (authClient.signIn.social / authClient.signOut)",
+        "Create apps/expo/src/app/sessions.tsx as placeholder screen with Text 'Sessions' and back navigation",
         "Typecheck passes"
       ],
       "priority": 4,
       "passes": true,
-      "notes": "Security fix. Currently any authenticated user can delete/read any session by guessing the ID."
+      "notes": "Auth is already configured in apps/expo/src/utils/auth.ts with Better Auth + @better-auth/expo plugin. Use authClient.useSession() for session state."
     },
     {
       "id": "US-005",
-      "title": "Fix AudioContext leak on recording setup error",
-      "description": "As a developer, I need the useAudioInput hook to clean up resources if setup fails partway through.",
+      "title": "Create WAV file parser utility",
+      "description": "As a developer, I need a pure-JS WAV parser that works in React Native to decode WAV audio files to raw PCM samples.",
       "acceptanceCriteria": [
-        "apps/nextjs/src/hooks/use-audio-input.ts catch block: closes audioContextRef.current if set",
-        "Catch block stops media stream tracks via streamRef.current?.getTracks().forEach(t => t.stop())",
-        "Catch block nulls out all refs (audioContextRef, streamRef, sourceNodeRef, workletNodeRef)",
+        "Create apps/expo/src/utils/wav-parser.ts accepting ArrayBuffer input",
+        "Returns { samples: Float32Array, sampleRate: number, channels: number, bitsPerSample: number }",
+        "Supports 16-bit and 32-bit PCM WAV files (format code 1)",
+        "Extracts first channel only (mono output)",
+        "Normalizes samples to [-1, 1] range (Int16 / 32768 or Int32 / 2147483648)",
+        "Throws descriptive errors for: missing RIFF header, missing WAVE format, unsupported audio format, missing fmt chunk, missing data chunk, unsupported bit depth",
+        "Logic adapted from packages/morse-decoder/src/__tests__/helpers/read-wav.ts but without node:fs dependency",
         "Typecheck passes"
       ],
       "priority": 5,
       "passes": true,
-      "notes": "If addModule or createMediaStreamSource throws, the AudioContext and stream are leaked since isRecording stays false and stopRecording won't be called."
+      "notes": "The existing read-wav.ts in the test helpers uses DataView-based RIFF/WAV parsing. Port the parsing logic but accept ArrayBuffer instead of file path. Do NOT use .js extensions in imports."
     },
     {
       "id": "US-006",
-      "title": "Fix Safari sampleRate mismatch",
-      "description": "As a developer, I need the audio input hook to detect the actual AudioContext sample rate and expose it so the decoder uses the correct rate.",
+      "title": "Create useMorseDecoder hook for React Native",
+      "description": "As a developer, I need the useMorseDecoder hook ported to React Native so audio samples can be decoded into morse text.",
       "acceptanceCriteria": [
-        "apps/nextjs/src/hooks/use-audio-input.ts: after creating AudioContext, read audioContext.sampleRate as actual rate",
-        "Hook return value includes actualSampleRate: number | null (null when not recording)",
-        "Decoder panel or useMorseDecoder uses the actual sample rate when configuring the decoder instead of the hardcoded default",
+        "Create apps/expo/src/hooks/use-morse-decoder.ts",
+        "Uses @morse-bot/morse-decoder createDecoder, DEFAULT_CONFIG, and type imports (DecoderConfig, DecoderStats, MorseElement)",
+        "Hook returns { decodedText, stats, currentElements, processSamples, reset, updateConfig } matching web API",
+        "Uses requestAnimationFrame batching for state updates (same pattern as apps/nextjs/src/hooks/use-morse-decoder.ts)",
+        "Decoder recreates when config changes using JSON.stringify configKey comparison",
+        "Cancels pending rAF on unmount",
+        "No 'use client' directive (not needed in React Native)",
         "Typecheck passes"
       ],
       "priority": 6,
       "passes": true,
-      "notes": "Safari may ignore the sampleRate parameter and use hardware default (44100/48000). The Goertzel filter frequency calc will be completely wrong if the decoder assumes 8000 but receives 44100."
+      "notes": "This is a near-direct port from apps/nextjs/src/hooks/use-morse-decoder.ts. requestAnimationFrame and cancelAnimationFrame are available in React Native. Remove the 'use client' directive. All @morse-bot/morse-decoder imports work unchanged (pure JS package)."
     },
     {
       "id": "US-007",
-      "title": "Add elementGap constant and fix morse tree prosign collisions",
-      "description": "As a developer, I need TIMING_RATIOS to have an explicit elementGap constant, and the morse tree to not map ITU prosigns to unrelated ASCII characters.",
+      "title": "Create useAudioInput hook for microphone recording",
+      "description": "As a user, I want to record audio from my phone's microphone to decode morse code in real time.",
       "acceptanceCriteria": [
-        "packages/morse-decoder/src/constants.ts TIMING_RATIOS: add elementGap: 1",
-        "packages/morse-decoder/src/encoder.ts: change 'dit * TIMING_RATIOS.dit' to 'dit * TIMING_RATIOS.elementGap' for element gap calculation",
-        "packages/morse-decoder/src/morse-tree.ts: remove '.-...' -> '&' mapping with comment explaining it's ITU AS (wait) prosign",
-        "packages/morse-decoder/src/morse-tree.ts: remove '...-..-' -> '$' mapping with comment noting it's non-ITU",
+        "Create apps/expo/src/hooks/use-audio-input.ts using react-native-live-audio-stream",
+        "Configure stream for 8000 Hz sample rate, 1 channel (mono), 16-bit PCM",
+        "Convert incoming base64 PCM data to Float32Array: decode base64 -> Uint8Array -> DataView -> read Int16 pairs -> divide by 32768",
+        "Call onSamples(float32Array) callback with each chunk of converted samples",
+        "Request microphone permission before recording starts (use PermissionsAndroid on Android or expo-av Audio.requestPermissionsAsync)",
+        "Returns { isRecording, error, startRecording, stopRecording } matching web hook interface",
+        "Shows 'Microphone permission denied' error message if permission is not granted",
+        "Cleans up stream on stopRecording and on component unmount",
         "Typecheck passes"
       ],
       "priority": 7,
       "passes": true,
-      "notes": "Two small fixes in the morse-decoder package combined into one story since they're both quick constant/data changes."
+      "notes": "react-native-live-audio-stream emits 'data' events with base64-encoded PCM. The conversion chain: base64 string -> byte array -> Int16Array (little-endian) -> Float32Array (normalize by dividing by 32768). Use a ref for the onSamples callback to avoid stale closures."
     },
     {
       "id": "US-008",
-      "title": "Fix updateConfig state corruption in decoder",
-      "description": "As a developer, I need updateConfig() to reset decoder transition state when DSP components are rebuilt.",
+      "title": "Create useAudioFile hook for WAV file decoding",
+      "description": "As a user, I want to pick a WAV file from my device to decode pre-recorded morse code audio.",
       "acceptanceCriteria": [
-        "packages/morse-decoder/src/decoder.ts updateConfig method: after rebuilding components, resets prevToneActive = false, lastTransitionMs = null, currentElements = []",
-        "decodedText is NOT cleared (only transition state is reset, preserving decoded output)",
+        "Create apps/expo/src/hooks/use-audio-file.ts using expo-document-picker and expo-file-system",
+        "processFile() opens native file picker via DocumentPicker.getDocumentAsync({ type: ['audio/wav', 'audio/x-wav'] })",
+        "Reads selected file as base64 via FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 })",
+        "Converts base64 to ArrayBuffer, parses with wav-parser.ts from ~/utils/wav-parser",
+        "Delivers samples in chunks of 4096 to onSamples(chunk, timestampMs) callback",
+        "Reports progress (0-1) between chunks",
+        "Yields to UI thread between chunks via setTimeout(0)",
+        "Returns { isProcessing, progress, error, processFile, stopProcessing }",
+        "Cancellation via stopProcessing() stops mid-processing using a cancelledRef",
         "Typecheck passes"
       ],
       "priority": 8,
       "passes": true,
-      "notes": "Without this, if updateConfig is called mid-character, the stale prevToneActive=true with a fresh envelope detector (starts toneActive=false) causes a spurious transition."
+      "notes": "Follow the same pattern as apps/nextjs/src/hooks/use-audio-file.ts for chunking and progress logic. The main difference is file reading: instead of File.arrayBuffer(), use expo-document-picker + expo-file-system. Base64 to ArrayBuffer conversion: atob() or Buffer.from(base64, 'base64') in RN."
     },
     {
       "id": "US-009",
-      "title": "Fix spectrogram unbounded queue during file processing",
-      "description": "As a developer, I need the spectrogram to handle rapid data inflow without unbounded memory growth.",
+      "title": "Create decoder controls component",
+      "description": "As a user, I want to adjust decoder parameters (frequency, speed, threshold, adaptive mode) to tune decoding.",
       "acceptanceCriteria": [
-        "apps/nextjs/src/app/_components/spectrogram.tsx: replace while(queue.length) { queue.shift() } with const items = queue.splice(0) to drain entire queue at once",
-        "Only paint the last CANVAS_WIDTH entries from the drained array (skip excess entries from fast file processing)",
-        "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Create apps/expo/src/components/decoder-controls.tsx with React Native controls",
+        "Frequency: @react-native-community/slider, range 300-1200 Hz, step 10, shows current value as Text",
+        "Speed (WPM): custom picker or Pressable dropdown with presets [5, 10, 13, 15, 20, 25, 30]",
+        "Threshold: @react-native-community/slider, range 0.001-0.1, step 0.001, shows value formatted to 3 decimal places",
+        "Adaptive toggle: React Native Switch component",
+        "Clear/Reset button as Pressable with styling",
+        "All controls accept isDisabled prop and are disabled during active decoding",
+        "Calls onUpdateConfig(partial: Partial<DecoderConfig>) on each change",
+        "Calls onReset() when Clear button pressed",
+        "Uses NativeWind classes for styling consistent with existing Expo app patterns",
+        "Typecheck passes"
       ],
       "priority": 9,
       "passes": true,
-      "notes": "During file processing, samples arrive faster than 60fps rAF can consume. queue.shift() is O(n) and the queue grows unboundedly."
+      "notes": "Port logic from apps/nextjs/src/app/_components/decoder-controls.tsx. Replace HTML elements: <input type='range'> -> Slider, <select> -> custom picker using Modal+FlatList or simple Pressable dropdown, <input type='checkbox'> -> Switch. Import DEFAULT_CONFIG from @morse-bot/morse-decoder for initial values."
     },
     {
       "id": "US-010",
-      "title": "Add Suspense boundary to sessions page",
-      "description": "As a developer, I need the sessions page to wrap SessionsList in a Suspense boundary.",
+      "title": "Create signal statistics display component",
+      "description": "As a user, I want to see real-time signal statistics during decoding.",
       "acceptanceCriteria": [
-        "apps/nextjs/src/app/sessions/page.tsx: wrap <SessionsList /> in <Suspense fallback={<p>Loading sessions...</p>}>",
-        "Import Suspense from react",
-        "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "Create apps/expo/src/components/signal-stats.tsx with React Native Views and Text",
+        "Displays 4 stats in a 2x2 grid: Signal (dBFS), Frequency (Hz), SNR (dB), Speed (WPM)",
+        "Shows '-- dBFS' / '-- dB' when values are not finite (use isFinite() check)",
+        "Color-coded values using NativeWind theme tokens: text-primary, text-secondary, text-chart-5, text-accent-foreground",
+        "Each stat has uppercase label in small text and value in monospace font",
+        "Accepts stats: DecoderStats prop from @morse-bot/morse-decoder",
+        "Typecheck passes"
       ],
       "priority": 10,
       "passes": true,
-      "notes": "SessionsList uses useSuspenseQuery but has no Suspense boundary. Client-side navigation will throw."
+      "notes": "Direct port from apps/nextjs/src/app/_components/signal-stats.tsx. Replace <div>/<span> with <View>/<Text>. Same StatItem pattern. NativeWind supports the same Tailwind class names."
     },
     {
       "id": "US-011",
-      "title": "Fix isProcessing timing and verify pathFilter API",
-      "description": "As a developer, I need isProcessing set before async work begins in useAudioFile, and the tRPC pathFilter() call verified.",
+      "title": "Create spectrogram visualization with Skia",
+      "description": "As a user, I want a scrolling waterfall spectrogram to visually monitor the morse signal.",
       "acceptanceCriteria": [
-        "apps/nextjs/src/hooks/use-audio-file.ts: move setIsProcessing(true) to before the first await (before file.arrayBuffer())",
-        "apps/nextjs/src/app/sessions/_components/sessions-list.tsx: verify trpc.session.pathFilter() works; if not, replace with { queryKey: trpc.session.list.queryOptions().queryKey }",
+        "Create apps/expo/src/components/spectrogram.tsx using @shopify/react-native-skia Canvas",
+        "Maintains a circular buffer of 512 dB values",
+        "On each stats update, appends new signalDb value and shifts buffer left",
+        "Draws 512 vertical rectangles colored by dbToColor() function",
+        "dbToColor() gradient: black -> green -> yellow for dBFS range -80 to -20 (port directly from apps/nextjs/src/app/_components/spectrogram.tsx)",
+        "Canvas renders via Skia (separate thread, does not block JS)",
+        "Accepts stats: DecoderStats prop",
         "Typecheck passes"
       ],
       "priority": 11,
       "passes": true,
-      "notes": "Two small fixes combined. The isProcessing shows false during audio decoding. The pathFilter may not exist in the installed tRPC version."
+      "notes": "Use Skia Canvas with useCanvasRef or imperative drawing. The dbToColor() function is pure math and ports directly. For drawing, use canvas.drawRect() for each column with Skia.Paint colored by the dB value."
+    },
+    {
+      "id": "US-012",
+      "title": "Create decoded text output component",
+      "description": "As a user, I want to see decoded morse text with a blinking cursor and copy support.",
+      "acceptanceCriteria": [
+        "Create apps/expo/src/components/decoded-text.tsx with ScrollView",
+        "Shows decoded text in monospace font (font-mono NativeWind class)",
+        "Shows in-progress morse elements (dit/dah) as dots/dashes in muted color using elementsToSymbols() helper",
+        "Blinking cursor (animated opacity View) shown when isRecording is true",
+        "Auto-scrolls to bottom when decodedText or currentElements change (scrollViewRef.current?.scrollToEnd())",
+        "Copy button that copies decodedText to clipboard via expo-clipboard setStringAsync()",
+        "Shows 'Listening for morse code...' placeholder when recording with empty output",
+        "Shows 'Press Start to begin decoding' when idle with empty output",
+        "Wrapped in a card-like View with rounded corners and background",
+        "Accepts props: decodedText: string, currentElements: MorseElement[], isRecording: boolean",
+        "Typecheck passes"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": "Port from apps/nextjs/src/app/_components/decoded-text.tsx. Replace navigator.clipboard with expo-clipboard. Replace div ref auto-scroll with ScrollView ref scrollToEnd(). elementsToSymbols maps 'dit'->'.' and 'dah'->'-'."
+    },
+    {
+      "id": "US-013",
+      "title": "Create decoder panel - main decoder screen",
+      "description": "As a user, I want the complete decoder interface combining controls, audio input, visualization, and output.",
+      "acceptanceCriteria": [
+        "Create apps/expo/src/components/decoder-panel.tsx orchestrating all decoder components",
+        "Uses useMorseDecoder hook for decoding state",
+        "Uses useAudioInput hook for microphone recording",
+        "Uses useAudioFile hook for file processing",
+        "'Start Mic' / 'Stop Mic' toggle button (destructive variant when recording)",
+        "'Open File' button that triggers file picker",
+        "'Stop' button visible during file processing",
+        "Progress bar (View with dynamic width and bg-primary) shown during file processing",
+        "Error messages shown for mic/file errors",
+        "Renders DecoderControls, Spectrogram, SignalStats, and DecodedText components",
+        "Updates decoder sampleRate when mic provides actualSampleRate (if applicable)",
+        "Mic and file buttons disabled appropriately during active decoding",
+        "Uses authClient.useSession() to check authentication state",
+        "Typecheck passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Port from apps/nextjs/src/app/_components/decoder-panel.tsx. This is the main orchestrator. Replace HTML <Button> with Pressable, <input type='file'> with useAudioFile().processFile(). The save session button will be added in a later story."
+    },
+    {
+      "id": "US-014",
+      "title": "Create useMorsePlayer hook for encoder",
+      "description": "As a developer, I need the useMorsePlayer hook ported to React Native for morse code audio playback.",
+      "acceptanceCriteria": [
+        "Create apps/expo/src/hooks/use-morse-player.ts using react-native-audio-api",
+        "Import AudioContext from react-native-audio-api (Web Audio API compatible)",
+        "play(text) creates AudioContext, schedules OscillatorNode tones at specified frequency and WPM",
+        "Oscillators use sine wave type with 0.3 gain",
+        "Tone scheduling uses AudioContext.currentTime for precise timing with 50ms lead time",
+        "stop() clears all scheduled timeouts, closes AudioContext, resets state",
+        "currentCharIndex updates via setTimeout during playback for UI highlighting",
+        "buildCharTimings() function ported directly from apps/nextjs/src/hooks/use-morse-player.ts (pure math using ditDurationMs, TIMING_RATIOS, getMorseForChar from @morse-bot/morse-decoder)",
+        "Returns { isPlaying, currentCharIndex, play, stop }",
+        "Cleanup timeout on playback completion (totalDurationMs + 100ms buffer)",
+        "Typecheck passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": "react-native-audio-api provides AudioContext, OscillatorNode, GainNode matching Web Audio API. The hook logic from apps/nextjs/src/hooks/use-morse-player.ts should port nearly 1:1. buildCharTimings is 100% portable (pure math)."
+    },
+    {
+      "id": "US-015",
+      "title": "Create encoder panel component",
+      "description": "As a user, I want to type text and hear it played back as morse code audio.",
+      "acceptanceCriteria": [
+        "Create apps/expo/src/components/encoder-panel.tsx with React Native components",
+        "Multiline TextInput for text entry with placeholder 'Type text to encode as morse code...'",
+        "WPM speed picker with same presets as decoder: [5, 10, 13, 15, 20, 25, 30]",
+        "Frequency display in Hz (accepts frequency prop)",
+        "Play button (disabled when text is empty or trimmed empty)",
+        "Stop button with destructive styling (shown during playback, replaces Play)",
+        "Real-time character highlighting: map over text chars, current char gets bg-primary text-primary-foreground styling",
+        "TextInput disabled during playback",
+        "Character highlight display shown only during playback when chars exist",
+        "Uses useMorsePlayer hook for audio playback",
+        "Accepts props: frequency: number, wpm: number",
+        "Typecheck passes"
+      ],
+      "priority": 15,
+      "passes": true,
+      "notes": "Port from apps/nextjs/src/app/_components/encoder-panel.tsx. Replace <textarea> with <TextInput multiline>. Replace <select> with same picker pattern used in decoder-controls. Character highlighting uses map over [...text] to create individually styled Text components."
+    },
+    {
+      "id": "US-016",
+      "title": "Wire up tab screens with decoder and encoder panels",
+      "description": "As a user, I want the Decoder and Encoder tabs to show the full functional panels.",
+      "acceptanceCriteria": [
+        "Update apps/expo/src/app/(tabs)/index.tsx: render DecoderPanel inside SafeAreaView, set screen title 'Morse Decoder'",
+        "Update apps/expo/src/app/(tabs)/encoder.tsx: render EncoderPanel inside SafeAreaView, set screen title 'Morse Encoder'",
+        "Encoder receives frequency and wpm as props (use state with defaults from DEFAULT_CONFIG)",
+        "Typecheck passes"
+      ],
+      "priority": 16,
+      "passes": true,
+      "notes": "Replace the placeholder content from US-003 with the actual panel components. Use Stack.Screen options for title. Import DEFAULT_CONFIG from @morse-bot/morse-decoder for initial frequency/wpm values."
+    },
+    {
+      "id": "US-017",
+      "title": "Add save session functionality to decoder",
+      "description": "As an authenticated user, I want to save a decoding session from the decoder panel.",
+      "acceptanceCriteria": [
+        "In decoder-panel.tsx: add 'Save Session' Pressable button visible when authenticated and decodedText is non-empty",
+        "Button calls trpc.session.save mutation with: decodedText, durationMs (Date.now() - sessionStart), source ('mic' or 'file'), settings ({ targetFrequency, wpm })",
+        "Track session start time when recording/processing begins",
+        "Track last source ('mic' or 'file') based on which input method was used",
+        "Button shows 'Saving...' text and is disabled while mutation is pending",
+        "Show 'Sign in to save sessions' Pressable when not authenticated, triggers authClient.signIn.social({ provider: 'discord', callbackURL: '/' })",
+        "Show success Alert on save, error Alert on failure",
+        "Uses trpc from ~/utils/api and authClient from ~/utils/auth",
+        "Typecheck passes"
+      ],
+      "priority": 17,
+      "passes": true,
+      "notes": "The tRPC session.save mutation is already available via the configured client. Follow the same mutation pattern used in the existing Expo app (see apps/expo/src/app/index.tsx for useMutation examples with trpc)."
+    },
+    {
+      "id": "US-018",
+      "title": "Create sessions list screen",
+      "description": "As an authenticated user, I want to view, expand, export, and delete my saved sessions.",
+      "acceptanceCriteria": [
+        "Update apps/expo/src/app/sessions.tsx (replacing placeholder from US-004)",
+        "Auth guard: if authClient.useSession() has no session, show sign-in prompt with Discord OAuth button",
+        "Fetch sessions via useQuery(trpc.session.list.queryOptions())",
+        "Display sessions using LegendList (already a dependency) with: creation timestamp (toLocaleString), duration (formatted with formatDuration helper), source (mic/file, capitalized)",
+        "Each session shows first 100 chars of decodedText as preview with '...' if truncated",
+        "'Show more' / 'Show less' Pressable toggle for long sessions using expandedId state",
+        "Export button: write decodedText to file via expo-file-system then share via expo-sharing",
+        "Delete button: confirmation via Alert.alert('Delete this session?'), then trpc.session.delete mutation",
+        "Alert feedback on delete success/failure",
+        "Invalidate session queries after delete (queryClient.invalidateQueries)",
+        "Empty state: Text 'No saved sessions yet. Decode some morse code and click Save Session!'",
+        "formatDuration helper: formats ms to '1h 30m', '5m 30s', or '45s' (port from apps/nextjs/src/app/sessions/_components/sessions-list.tsx)",
+        "Typecheck passes"
+      ],
+      "priority": 18,
+      "passes": true,
+      "notes": "Port logic from apps/nextjs/src/app/sessions/_components/sessions-list.tsx. Replace window.confirm with Alert.alert. Replace Blob download with expo-file-system writeAsStringAsync + expo-sharing shareAsync. Use LegendList (already imported in existing index.tsx) for the sessions list."
+    },
+    {
+      "id": "US-019",
+      "title": "Polish theming and final cleanup",
+      "description": "As a user, I want the app to look polished with proper theming and no leftover demo code.",
+      "acceptanceCriteria": [
+        "Dark/light mode works via useColorScheme() + NativeWind theme tokens throughout all screens",
+        "All components use consistent NativeWind classes matching the web app's color scheme (bg-background, text-foreground, bg-primary, etc.)",
+        "No remaining posts-related code anywhere in apps/expo/src/",
+        "No TypeScript errors: pnpm --filter @morse-bot/expo typecheck",
+        "No lint errors: pnpm --filter @morse-bot/expo lint"
+      ],
+      "priority": 19,
+      "passes": true,
+      "notes": "The Tailwind theme tokens are already shared via @morse-bot/tailwind-config and imported in apps/expo/src/styles.css. NativeWind translates these to React Native styles. Verify all new components use the correct theme tokens."
     }
   ]
 }

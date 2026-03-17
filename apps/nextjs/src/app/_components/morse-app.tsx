@@ -19,10 +19,7 @@ export function MorseApp() {
         <TabsTrigger value="encoder">Encoder</TabsTrigger>
       </TabsList>
       <TabsContent value="decoder">
-        <DecoderPanel
-          onFrequencyChange={setFrequency}
-          onWpmChange={setWpm}
-        />
+        <DecoderPanel onFrequencyChange={setFrequency} onWpmChange={setWpm} />
       </TabsContent>
       <TabsContent value="encoder">
         <EncoderPanel frequency={frequency} wpm={wpm} />

@@ -2,9 +2,10 @@ import type { AppRouter } from "@morse-bot/api";
 import type { TRPCQueryOptions } from "@trpc/tanstack-react-query";
 import { cache } from "react";
 import { headers } from "next/headers";
-import { appRouter, createTRPCContext } from "@morse-bot/api";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
+
+import { appRouter, createTRPCContext } from "@morse-bot/api";
 
 import { auth } from "~/auth/server";
 import { createQueryClient } from "./query-client";

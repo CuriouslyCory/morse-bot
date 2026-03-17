@@ -65,7 +65,10 @@ export function DecoderControls({
   return (
     <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 lg:grid-cols-5">
       <div className="flex flex-col gap-2">
-        <Label htmlFor="frequency" className="text-xs font-medium uppercase tracking-wider">
+        <Label
+          htmlFor="frequency"
+          className="text-xs font-medium tracking-wider uppercase"
+        >
           Frequency
         </Label>
         <Input
@@ -85,7 +88,10 @@ export function DecoderControls({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="wpm" className="text-xs font-medium uppercase tracking-wider">
+        <Label
+          htmlFor="wpm"
+          className="text-xs font-medium tracking-wider uppercase"
+        >
           Speed
         </Label>
         <select
@@ -104,7 +110,10 @@ export function DecoderControls({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="threshold" className="text-xs font-medium uppercase tracking-wider">
+        <Label
+          htmlFor="threshold"
+          className="text-xs font-medium tracking-wider uppercase"
+        >
           Threshold
         </Label>
         <Input
@@ -124,7 +133,10 @@ export function DecoderControls({
       </div>
 
       <div className="flex flex-col gap-2">
-        <Label htmlFor="adaptive" className="text-xs font-medium uppercase tracking-wider">
+        <Label
+          htmlFor="adaptive"
+          className="text-xs font-medium tracking-wider uppercase"
+        >
           Adaptive
         </Label>
         <div className="flex h-9 items-center">
@@ -137,7 +149,7 @@ export function DecoderControls({
               disabled={isDisabled}
               className="peer sr-only"
             />
-            <div className="peer-checked:bg-primary bg-muted h-6 w-11 rounded-full after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5 peer-disabled:cursor-not-allowed peer-disabled:opacity-50" />
+            <div className="peer-checked:bg-primary bg-muted h-6 w-11 rounded-full peer-disabled:cursor-not-allowed peer-disabled:opacity-50 after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
           </label>
         </div>
       </div>

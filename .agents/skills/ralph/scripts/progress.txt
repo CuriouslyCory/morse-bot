@@ -1,27 +1,183 @@
-## Codebase Patterns
-- This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
-- sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
-- pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
-- Package scope is @morse-bot/ (was @acme/ in the t3-turbo template).
-- Root package.json name is "morse-bot".
-- The `public/` directory in apps/nextjs must be excluded from tsconfig.json to avoid TS errors on plain JS worklet files.
-- TypeScript imports must NOT use .js extensions — project uses bundler module resolution
-- Package tsconfig must extend @morse-bot/tsconfig/compiled-package.json (not base.json) to emit dist/ output
-- All tRPC mutations/queries that access user-owned data must include userId in where clause
-- @morse-bot/db re-exports drizzle-orm helpers (eq, and, desc, etc.)
-
 # Ralph Progress Log
-Started: Sat Mar 15 2026 — Code Review Remediation
+Started: Sun Mar 15 10:04:02 PM MST 2026
 ---
 
-## 2026-03-15 - US-001
-- Replaced all remaining @acme/ references with @morse-bot/ in turbo generator templates and Expo postcss config
-- Files changed:
-  - turbo/generators/templates/package.json.hbs (lines 2, 18, 19, 20, 25)
-  - turbo/generators/templates/eslint.config.ts.hbs (line 3)
-  - turbo/generators/templates/tsconfig.json.hbs (line 2)
-  - apps/expo/postcss.config.mjs (line 1)
+## Codebase Patterns
+- Use `npx expo install <packages>` to resolve SDK-compatible versions (auto-resolves based on expo version in package.json)
+- sherif enforces alphabetical ordering in package.json deps; always sort alphabetically
+- Use `catalog:` for packages in pnpm-workspace.yaml catalog, explicit versions for others
+- `@morse-bot/morse-decoder` is a workspace package: use `workspace:*` as version
+- For Expo SDK 54, expo-clipboard is ~8.x, expo-document-picker is ~14.x, expo-file-system is ~19.x, expo-sharing is ~14.x
+- react-native-live-audio-stream@^1.1.1 and react-native-audio-api@^0.11.6 are the versions compatible with this project
+- react-hooks/set-state-in-effect: setState must be called from callback (rAF/setTimeout/event), not directly in effect body
+- react-hooks/refs: Do NOT read ref.current during render; use state for render data
+- For Animated.Value: use `const [val] = useState(() => new Animated.Value(1))` not useRef
+- expo-file-system v19: use `import { File } from "expo-file-system"` and `new File(uri).bytes()` (NOT legacy readAsStringAsync)
+- @shopify/react-native-skia@2.2.12 and @react-native-community/slider@5.0.1 are SDK 54 compatible
+- Never use .js extensions in TS imports (bundler module resolution)
+
+## 2026-03-15 22:xx MST - US-001
+- Installed all required dependencies using `npx expo install` (auto-resolved SDK 54 compatible versions)
+- Added @morse-bot/morse-decoder workspace:* to dependencies (was missing from file entirely)
+- Dependencies sorted alphabetically, sherif postinstall check passed
+- Files changed: apps/expo/package.json, pnpm-lock.yaml
 - **Learnings for future iterations:**
-  - .hbs template files are not compiled by TS so won't show typecheck errors; check them separately with grep
-  - All 4 files were simple string replacements, no functional changes needed
+  - Use `npx expo install <pkg>` instead of manually picking versions - it resolves the right SDK-compatible versions
+  - Expo SDK 54 uses higher numbered package versions than expected (expo-clipboard ~8.x not ~7.x, expo-file-system ~19.x not ~18.x)
+  - react-native-audio-api adds a plugin requirement to app.config.ts (handled in US-002)
+  - Unmet peer warnings are pre-existing and not blocking
+---
+
+## 2026-03-15 - US-002
+- Updated apps/expo/app.config.ts:
+  - Changed app name from "expo" to "Morse Code Studio"
+  - Added iOS NSMicrophoneUsageDescription in infoPlist
+  - Added Android RECORD_AUDIO permission in permissions array
+  - Added @shopify/react-native-skia plugin
+  - Added react-native-audio-api plugin
+  - Added react-native-live-audio-stream plugin with microphonePermission config
+- Files changed: apps/expo/app.config.ts
+- **Learnings for future iterations:**
+  - react-native-live-audio-stream plugin accepts microphonePermission config option for iOS
+  - @shopify/react-native-skia and react-native-audio-api are simple string plugins (no config needed)
+  - iOS mic permission uses infoPlist.NSMicrophoneUsageDescription (not a plugin)
+  - Android mic permission uses android.permissions array with "android.permission.RECORD_AUDIO"
+---
+
+## 2026-03-15 - US-003
+- Created (tabs) tab navigator layout with Decoder (index) and Encoder tabs
+- Created placeholder Decoder screen at apps/expo/src/app/(tabs)/index.tsx
+- Created placeholder Encoder screen at apps/expo/src/app/(tabs)/encoder.tsx
+- Deleted apps/expo/src/app/index.tsx (old posts home screen)
+- Deleted apps/expo/src/app/post/[id].tsx (old post detail screen)
+- Files changed: apps/expo/src/app/(tabs)/_layout.tsx (new), apps/expo/src/app/(tabs)/index.tsx (new), apps/expo/src/app/(tabs)/encoder.tsx (new), apps/expo/src/app/index.tsx (deleted), apps/expo/src/app/post/[id].tsx (deleted)
+- **Learnings for future iterations:**
+  - expo-router (tabs) folder uses parentheses in filesystem; shell needs escaping: mkdir -p "path/(tabs)"
+  - tabBarPosition: "bottom" sets tab bar at bottom (Tabs screenOptions)
+  - Decoder tab is the default because it's index.tsx in the (tabs) folder
+---
+
+## 2026-03-15 - US-004
+- Updated apps/expo/src/app/_layout.tsx:
+  - Added Stack screenOptions title: "Morse Code Studio" with white header title styling
+  - Created HeaderRight component using authClient.useSession() for conditional rendering
+  - When authenticated: shows "My Sessions" Link (navigates to /sessions) and "Sign Out" button
+  - When not authenticated: shows "Sign In" button that triggers Discord OAuth
+  - headerRight renders HeaderRight component in Stack screenOptions
+- Created apps/expo/src/app/sessions.tsx as placeholder screen
+- Files changed: apps/expo/src/app/_layout.tsx, apps/expo/src/app/sessions.tsx (new)
+- **Learnings for future iterations:**
+  - authClient.useSession() returns { data: session } - use `const { data: session } = authClient.useSession()`
+  - Stack headerRight accepts a function: `headerRight: () => <Component />`
+  - Define header components outside the layout function to use hooks
+  - authClient.signIn.social takes { provider, callbackURL } options
+---
+
+## 2026-03-15 - US-005
+- Created apps/expo/src/utils/wav-parser.ts with parseWav(buffer: ArrayBuffer) function
+- Ported directly from packages/morse-decoder/src/__tests__/helpers/read-wav.ts
+- Main difference: accepts ArrayBuffer instead of file path (no node:fs dependency)
+- Returns WavData: { samples: Float32Array, sampleRate, channels, bitsPerSample }
+- Supports 16-bit and 32-bit PCM, extracts first channel, normalizes to [-1, 1]
+- Throws descriptive errors for all invalid WAV conditions
+- Files changed: apps/expo/src/utils/wav-parser.ts (new)
+- **Learnings for future iterations:**
+  - React Native has DataView globally available (same Web API)
+  - Pure DataView-based parsing works identically in RN and Node
+---
+
+## 2026-03-15 - US-006
+- Created apps/expo/src/hooks/use-morse-decoder.ts
+- Near-direct port from apps/nextjs/src/hooks/use-morse-decoder.ts
+- Removed "use client" directive (not needed in React Native)
+- requestAnimationFrame and cancelAnimationFrame are available in React Native globally
+- Files changed: apps/expo/src/hooks/use-morse-decoder.ts (new)
+- **Learnings for future iterations:**
+  - requestAnimationFrame/cancelAnimationFrame work identically in React Native
+  - @morse-bot/morse-decoder is pure JS, works unchanged in RN
+---
+
+## 2026-03-15 - US-007
+- Created apps/expo/src/hooks/use-audio-input.ts using react-native-live-audio-stream
+- Configured for 8000 Hz, 1 channel (mono), 16-bit PCM
+- Converts base64 PCM data: atob -> Uint8Array -> DataView -> Int16 -> Float32Array / 32768
+- Android mic permission via PermissionsAndroid.request; iOS handled via Info.plist (NSMicrophoneUsageDescription)
+- Uses isRecordingRef to guard data events after stop, onSamplesRef to avoid stale closures
+- Files changed: apps/expo/src/hooks/use-audio-input.ts (new)
+- **Learnings for future iterations:**
+  - react-native-live-audio-stream API: init({ sampleRate, channels, bitsPerSample, wavFile }), on("data", cb), start(), stop()
+  - The "data" callback receives base64-encoded PCM string
+  - atob() is available globally in React Native for base64 decoding
+  - AudioRecord.stop() returns Promise<string>; void it to avoid unhandled promise
+---
+
+## 2026-03-15 - US-008
+- Created apps/expo/src/hooks/use-audio-file.ts using expo-document-picker and new expo-file-system v19 API
+- Uses DocumentPicker.getDocumentAsync({ type: ['audio/wav', 'audio/x-wav'] }) for file selection
+- Uses new File(uri).bytes() to read file as Uint8Array (NOT the deprecated readAsStringAsync)
+- Passes bytes.buffer to parseWav() from ~/utils/wav-parser
+- Delivers samples in chunks of 4096 with progress reporting and setTimeout(0) yielding
+- Files changed: apps/expo/src/hooks/use-audio-file.ts (new)
+- **Learnings for future iterations:**
+  - expo-file-system v19 has a new API: `new File(uri).bytes()` returns Promise<Uint8Array>
+  - The old `FileSystem.readAsStringAsync` with EncodingType is in `expo-file-system/legacy` and throws at runtime if imported from main package
+  - `File` class is imported directly: `import { File } from "expo-file-system"`
+  - bytes.buffer has type ArrayBufferLike in TS; cast to ArrayBuffer with `bytes.buffer as ArrayBuffer`
+---
+
+## 2026-03-15 - US-009
+- Created apps/expo/src/components/decoder-controls.tsx
+- Replaced HTML inputs with: Slider (@react-native-community/slider), Pressable buttons for WPM presets, Switch for Adaptive
+- WPM uses Pressable preset buttons (no dropdown needed - simpler for mobile)
+- Files changed: apps/expo/src/components/decoder-controls.tsx (new)
+
+## 2026-03-15 - US-010
+- Created apps/expo/src/components/signal-stats.tsx
+- 2x2 grid layout using flex-row pairs
+- Files changed: apps/expo/src/components/signal-stats.tsx (new)
+
+## 2026-03-15 - US-011
+- Created apps/expo/src/components/spectrogram.tsx using @shopify/react-native-skia
+- Initially used useEffect+setState directly (triggered lint error: react-hooks/set-state-in-effect)
+- Fixed using rAF loop pattern: pendingRef accumulates in effect, rAF drains and calls setState from callback
+- Files changed: apps/expo/src/components/spectrogram.tsx (new)
+- **Learnings for future iterations:**
+  - react-hooks/set-state-in-effect: Do NOT call setState directly in useEffect body; call it from a callback (rAF, setTimeout, event handler)
+  - react-hooks/refs: Do NOT read ref.current during render; use state instead
+  - For `new Animated.Value()`, use `const [val] = useState(() => new Animated.Value(1))` instead of useRef to avoid ref-in-render lint errors
+  - Skia Canvas: `<Canvas>` with `<Rect>` children for declarative drawing; color prop accepts rgb() strings
+
+## 2026-03-15 - US-012
+- Created apps/expo/src/components/decoded-text.tsx
+- Uses Animated.Value via useState (not useRef) for blinking cursor
+- Uses ScrollView with scrollToEnd for auto-scroll
+- Uses expo-clipboard for copy
+- Files changed: apps/expo/src/components/decoded-text.tsx (new)
+
+## 2026-03-15 - US-013
+- Created apps/expo/src/components/decoder-panel.tsx orchestrating all decoder components
+- Does not include save session button (added in US-017)
+- Also fixed lint issues in use-audio-file.ts (onSamplesRef.current assignment moved to useEffect)
+- Files changed: apps/expo/src/components/decoder-panel.tsx (new), use-audio-file.ts (fix)
+---
+
+## 2026-03-15 - US-014
+- Created apps/expo/src/hooks/use-morse-player.ts
+- Imported AudioContext from react-native-audio-api (Web Audio API compatible)
+- Near-direct port from apps/nextjs/src/hooks/use-morse-player.ts
+- AudioContext.close() is async in react-native-audio-api; use void ctx.close()
+- Files changed: apps/expo/src/hooks/use-morse-player.ts (new)
+
+## 2026-03-15 - US-015 through US-019
+- US-015: encoder-panel.tsx with TextInput, WPM presets, char highlighting
+- US-016: Wired up (tabs)/index.tsx and encoder.tsx with panels
+- US-017: Added save session to decoder-panel.tsx using trpc.session.save mutation + Alert feedback
+- US-018: sessions.tsx with auth guard, LegendList, export/delete with expo-file-system+expo-sharing
+- US-019: Cleanup - removed unused queryClient import from decoder-panel.tsx; all components use NativeWind tokens
+- **Learnings for future iterations:**
+  - expo-file-system v19: cacheDirectory -> `Paths.cache` (not FileSystem.cacheDirectory)
+  - LegendList: requires data, keyExtractor, estimatedItemSize, renderItem props
+  - expo-sharing: check isAvailableAsync() before shareAsync()
+  - Interface vs type: use interface (lint rule @typescript-eslint/consistent-type-definitions)
+  - react-native-audio-api AudioContext.close() returns Promise, use void
 ---

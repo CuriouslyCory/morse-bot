@@ -1,149 +1,23 @@
-## 2026-03-14 - US-010
-- Created apps/nextjs/src/app/_components/signal-stats.tsx: 4-stat display (signal dBFS, frequency Hz, SNR dB, speed WPM)
-- Uses @morse-bot/ui/separator (vertical) between stat items; StatItem subcomponent for label+value layout
-- isFinite() guard to display "— dBFS" / "— dB" when values are -Infinity/non-finite (e.g. before recording starts)
-- Updated DecoderPanel to import SignalStats and pass stats from useMorseDecoder()
-- Typecheck passed (16/16 tasks, 15 cached)
-- Browser verification: manual verification needed (no browser tool available)
-- **Learnings for future iterations:**
-  - @morse-bot/ui/separator supports `orientation="vertical"` with explicit `className="h-8"` for fixed height
-  - Use `isFinite()` for -Infinity guard on dBFS/dB values before calling .toFixed()
-  - tabular-nums class keeps number widths consistent as values update
----
-
-## 2026-03-14 - US-009
-- Created apps/nextjs/src/app/_components/decoded-text.tsx: scrollable monospace text area with auto-scroll and in-progress element display
-- "dit" → "." and "dah" → "-" rendered as in-progress symbols in muted color at end of decoded text
-- Auto-scroll via useEffect watching decodedText/currentElements, setting scrollTop = scrollHeight
-- Updated DecoderPanel to import DecodedText and pass decodedText, currentElements, isRecording props
-- Typecheck passed (16/16 tasks, 15 cached)
-- **Learnings for future iterations:**
-  - Auto-scroll pattern: containerRef + useEffect → el.scrollTop = el.scrollHeight
-  - In-progress elements live in a separate styled span after the main decoded text
-  - MorseElement "dit" → ".", "dah" → "-" for visual display
----
-
-## 2026-03-14 - US-008
-- Replaced demo posts/auth showcase in apps/nextjs/src/app/page.tsx with DecoderPanel
-- Created apps/nextjs/src/app/_components/decoder-panel.tsx as 'use client' component
-- DecoderPanel composes useAudioInput and useMorseDecoder hooks, wiring onSamples to processSamples
-- Start/Stop button toggles recording; Clear button resets decoded text; error display; decoded text output area
-- Typecheck passed (16/16 tasks, 15 cached)
-- Browser verification: manual verification needed (no browser tool available in this environment)
-- **Learnings for future iterations:**
-  - onSamples callback ref pattern already in useAudioInput — pass a stable wrapper via useRef to avoid re-registering
-  - performance.now() used for timestampMs since Audio API callbacks don't provide timestamps directly
-  - page.tsx is a Server Component — only DecoderPanel needs 'use client' directive
----
-
-## 2026-03-14 - US-007
-- Created apps/nextjs/src/hooks/use-morse-decoder.ts: useMorseDecoder(config) hook
-- Wraps createDecoder() in a useRef to avoid recreating on every render
-- Maintains React state for decodedText (string), stats (DecoderStats), currentElements (MorseElement[])
-- Uses requestAnimationFrame-gated flush (scheduleFlush) to batch all decoder event updates into a single React render
-- Pending updates accumulated in refs (pendingTextRef, pendingStatsRef, pendingElementsRef) between rAF callbacks
-- Config change detection via JSON.stringify comparison — recreates decoder when config differs
-- cancelAnimationFrame on unmount to prevent memory leaks
-- Typecheck passed (16/16 tasks)
-- **Learnings for future iterations:**
-  - Use pending refs + rAF batching for high-frequency callbacks (decoder fires onStats on every sample block)
-  - decodedText appends incrementally via setDecodedText(prev => prev + newText) — avoids needing full text in pending ref
-  - Config recreation pattern: compare JSON.stringify of config, recreate decoder inline (not in useEffect) to avoid stale closure issues
-  - The void prev line is just to silence "variable assigned but never used" linter warnings on the old decoder reference
----
-
 ## Codebase Patterns
 - This is a pnpm monorepo using Turborepo. Apps in apps/, shared packages in packages/, tooling in tooling/.
 - sherif@latest enforces alphabetical ordering in package.json dependencies/devDependencies. Always sort keys alphabetically.
 - pnpm postinstall runs sherif lint:ws automatically; fix ordering issues before committing.
 - Package scope is @morse-bot/ (was @acme/ in the t3-turbo template).
-- Root package.json name is "morse-bot".
-- The `public/` directory in apps/nextjs must be excluded from tsconfig.json to avoid TS errors on plain JS worklet files.
+- TypeScript imports must NOT use .js extensions — project uses bundler module resolution.
+- The Expo app uses expo-router for file-based routing (similar to Next.js App Router).
+- The Expo app uses NativeWind (Tailwind CSS for React Native) — use className prop on RN components.
+- tRPC client is configured at apps/expo/src/utils/api.tsx — use `trpc` for query/mutation options.
+- Auth client is configured at apps/expo/src/utils/auth.ts — use `authClient.useSession()`, `authClient.signIn.social()`, `authClient.signOut()`.
+- @morse-bot/morse-decoder is pure JS and works in React Native without changes.
+- @morse-bot/ui (Radix-based) does NOT work in React Native — build RN equivalents with NativeWind classes.
+- requestAnimationFrame and cancelAnimationFrame are available in React Native.
+- All tRPC mutations/queries that access user-owned data must include userId in where clause.
+- @morse-bot/db re-exports drizzle-orm helpers (eq, and, desc, etc.).
+- The path alias ~/ maps to apps/expo/src/ in the Expo app (configured in tsconfig.json).
+- Use Pressable (not TouchableOpacity) for interactive elements — it's the modern RN approach.
+- For portable functions (dbToColor, buildCharTimings, elementsToSymbols, formatDuration), copy directly from the Next.js app — they are pure math/string functions with no web dependencies.
 
 # Ralph Progress Log
-Started: Sat Mar 14 08:55:18 PM MST 2026
+Started: Sun Mar 15 2026 — Expo Morse Code Studio
 ---
 
-## 2026-03-14 - US-001
-- Renamed all @acme/ references to @morse-bot/ across all files
-- Updated root package.json name from create-t3-turbo to morse-bot
-- Updated turbo/generators/config.ts description from "Acme Monorepo" to "morse Bot Monorepo"
-- Updated apps/nextjs/src/app/layout.tsx metadata titles/descriptions/URLs from "Create T3 Turbo" to "morse Bot"
-- Fixed alphabetical ordering in packages/auth/package.json and apps/tanstack-start/package.json (required by sherif)
-- Deleted and regenerated pnpm-lock.yaml via pnpm install
-- Typecheck passed (14/14 tasks)
-- Files changed: all *.json, *.ts, *.tsx, *.js, *.css files across the monorepo
-- **Learnings for future iterations:**
-  - sherif enforces alphabetical sorting in package.json; new packages must have sorted deps
-  - pnpm install fails if sherif finds issues (it runs as postinstall)
-  - Node engine mismatch warning (wants ^22.21.0, has v24.13.1) but doesn't block install
----
-
-## 2026-03-14 - US-003
-- Created packages/morse-decoder/src/goertzel.ts: createGoertzelFilter using standard second-order IIR Goertzel algorithm
-- Created packages/morse-decoder/src/envelope-detector.ts: createEnvelopeDetector with dual-threshold hysteresis and EMA noise floor tracking
-- Updated src/types.ts: added GoertzelConfig, EnvelopeConfig, EnvelopeState interfaces
-- Updated src/index.ts: exports for new types and functions
-- Typecheck passed (15/15 tasks)
-- **Learnings for future iterations:**
-  - Goertzel power formula: `s1*s1 + s2*s2 - coeff*s1*s2` where coeff = 2*cos(omega); normalize by dividing sqrt(power) by N/2
-  - Envelope detector: onThreshold > offThreshold (hysteresis gap prevents jitter); noise floor tracked via slow EMA (0.99/0.01 ratio) only when tone is off
-  - `stateStartMs` initialized on first call since we don't have a valid timestamp at construction time
----
-
-## 2026-03-14 - US-004
-- Created packages/morse-decoder/src/timing-analyzer.ts: createTimingAnalyzer with onToneEnd/onSilenceEnd/getCurrentWpm
-- Created packages/morse-decoder/src/decoder.ts: createDecoder orchestrating Goertzel -> envelope -> timing -> morse tree
-- Updated src/types.ts: added TimingConfig and MorseDecoder interfaces
-- Updated src/index.ts: exports for new types and functions
-- Typecheck passed (15/15 tasks)
-- **Learnings for future iterations:**
-  - Timing thresholds: dit/dah split at 1.5x ditUnit; element/char gap split at 2x; char/word gap split at 5x ditUnit
-  - Decoder tracks lastTransitionMs externally (not from envelope detector) to compute state durations accurately
-  - Adaptive EMA only applied on dits (not dahs) to track sender dit duration; wpm updated as 1200/ditUnit
-  - On silence end with "element" gap (inter-element space), do nothing — only flush on character/word gaps
-  - updateConfig and reset both re-create all sub-components to clear internal state
----
-
-## 2026-03-14 - US-002
-- Created packages/morse-decoder with name @morse-bot/morse-decoder
-- package.json follows existing validators pattern: "type": "module", exports with types+default, no runtime dependencies
-- tsconfig.json extends @morse-bot/tsconfig/base.json (not compiled-package.json as PRD specified base.json)
-- eslint.config.ts mirrors packages/validators/eslint.config.ts (baseConfig only, no react)
-- src/types.ts exports: MorseElement, MorseGap, GoertzelResult, DecoderConfig, DecoderEvents, DecoderStats
-- src/constants.ts exports: DEFAULT_CONFIG, TIMING_RATIOS, ditDurationMs()
-- src/morse-tree.ts exports: lookupMorse(), getMorseForChar() covering A-Z, 0-9, and 18 standard punctuation marks
-- src/index.ts re-exports all public API using named exports
-- Typecheck passed (15/15 tasks)
-- **Learnings for future iterations:**
-  - New packages need pnpm install to be registered in the workspace before typechecking
-  - Use map-based approach for morse code lookup (MORSE_TO_CHAR / CHAR_TO_REVERSE maps) — simpler than binary tree
-  - Internal imports need .js extension in ESM (e.g., "./types.js") even for .ts source files
----
-
-## 2026-03-14 - US-005
-- Created packages/morse-decoder/src/encoder.ts: createEncoder(config) returning MorseEncoder with encode(text) method
-- encode() splits text by spaces for words, iterates chars, looks up getMorseForChar(), emits tone/silence ToneEvent[]
-- Timing: dit=1200/wpm, dah=3x dit, elementGap=1x dit, charGap=3x dit, wordGap=7x dit (uses TIMING_RATIOS + ditDurationMs from constants)
-- Unknown characters silently skipped; empty words from multiple spaces also skipped
-- Updated src/index.ts: exports createEncoder, EncoderConfig, MorseEncoder, ToneEvent
-- Typecheck passed (15/15 tasks, 14 cached)
-- **Learnings for future iterations:**
-  - Encoder is pure data transformation — no audio involved at this layer; audio playback is handled in the UI (US-014)
-  - Word gaps: insert wordGap silence BETWEEN words (not before first word, not after last); use index check + events.length guard
-  - Char gaps: insert charGap silence BETWEEN encoded characters within a word (not before first char)
-  - Element gaps: insert elementGap silence BETWEEN elements within a character (not before first element)
----
-
-## 2026-03-14 - US-006
-- Created apps/nextjs/public/audio-worklet/sample-forwarder.js: minimal AudioWorkletProcessor that forwards Float32Array input samples via this.port.postMessage()
-- Created apps/nextjs/src/hooks/use-audio-input.ts: useAudioInput hook with startRecording/stopRecording, isRecording/error state, onSamples callback ref pattern
-- Added @morse-bot/morse-decoder to apps/nextjs/package.json dependencies and next.config.js transpilePackages
-- Added "public" to tsconfig.json exclude to prevent TS errors on plain JS worklet file
-- Typecheck passed (16/16 tasks)
-- **Learnings for future iterations:**
-  - AudioWorklet files must be plain .js in public/ (URL-loaded, not bundled) — exclude public/ from tsconfig to avoid TS errors
-  - Use a callback ref pattern (useRef for onSamples) so the worklet message handler always calls the latest callback without re-registering the listener
-  - AudioContext sampleRate must be set at construction time; 8000 Hz is sufficient for morse (narrow-band CW tone)
-  - workletNode must be connected to destination even if we don't want output; otherwise some browsers suspend the AudioContext
----

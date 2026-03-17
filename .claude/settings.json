@@ -30,7 +30,9 @@
       "Bash(pnpm test:*)",
       "Bash(pnpm format:*)",
       "WebFetch(domain:v0.app)",
-      "Bash(pnpm typecheck:*)"
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm -F @morse-bot/expo lint)",
+      "Bash(git add:*)"
     ],
     "additionalDirectories": [
       "/home/curiouslycory/workspace/active-personal/morse-bot",

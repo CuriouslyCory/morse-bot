@@ -5,3 +5,12 @@
 @import "nativewind/theme";
 
 @import "@morse-bot/tailwind-config/theme";
+
+/*
+ * NativeWind v5 preview doesn't handle self-referential @theme inline vars
+ * (e.g. --tracking-normal: var(--tracking-normal)) the way TailwindCSS v4 does
+ * on web. Override with explicit values to break circular resolution.
+ */
+@theme inline {
+  --tracking-normal: 0rem;
+}
