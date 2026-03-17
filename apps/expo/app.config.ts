@@ -61,14 +61,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         },
       },
     ],
-    "@shopify/react-native-skia",
     "react-native-audio-api",
-    [
-      "react-native-live-audio-stream",
-      {
-        microphonePermission:
-          "Morse Code Studio needs microphone access to decode morse code from audio input.",
-      },
-    ],
   ],
 });

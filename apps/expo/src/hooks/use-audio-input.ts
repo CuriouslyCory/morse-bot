@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Platform, PermissionsAndroid } from "react-native";
-import AudioRecord from "react-native-live-audio-stream";
+import { AudioRecorder } from "react-native-audio-api";
 
 interface UseAudioInputOptions {
   onSamples: (samples: Float32Array) => void;
@@ -14,8 +14,7 @@ interface UseAudioInputResult {
 }
 
 const SAMPLE_RATE = 8000;
-const CHANNELS = 1;
-const BITS_PER_SAMPLE = 16;
+const BUFFER_LENGTH = 1024;
 
 async function requestMicrophonePermission(): Promise<boolean> {
   if (Platform.OS === "android") {
@@ -34,6 +33,7 @@ export function useAudioInput({
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const onSamplesRef = useRef(onSamples);
+  const recorderRef = useRef<AudioRecorder | null>(null);
   const isRecordingRef = useRef(false);
 
   // Keep onSamples callback up to date without recreating the hook
@@ -50,39 +50,46 @@ export function useAudioInput({
       return;
     }
 
-    AudioRecord.init({
-      sampleRate: SAMPLE_RATE,
-      channels: CHANNELS,
-      bitsPerSample: BITS_PER_SAMPLE,
-      wavFile: "recording.wav",
+    const recorder = new AudioRecorder();
+    recorderRef.current = recorder;
+
+    const result = recorder.onAudioReady(
+      {
+        sampleRate: SAMPLE_RATE,
+        bufferLength: BUFFER_LENGTH,
+        channelCount: 1,
+      },
+      (event) => {
+        if (!isRecordingRef.current) return;
+
+        // Extract mono channel data from the AudioBuffer
+        const samples = event.buffer.getChannelData(0);
+        onSamplesRef.current(samples);
+      },
+    );
+
+    if (result.status === "error") {
+      setError(result.message);
+      return;
+    }
+
+    recorder.onError((err) => {
+      setError(err.message);
     });
 
-    AudioRecord.on("data", (base64Data: string) => {
-      if (!isRecordingRef.current) return;
-
-      // Decode base64 -> Uint8Array -> Int16 pairs -> Float32Array
-      const binaryString = atob(base64Data);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const dataView = new DataView(bytes.buffer);
-      const sampleCount = Math.floor(bytes.length / 2);
-      const samples = new Float32Array(sampleCount);
-      for (let i = 0; i < sampleCount; i++) {
-        samples[i] = dataView.getInt16(i * 2, true) / 32768;
-      }
-      onSamplesRef.current(samples);
-    });
-
-    AudioRecord.start();
+    recorder.start();
     isRecordingRef.current = true;
     setIsRecording(true);
   }, []);
 
   const stopRecording = useCallback(() => {
     isRecordingRef.current = false;
-    void AudioRecord.stop();
+    if (recorderRef.current) {
+      recorderRef.current.clearOnAudioReady();
+      recorderRef.current.clearOnError();
+      recorderRef.current.stop();
+      recorderRef.current = null;
+    }
     setIsRecording(false);
   }, []);
 
@@ -91,7 +98,12 @@ export function useAudioInput({
     return () => {
       if (isRecordingRef.current) {
         isRecordingRef.current = false;
-        void AudioRecord.stop();
+        if (recorderRef.current) {
+          recorderRef.current.clearOnAudioReady();
+          recorderRef.current.clearOnError();
+          recorderRef.current.stop();
+          recorderRef.current = null;
+        }
       }
     };
   }, []);
